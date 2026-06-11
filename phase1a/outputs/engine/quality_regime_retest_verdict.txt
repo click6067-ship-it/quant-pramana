@@ -1,0 +1,2 @@
+quality 레짐 retest · NEEDS_EVIDENCE
+net연+14.1%·IC-IR+0.22·한계기여연-0.64%p·레짐{'chop/down': np.float64(0.03), 'trend': np.float64(-0.82)}·KILL['K4 작동레짐 기여<비용']

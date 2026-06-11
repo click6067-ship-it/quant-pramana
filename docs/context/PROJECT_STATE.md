@@ -40,7 +40,7 @@ core-satellite 재설계(V4). **v4 build complete; alpha research open & capital
 ## 다음 행동
 1. **cron 등록 → forward 12개월 무인 가동.** 판정표 통과해야 'win'(수익-only 합격 금지).
 2. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
-3. 알파 research-OPEN(Active 1개): MR 변형/quality 레짐. 알파 찾으면 레버 덜.
+3. 알파 research(유료 Sharadar 사용): thread1 MR=REJECT(turnover 3660%)·thread2 quality 레짐=**NEEDS_EVIDENCE**(IC-IR 0.22 신호 희미·chop서 +36.9% vs trend +7.9% 방어적이나 Core 대비 한계기여 +0.03%p≈0). 다음 후보: event/revision 또는 quality×다른팩터. *알파는 베타를 못 넘는 패턴 재확인.*
 4. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
 2. (보류) Research 후보: quality 레짐 retest / MR 변형(longer-horizon·no-trade band) — v5 방향 정해진 뒤.
 3. (TODO) forward reconciliation 2nd 무료소스 wiring(stooq 대체).
