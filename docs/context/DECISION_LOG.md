@@ -2,6 +2,7 @@
 > 결정의 *이유 + 시점.* 무엇=LOCKS.md, 이유=여기. 신규 결정은 맨 위에 추가.
 
 ## 2026-06-12
+- **V6 Diversified Aggressive 빌드 (용하 'v6 ㄱㄱ'·결정은 Codex 회의).** 동기: V5가 SPY/QQQ와 같이 낙폭(레버 증폭)·용하 "같이 안 맞기·현금으로 빼기(숏 아님)". 파훼법 회의 → managed-futures 분산이 답(DBMF 2022 +21.5%). Codex v6 스펙 council 확정: **vol_target·cap 1.5·DBMF 15%·추가 gate OFF**(v6A: 풀 +257%/−27%MDD/Sh0.99 > V5 +344%/−32%/0.95·고정레버 −39%MDD보다 나음; 6mo −6.3%p는 보험료지 결함 아님; DBMF 20%는 과함; gate=config-mining). **정직 트레이드오프: 낙폭↓·Sharpe↑ 대신 수익↓(+257 vs +344)·2023 bull 드래그 = "보험료"(Codex). alpha 아님·검증은 forward.** RESEARCH_ONLY. forward_runner_v6.py 가동(라이브 2026-06-11)·PRAMANA_V6_Problem_Frame_v0.1.md. caveat: DBMF 짧음(2019~·2008없음)·MF lost-decade(2011-20)·샘플의존. + Codex 전체검수 fix(판정표 라이브-only·no-ruin 제거·대시보드 프레이밍).
 - **Production / Research 분리 확정 (LOCK SHEET v0.2).** 왜: v0.1이 Phase 1 실망 때문에 *연구 가능성까지* 닫음 = V1의 과폐기를 반대 방향으로 반복. → 자본권한 엄격 / 연구 개방. "쉬운 알파 없다"·"DL reject"를 LOCK에서 prior(높은 바)로 강등.
 - **임시 A1 = ₩100M · 1~3년 · MDD −35%.** 왜: 임시값 없으면 모든 후속 선택(위성 채택·레버·승격)이 계속 흔들림.
 - **Phase 1.5 risk-matched 측정.** 왜: Phase 1(equal-notional)이 위성 과소평가 의심 → 동일 vol·동일 −35%MDD로 *공정* 재검증 → +0.15%/yr 노이즈 확인 = false-negative 아님(공정히 봐도 안 보탬).

@@ -3,8 +3,8 @@
 > 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
 
 ## 한 줄
-core-satellite 재설계(V4). **v4 build complete; alpha research open & capital-isolated**(Codex 표현). Production = Core Beta Forward Book(SPY/QQQ 1.0x·*베타*지 알파 아님). 확인된 알파 위성 *없음*(MR thread1 REJECT).
-**⚠️ 3개월 sim: Core Beta +10.9% > SPY +7.6%, but QQQ +14.3%엔 짐 → 사용자 directive(SPY·QQQ 둘 다 못넘으면 재정의)대로 v5 재정의 진행중.**
+**최신 = V6 Diversified Aggressive** (Codex 확정 스펙·SHIP-as-paper·RESEARCH_ONLY): 85% 레버드 Core(SPY/QQQ·vol-target·캡1.5x) + 15% managed-futures(DBMF). 용하 "같이 안 맞기"의 답=구조적 분산(2022 DBMF 방어·Sharpe 0.99·MDD −27%). 정직: alpha 아니라 보험료(상승장 수익↓)·검증은 forward.
+계보: v4(Core Beta 베타북) → v5(레버드 베타·in-sample QQQ넘김 but 레버지 알파아님·6mo 같이 낙폭) → **v6(+managed-futures 분산·낮은 레버)**. forward_runner_v6 가동(라이브 2026-06-11). 스펙 PRAMANA_V4/PRAMANA_V6_Problem_Frame_v0.1.md.
 
 ## 지금까지 측정된 것 (Evidence)
 - 단순 횡단면 팩터(value/momentum/lowvol) = 비용후 net 엣지 없음. quality = 식음(IC-IR 0.22→0.046).
