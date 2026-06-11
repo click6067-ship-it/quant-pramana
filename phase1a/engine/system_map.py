@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+"""PRAMANA — 시스템 맵 HTML. "무슨 원리로 돌아가는지" 레이어별 + V6 북 매일 동작 + 냉정한 평가.
+정직: 알파 아닌 레버드 분산 베타. self-contained HTML."""
+import os
+ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def layers():
+    L=[("L1 데이터","Sharadar(유료·backtest)·yfinance(무료·forward)","PIT·survivorship-safe·가격만(V6는 펀더멘털 안 씀)","과거를 *정직하게* 재현(미래 누수 차단). 깨끗한 데이터가 생존 — 더러우면 다 무의미."),
+       ("L2 신호/레짐","20일 실현변동성 + 현재 낙폭","<b>모델 없음 = 규칙(공식)</b>","예측 아님. *후행* 지표(변동성은 떨어진 뒤 오름). '지금 얼마나 출렁이나'만 본다."),
+       ("L3 북(sleeve)","85% 레버드 Core(SPY/QQQ 50/50) + 15% managed-futures(DBMF)","vol-target 공식 + DD-ladder 테이블 + 고정 85/15","레버=시장 노출↑(수익·리스크↑). DBMF=주식 추세하락때 *오름*→'같이 안 맞기'(분산)."),
+       ("L4 배분(allocator)","고정 85/15 core/DBMF","<b>고정비중</b>(적응형 allocator 아님)","DeMiguel 2009: 복잡한 배분이 단순 고정비중을 OOS서 못 이긴다 → 멍청하게 고정."),
+       ("L5 리스크엔진","vol-target + DD-ladder + 레버캡 1.5x","결정적 규칙(예측 X)","변동성 터지면 노출↓·낙폭 깊으면 자동 디레버·레버 절대 1.5 초과 금지. '안 죽기' 바닥."),
+       ("L6 실행","next-bar(신호 t→진입 t+1)","비용 모델(financing 5%·스프레드)","오늘 종가 신호로 *내일* 들어감 = look-ahead(미래 훔쳐보기) 차단. 백테스트 정직성 핵심."),
+       ("L7 귀속/모니터","core vs DBMF 기여 분해·forward 판정표","—","'누가 벌었나' 분해 → 자기기만 방지. 판정표=수익만 좋으면 불합격."),
+       ("L8 거버넌스","paper·사람 자본게이트·LLM off-path·12mo STOP","—","실거래는 사람만 켤 수 있음. LLM은 자문만(주문 X). 12개월 못 맞추면 '쉬운 알파 없음' 수용.")]
+    return "".join(f"<tr><td><b>{a}</b></td><td>{b}</td><td>{c}</td><td>{d}</td></tr>" for a,b,c,d in L)
+DAILY=["어제 종가로 SPY·QQQ·DBMF 가격을 받는다.","Core(SPY/QQQ 50/50)의 <b>최근 20일 변동성</b>을 계산한다.",
+ "<b>레버 L = min(1.5, 28%÷변동성)</b> — 잠잠하면 레버↑(최대 1.5x), 출렁이면 레버↓.",
+ "현재 <b>낙폭</b>을 보고 DD-ladder로 L을 더 줄인다(−20%↓=×0.7·−30%↓=×0.4·−40%↓=×0.2).",
+ "오늘 북 = <b>85%를 L배 레버한 Core + 15% DBMF</b> (financing 비용 차감).",
+ "NAV 갱신 → 판정표 채점 → 대시보드. <b>예측·익절·종목선택 0. 그냥 '변동성 따라 레버 조절한 분산 베타'.</b>"]
+html=f"""<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>PRAMANA 시스템 맵</title><style>
+body{{background:#070b16;color:#e5e7eb;font-family:'Segoe UI',system-ui,sans-serif;margin:0;line-height:1.6}}
+.wrap{{max-width:1040px;margin:0 auto;padding:24px 18px 60px}} h1{{font-size:1.5em}} h2{{font-size:1.18em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:30px}}
+.card{{background:#0d1326;border:1px solid #1e293b;border-radius:14px;padding:16px 18px;margin:10px 0}}
+table{{width:100%;border-collapse:collapse;font-size:.88em}} th,td{{padding:8px 9px;border-bottom:1px solid #1e293b;text-align:left;vertical-align:top}} th{{color:#94a3b8;font-size:.8em}}
+.flow{{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.85em;color:#cbd5e1}} .flow span{{background:#1e293b;border-radius:7px;padding:6px 11px}} .flow i{{color:#64748b;font-style:normal}}
+ol li{{margin:7px 0}} .pos{{color:#34d399}} .neg{{color:#f87171}} .cyan{{color:#22d3ee}}
+.warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:14px 16px;color:#fde68a;font-size:.9em}}
+.ok{{background:#08210f;border:1px solid #166534;color:#86efac;border-radius:10px;padding:14px 16px;font-size:.9em}}
+.badge{{background:#7f1d1d;color:#fecaca;border-radius:6px;padding:2px 9px;font-size:.72em;font-weight:700;margin-left:6px}}
+b{{color:#e5e7eb}} .muted{{color:#64748b;font-size:.82em}}</style></head><body>
+<div class=wrap><h1>🗺️ PRAMANA — 시스템 맵 (무슨 원리로 돌아가나)<span class=badge>V6·PAPER</span></h1>
+<div class=ok><b>한 문장:</b> '똑똑한 AI가 종목 찍는 시스템'이 <b>아니다.</b> 데이터·비용 정직성으로 <b>쉬운 알파가 없음을 먼저 입증</b>한 뒤, <b>레버드 분산 베타</b>(SPY/QQQ + managed-futures)를 <b>변동성-반응 리스크 통제</b>로 굴리는 솔로용 *페이퍼 검증* 시스템이다. 예측을 안 한다.</div>
+
+<h2>① 데이터 흐름 (매일)</h2>
+<div class=card><div class=flow><span>📊 가격(SPY/QQQ/DBMF)</span><i>→</i><span>20일 변동성 측정</span><i>→</i><span>레버 계산(vol-target×DD-ladder·캡1.5)</span><i>→</i><span>북=85%레버Core+15%DBMF</span><i>→</i><span>next-bar 실행(비용↓)</span><i>→</i><span>💰 NAV</span><i>→</i><span>판정표·대시보드</span></div></div>
+
+<h2>② 레이어별 — 뭐 썼나 · 무슨 "모델" · 원리</h2>
+<div class=card><table><tr><th>레이어</th><th>뭐 썼나</th><th>모델/규칙</th><th>원리(왜)</th></tr>{layers()}</table>
+<p class=muted style=margin-top:8px>★ <b>핵심: 학습된 ML/AI 모델이 0개다.</b> 전부 *규칙·산술*(변동성 공식·낙폭 테이블·고정비중). ML/TSFM은 검증결과 알파가 없어서 의도적으로 뺐다(off-path 보조만 허용). 그래서 GPU·클라우드 불필요, CPU로 밀리초.</p></div>
+
+<h2>③ V6 북이 <span class=cyan>매일</span> 하는 일 (이게 "원리")</h2>
+<div class=card><ol>{''.join(f'<li>{s}</li>' for s in DAILY)}</ol></div>
+
+<h2>④ 냉정한 평가</h2>
+<div class=card>
+<p><b>이게 뭔가:</b> 정직한 <b>레버드 분산 베타</b> 페이퍼 북. 리스크 통제(vol-target·DD-ladder·캡1.5)로 안 죽고, 분산(DBMF)으로 상관 낙폭을 구조적으로 줄인다.</p>
+<p><b>이게 <span class=neg>아닌</span> 것:</b> 알파. 예측 안 함 · 시장을 *위험조정으로* 못 이김(Sharpe ≈ QQQ). 수익은 <b>레버(리스크)</b>에서, 낙폭통제는 <b>분산(보험료)</b>에서 — 공짜 없음.</p>
+<p><b>강점:</b> <span class=pos>가짜 알파를 한 번도 안 만들었다.</span> 전부 정직 라벨. V6가 V5의 "같이 낙폭" 문제를 <span class=pos>실제로 개선</span>(6개월 진입: V5 +7.5%/−20%MDD → V6 +12.2%/−13%·12개월: QQQ도 넘김 +37.5 vs +34.1).</p>
+<p><b>약점/위험:</b> 레버 <span class=neg>꼬리위험(forward −70%+ 가능</span>·2008/닷컴 없는 benign 샘플) · DBMF 짧은 역사(2019~) · managed futures 2011-20 'lost decade' · <b>forward 검증 0개월</b>(in-sample/backtest일 뿐).</p>
+</div>
+<div class=warn><b>냉정한 한 줄:</b> 돈 버는 기계도, 알파도 아니다. <b>안 죽고(리스크 통제) 시장을 타며(레버드 베타) 낙폭을 구조적으로 줄이는(분산) 정직한 시스템</b>이다. in-sample 성과는 레버·분산·샘플의 결과지 *스킬*이 아니다. 진짜 가치는 <b>forward 12개월 + 다음 크래시</b>가 말한다. paper·NO LIVE.</div>
+
+<h2>⑤ 계보 (왜 여기까지 왔나)</h2>
+<div class=card><b>v1~v3</b> 단순/선형 팩터·풀북 → 전부 SPY/QQQ 못 이김(정직한 negative·가짜알파 안 만든 게 자산) ·
+<b>v4</b> Core Beta(정직한 베타북) ·
+<b>v5</b> 레버드 베타(in-sample QQQ raw 넘김 but 레버지 알파 아님·SPY/QQQ와 *같이* 낙폭) ·
+<b class=cyan>v6</b> + managed-futures 분산 + 낮은 레버 = "같이 안 맞기"를 구조적으로 해결. <br><span class=muted>가짜 승리 없이, 질문마다 Codex 적대검증으로, 정직하게.</span></div>
+<div class=muted style=margin-top:12px>생성 system_map.py · 스펙 PRAMANA_V4/PRAMANA_V6_Problem_Frame_v0.1.md · 대시보드 v6_forward_dashboard·multi_anchor_v6·production_dashboard.html</div>
+</div></body></html>"""
+out=os.path.join(ROOT,"outputs","pramana_system_map.html"); open(out,"w").write(html)
+print(f"✅ 시스템 맵 → {out} ({os.path.getsize(out)//1024}KB)")
