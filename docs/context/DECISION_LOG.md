@@ -7,6 +7,7 @@
 - **Phase 1.5 risk-matched 측정.** 왜: Phase 1(equal-notional)이 위성 과소평가 의심 → 동일 vol·동일 −35%MDD로 *공정* 재검증 → +0.15%/yr 노이즈 확인 = false-negative 아님(공정히 봐도 안 보탬).
 - **Codex 기억 = repo 컨텍스트 파일로 고정** (AGENTS.md + docs/context/*). 왜: Codex stateless → 대화 붙여넣기 비효율. AGENTS.md가 매번 강제 읽기.
 - **LOCK SHEET v0.3 통합(정본).** 왜: v0.1/v0.2 거치며 쌓인 의견 전체 합침 — 신규: 6 판정라벨+capital/research veto 명시(F), V1 정밀교정(연구성공/포트실패), 공유기억 운영층(H). 과하게 닫힌 표현은 prior로 강등 유지. 포인터 전부 v0.3로.
+- **LOCK SHEET v0.4 (정본·v0.1~v0.3 대체).** 왜: GPT 추가 refine 5개 수용 — ① A1 단일 −35%가 결정을 끌고 가는 위험 → 3 시나리오(−20/−35/−50) 병기 ② Production을 **"Core Beta Forward Book"**으로 정직 명명(Core>SPY=QQQ 틸트=레짐이지 알파 아님, 자기기만 방지·C6) ③ Research 1순위 = mean-reversion(trend가 알파 아니면 반대 성격을 봐야·quality는 식어서 2순위) ④ forward reconciliation(stooq 상시 sanity + Sharadar 윈도우 주기 대조) ⑤ 연구 active(1개)/passive data collection(병렬) 분리. v0.1~v0.3 git rm.
 
 ## 2026-06-11
 - **명명 V2→V4.** 왜: 내부 v1/v2/v3와 혼동 방지.

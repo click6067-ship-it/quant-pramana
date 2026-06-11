@@ -11,7 +11,7 @@ refuse cosmetic fixes when architecture is flawed · separate **production-safe*
 
 ## Required Context Files — read BEFORE advising or editing
 1. `docs/context/PROJECT_STATE.md`  — 현재 상태 (**날짜 확인**)
-2. `docs/context/LOCKS.md`           — 불변 결정 (full rationale → `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.3.md`)
+2. `docs/context/LOCKS.md`           — 불변 결정 (full rationale → `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md`)
 3. `docs/context/ADVERSARIAL_COUNSEL.md` — 공격 리스트 + 판정 라벨
 4. `docs/context/DECISION_LOG.md`    — 왜 그 결정을 했나
 **If any file is missing, or PROJECT_STATE's date looks stale vs what you're told, SAY SO FIRST** — do not critique against stale context.
