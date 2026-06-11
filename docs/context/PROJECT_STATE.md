@@ -3,8 +3,8 @@
 > 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
 
 ## 한 줄
-**최신 = V6 Diversified Aggressive** (Codex 확정 스펙·SHIP-as-paper·RESEARCH_ONLY): 85% 레버드 Core(SPY/QQQ·vol-target·캡1.5x) + 15% managed-futures(DBMF). 용하 "같이 안 맞기"의 답=구조적 분산(2022 DBMF 방어·Sharpe 0.99·MDD −27%). 정직: alpha 아니라 보험료(상승장 수익↓)·검증은 forward.
-계보: v4(Core Beta 베타북) → v5(레버드 베타·in-sample QQQ넘김 but 레버지 알파아님·6mo 같이 낙폭) → **v6(+managed-futures 분산·낮은 레버)**. forward_runner_v6 가동(라이브 2026-06-11). 스펙 PRAMANA_V4/PRAMANA_V6_Problem_Frame_v0.1.md.
+**최신 = V7 Paper Core Candidate = 4-sleeve** (GPT+Claude 수렴·Codex 검수 SHIP-as-paper/REVISE 반영·RESEARCH_ONLY/PRODUCTION_UNSAFE): Equity 50%(SPY/QQQ) + Managed-Futures 25%(DBMF) + Gold 15%(GLD) + Bonds 10%(IEF)·기본 1.0x. **회피기동 = 코어 대전환(QQQ↔4-sleeve 마켓타이밍·데이터로 짐)이 아니라 구조적 분산(4-sleeve)을 깔고 위험신호 뜨면 *공격 파트만* 끄기(throttle·NEEDS_EVIDENCE).** "Production"은 Promotion Gates(crash-pack+12mo forward+2-feed+attribution+사람 게이트) 통과 후만.
+계보: v4(Core Beta) → v5(레버드 베타·QQQ넘김 but 레버지 알파아님·6mo 같이 낙폭) → v6(+managed-futures 분산·낮은 레버) → **v7(4-sleeve 구조분산 코어 + throttle 공격파트만 + Alpha Lab paper + Risk Monitor)**. forward_runner_v7 가동(라이브 2026-06-11·4-sleeve 1.0x). 스펙 PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md. **부정됨(데이터): 코어 regime-switch(switch Sharpe 0.91<static 4-sleeve 1.07·2022 −24% vs −10% 휩쏘).**
 
 ## 지금까지 측정된 것 (Evidence)
 - 단순 횡단면 팩터(value/momentum/lowvol) = 비용후 net 엣지 없음. quality = 식음(IC-IR 0.22→0.046).
@@ -37,10 +37,17 @@
 - 대시보드: v5_forward_dashboard.html(라이브)·production_dashboard.html(백테스트)·multi_anchor_v5.html(12/6/3개월 진입).
 - multi-anchor: V5가 12mo 진입 QQQ 넘음(+38% vs +31%)·3mo ~동률·6mo 짐(+7.5% vs +11.3%)·세 구간 다 MDD↑·Sharpe<QQQ = 레버드 베타 양면.
 
+## v7 빌드 현황 (2026-06-12 · 최신 · GPT+Claude 수렴 → Codex SHIP-as-paper/REVISE 반영)
+- **V7 = Paper Core Candidate(4-sleeve) + Risk Throttle(공격파트만) + Alpha Lab(paper) + Risk Monitor.** 스펙 `PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md`.
+- **부정됨(데이터·no-echo):** 코어 regime-switch(QQQ↔4-sleeve 대전환)=마켓타이밍·휩쏘. `regime_switch_test.py`: switch 풀 Sharpe 0.91 < static 4-sleeve 1.07·2022 −24% vs −10%. → **코어는 안 갈아탄다.**
+- **4-sleeve 측정(`test_4sleeve.py`·2019-26 비용후):** 풀 +174%/MDD −18%/**Sharpe 1.21**(BEST)·2022 −10%/−12%(vs QQQ −35%)·2023 +18.9%(vs QQQ +55.9%=bull 드래그=보험료). 정직: QQQ bull 수익 ~절반 포기=알파 아니라 *목적함수(크래시생존) 선택*.
+- **빌드:** `forward_runner_v7.py`(4-sleeve 1.0x·free yfinance SPY/QQQ/DBMF/GLD/IEF·fail-closed·라이브 인셉션 2026-06-11)+Risk Monitor 점수(200일선/20일vol/DD→Growth/Caution/Defense/Crash·**정보용·자본 자동전환 금지**)·`outputs/v7_forward_dashboard.html`.
+- **Codex 검수 VERDICT: SHIP-as-paper plan, REVISE label/gate**(STOP 아님). 6지적 전부 반영: ①"Production"→"Paper Core Candidate"+Promotion Gates ②4-sleeve 수치는 crash-pack 전 ③throttle=NEEDS_EVIDENCE ④paper notional 2~5% ⑤게이트 전 차단(실자본·1.25x·throttle 편입) ⑥승격 판정표 §5b.
+- **🔒 Promotion Gates(실자본 전 전부):** crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트.
+
 ## 다음 행동
-1. **cron 등록 → forward 12개월 무인 가동.** 판정표 통과해야 'win'(수익-only 합격 금지).
-2. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
-3. 알파 research(유료 Sharadar 사용): thread1 MR=REJECT(turnover 3660%)·thread2 quality 레짐=**NEEDS_EVIDENCE → 사실상 not-candidate**(IC-IR 0.22·chop +36.9% 방어적이나 Core 대비 한계기여 최고 +0.03%p « 50bp 경제적 최소치 → 승격 후보 아님). 다음 후보: event/revision 또는 quality×다른팩터. *알파는 베타를 못 넘는 패턴 재확인.*
-4. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
-2. (보류) Research 후보: quality 레짐 retest / MR 변형(longer-horizon·no-trade band) — v5 방향 정해진 뒤.
-3. (TODO) forward reconciliation 2nd 무료소스 wiring(stooq 대체).
+1. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지).
+2. **crash-pack(2000-02·2008·2020·2022·1987 gap):** ① 4-sleeve robustness ② throttle이 static을 *crash-pack서* 이기나 → 이기면 승격, 못 이기면 대시보드 전용. DBMF/GLD/IEF 짧은 역사 → 장기 proxy 필요.
+3. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
+4. (Research·자본권한 0) Alpha Lab(급등주/VWAP/ORB·intraday infra 필요)·brake-only smoothing·event/revision 팩터. *알파는 베타를 못 넘는 패턴 재확인 위.*
+5. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
