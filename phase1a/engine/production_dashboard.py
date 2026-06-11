@@ -1,102 +1,91 @@
 #!/usr/bin/env python3
-"""PRAMANA V4 — Production 대시보드. Core Beta Forward Book(1.0x) vs SPY vs QQQ, 3개월+풀사이클.
-정직: 알파북 아님·베타북. beat/no-beat를 솔직히. 사용자 directive(SPY·QQQ 못넘으면 재정의) 반영.
-self-contained HTML. paper. dashboard.py 후속(v4판)."""
-import os, sys, io, base64, numpy as np, pandas as pd, json
+"""PRAMANA V5 대시보드 — Aggressive Leveraged Core Beta(용하 선택) vs SPY vs QQQ.
+정직: 레버드 베타지 알파 아님. in-sample QQQ 넘음=레버(Sharpe≈QQQ). forward −70%+ 가능. RESEARCH_ONLY.
+'이겼나?' 정직 판정 박스. paper. self-contained HTML."""
+import os, sys, io, base64, json, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import data
 CAP=100_000_000; ENG=os.path.join(data.PHASE1A,"outputs","engine")
 etf=data.load("SFP_FUNDS",usecols=["ticker","date","closeadj"]).pivot_table(index="date",columns="ticker",values="closeadj").sort_index()
-ret=etf.pct_change(); days=etf.index
-core=0.5*ret["SPY"]+0.5*ret["QQQ"]
-def navwin(s,n):
-    d=days[-n:]; return CAP*(1+s.reindex(d).fillna(0)).cumprod()
+ret=etf.pct_change()
+agg=pd.read_csv(os.path.join(ENG,"aggressive_book_nav.csv"),index_col=0,parse_dates=True).iloc[:,0] if os.path.exists(os.path.join(ENG,"aggressive_book_nav.csv")) else None
+ajson=json.load(open(os.path.join(ENG,"aggressive_book.json"))) if os.path.exists(os.path.join(ENG,"aggressive_book.json")) else {}
+days=agg.index if agg is not None else etf.index[etf.index>=etf.index[210]]
+core=(0.5*ret["SPY"]+0.5*ret["QQQ"]).reindex(days).fillna(0)
+def navser(s): return CAP*(1+s).cumprod()
+books={"V5 Aggressive":agg if agg is not None else navser(core),
+       "Core Beta 1.0x":navser(core),"SPY":navser(ret["SPY"].reindex(days).fillna(0)),"QQQ":navser(ret["QQQ"].reindex(days).fillna(0))}
 def stat(s):
-    r=s.dropna(); n=CAP*(1+r).cumprod(); yrs=(r.index[-1]-r.index[0]).days/365.25
-    tot=n.iloc[-1]/CAP-1; cagr=(1+tot)**(1/yrs)-1 if yrs>0 and tot>-1 else float('nan')
-    return tot,cagr,(n/n.cummax()-1).min(),(r.mean()/r.std()*np.sqrt(252) if r.std()>0 else float('nan'))
-# 3개월(~63 거래일) + 풀
-N=63
-w3={k:navwin(v,N) for k,v in {"Core Beta":core,"SPY":ret["SPY"],"QQQ":ret["QQQ"]}.items()}
-s3={k:stat(v.reindex(days[-N:]).fillna(0)) for k,v in {"Core Beta":core,"SPY":ret["SPY"],"QQQ":ret["QQQ"]}.items()}
-sf={k:stat(v.fillna(0)) for k,v in {"Core Beta":core,"SPY":ret["SPY"],"QQQ":ret["QQQ"]}.items()}
-tgt=json.load(open(os.path.join(ENG,"production_target.json"))) if os.path.exists(os.path.join(ENG,"production_target.json")) else {}
-mr=open(os.path.join(ENG,"research_meanrev_verdict.txt")).read().strip() if os.path.exists(os.path.join(ENG,"research_meanrev_verdict.txt")) else "n/a"
-recon=json.load(open(os.path.join(data.PHASE1A,"outputs","forward","reconcile.json"))) if os.path.exists(os.path.join(data.PHASE1A,"outputs","forward","reconcile.json")) else {}
-prod=pd.read_csv(os.path.join(ENG,"production_book.csv")) if os.path.exists(os.path.join(ENG,"production_book.csv")) else None
-
-# beat 판정
-c3=s3["Core Beta"][0]; beats_spy=c3>s3["SPY"][0]; beats_qqq=c3>s3["QQQ"][0]
-verdict = "SPY·QQQ 둘 다 넘음" if (beats_spy and beats_qqq) else (f"SPY는 넘고 QQQ엔 짐(베타·QQQ틸트)" if beats_spy else "둘 다 못 넘음")
-trigger = (beats_spy and beats_qqq)
-
+    r=s.pct_change().dropna(); yrs=(s.index[-1]-s.index[0]).days/365.25
+    tot=s.iloc[-1]/s.iloc[0]-1; cg=(1+tot)**(1/yrs)-1 if yrs>0 and tot>-1 else float('nan')
+    return tot,cg,(s/s.cummax()-1).min(),(r.mean()/r.std()*np.sqrt(252) if r.std()>0 else float('nan'))
+F={k:stat(v) for k,v in books.items()}
+N=63; T3={k:stat(v.iloc[-N:]) for k,v in books.items()}
+av=F["V5 Aggressive"]; qq=F["QQQ"]; beat=av[0]>qq[0]
 plt.style.use("dark_background"); plt.rcParams.update({"axes.facecolor":"#0d1326","figure.facecolor":"#0d1326","grid.alpha":.15,"font.size":9})
-def png(fig): b=io.BytesIO(); fig.savefig(b,format="png",dpi=95,bbox_inches="tight",facecolor="#0d1326"); plt.close(fig); return base64.b64encode(b.getvalue()).decode()
-f=plt.figure(figsize=(10,3.6))
-for k,c in [("Core Beta","#22d3ee"),("SPY","#f59e0b"),("QQQ","#a78bfa")]:
-    plt.plot(w3[k].index,w3[k]/CAP,label=k,lw=2.2 if k=="Core Beta" else 1.5,color=c,ls=("-" if k=="Core Beta" else "--"))
-plt.legend(framealpha=.2); plt.title("3-Month: Core Beta(1.0x) vs SPY vs QQQ",color="#e5e7eb"); plt.ylabel("× ₩100M"); ch=png(f)
+f=plt.figure(figsize=(11,3.8))
+for k,c,w in [("V5 Aggressive","#22d3ee",2.4),("QQQ","#a78bfa",1.5),("SPY","#f59e0b",1.4),("Core Beta 1.0x","#64748b",1.1)]:
+    plt.plot(books[k].index,books[k]/CAP,label=k,color=c,lw=w,ls=("-" if k=="V5 Aggressive" else "--"))
+plt.legend(framealpha=.2); plt.yscale("log"); plt.title(f"Growth of ₩100M (log) — {days[0].date()}→{days[-1].date()}",color="#e5e7eb"); plt.ylabel("× initial")
+b=io.BytesIO(); f.savefig(b,format="png",dpi=95,bbox_inches="tight",facecolor="#0d1326"); plt.close(f); ch=base64.b64encode(b.getvalue()).decode()
 C=lambda v:'pos' if v>=0 else 'neg'
-scen_rows=""
-if prod is not None:
-    for _,r in prod[prod.book=="CoreOnly"].iterrows():
-        scen_rows+=f"<tr><td>{r.scen}</td><td class=num>{r.lev:.2f}x</td><td class='num'>{r.cagr*100:+.1f}%</td><td class='num neg'>{r.mdd*100:.0f}%</td><td class=num>{r.sharpe:.2f}</td></tr>"
+def row(k):
+    return f"<tr><td>{k}</td><td class='num {C(F[k][0])}'>{F[k][0]*100:+.0f}%</td><td class=num>{F[k][1]*100:.1f}%</td><td class='num neg'>{F[k][2]*100:.0f}%</td><td class=num>{F[k][3]:.2f}</td><td class='num {C(T3[k][0])}'>{T3[k][0]*100:+.1f}%</td></tr>"
 html=f"""<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
-<title>PRAMANA V4 Production</title><style>
+<title>PRAMANA V5</title><style>
 body{{background:#070b16;color:#e5e7eb;font-family:'Segoe UI',system-ui,sans-serif;margin:0;line-height:1.55}}
-.wrap{{max-width:1040px;margin:0 auto;padding:22px 18px 60px}} h1{{font-size:1.5em}}
-.badge{{background:#7f1d1d;color:#fecaca;border-radius:6px;padding:2px 9px;font-size:.72em;font-weight:700;margin-left:6px}}
-.b2{{background:#1e3a8a;color:#bfdbfe}} .kpis{{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}}
-.kpi{{flex:1;min-width:120px;background:#0d1326;border:1px solid #1e293b;border-radius:12px;padding:12px 14px}}
-.kpi .l{{color:#94a3b8;font-size:.74em;text-transform:uppercase}} .kpi .v{{font-size:1.5em;font-weight:800}}
+.wrap{{max-width:1040px;margin:0 auto;padding:22px 18px 60px}} h1{{font-size:1.45em}}
+.badge{{background:#7f1d1d;color:#fecaca;border-radius:6px;padding:2px 9px;font-size:.7em;font-weight:700;margin-left:5px}}
+.b2{{background:#1e3a8a;color:#bfdbfe}} .kpis{{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}}
+.kpi{{flex:1;min-width:115px;background:#0d1326;border:1px solid #1e293b;border-radius:12px;padding:11px 13px}}
+.kpi .l{{color:#94a3b8;font-size:.72em;text-transform:uppercase}} .kpi .v{{font-size:1.4em;font-weight:800}}
 .card{{background:#0d1326;border:1px solid #1e293b;border-radius:14px;padding:16px;margin:10px 0}} img{{width:100%;border-radius:10px}}
 table{{width:100%;border-collapse:collapse;font-size:.9em}} th,td{{padding:6px 9px;border-bottom:1px solid #1e293b;text-align:left}}
-th{{color:#94a3b8;font-size:.8em}} td.num{{text-align:right;font-variant-numeric:tabular-nums}} .pos{{color:#34d399}} .neg{{color:#f87171}} .cyan{{color:#22d3ee}}
-h2{{font-size:1.12em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:24px}}
-.warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:13px 16px;color:#fde68a;font-size:.88em}}
-.ok{{background:#08210f;border:1px solid #166534;color:#86efac}} .muted{{color:#64748b;font-size:.82em}}</style></head><body>
-<div class=wrap><h1>🦊 PRAMANA V4 — Production: Core Beta Forward Book<span class=badge>PAPER·NO LIVE</span><span class="badge b2">베타북·알파 아님</span></h1>
-<p style='color:#94a3b8'>SPY/QQQ 50/50 (1.0x·PRODUCTION_SAFE 후보) · 정직: 알파 시스템 아님, 시장 베타를 *탄다.* Core&gt;SPY는 QQQ 틸트(레짐)지 스킬 아님.</p>
+th{{color:#94a3b8;font-size:.78em}} td.num{{text-align:right;font-variant-numeric:tabular-nums}} .pos{{color:#34d399}} .neg{{color:#f87171}}
+h2{{font-size:1.1em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:22px}}
+.win{{background:#0c2a16;border:1px solid #15803d;color:#86efac}} .warn{{background:#1c1408;border:1px solid #92400e;color:#fde68a}}
+.box{{border-radius:10px;padding:14px 16px;font-size:.9em;margin:8px 0}} .muted{{color:#64748b;font-size:.82em}}</style></head><body>
+<div class=wrap><h1>🦊 PRAMANA V5 — Aggressive Leveraged Core Beta<span class=badge>PAPER·NO LIVE</span><span class="badge b2">RESEARCH_ONLY</span></h1>
+<p style='color:#94a3b8'>용하 선택: 공격적 수익극대화·리스크 수용·유연. vol-target {ajson.get('target_vol_hypothesis','?')}·캡 {ajson.get('paper_max_cap','?')}x·DD ladder·현재 레버 {ajson.get('cur_lever','?')}x. <b>정직: 레버드 베타지 알파 아님.</b></p>
 
 <div class=kpis>
-<div class=kpi><div class=l>3M Core Beta</div><div class="v {C(s3['Core Beta'][0])}">{s3['Core Beta'][0]*100:+.2f}%</div></div>
-<div class=kpi><div class=l>3M SPY</div><div class="v {C(s3['SPY'][0])}">{s3['SPY'][0]*100:+.2f}%</div></div>
-<div class=kpi><div class=l>3M QQQ</div><div class="v {C(s3['QQQ'][0])}">{s3['QQQ'][0]*100:+.2f}%</div></div>
-<div class=kpi><div class=l>3M MDD</div><div class="v neg">{s3['Core Beta'][2]*100:.1f}%</div></div>
-<div class=kpi><div class=l>3M Sharpe</div><div class="v">{s3['Core Beta'][3]:+.2f}</div></div>
-</div>
-<div class=card><img src="data:image/png;base64,{ch}"></div>
-
-<h2>🎯 SPY·QQQ를 넘었나? (네 directive 기준)</h2>
-<div class="card {'ok' if trigger else 'warn'}">
-<b>판정: {verdict}.</b><br>
-3개월 Core Beta {s3['Core Beta'][0]*100:+.2f}% vs SPY {s3['SPY'][0]*100:+.2f}% vs QQQ {s3['QQQ'][0]*100:+.2f}%. 풀사이클 Sharpe Core {sf['Core Beta'][3]:.2f}/SPY {sf['SPY'][3]:.2f}/QQQ {sf['QQQ'][3]:.2f}.<br>
-{'✅ 둘 다 넘음 — 유지.' if trigger else '⚠️ <b>둘 다(특히 QQQ)는 못 넘는다 — 설계상 당연(50% QQQ 베타북). 네 directive대로 이건 v5 재정의 트리거다.</b> 넘는 길은 둘뿐: ① 레버(=리스크지 알파 아님·UNSAFE) ② 진짜 알파(미발견·MR 오늘 REJECT). → 가짜 승리 대신 정직히 재정의 회의(Codex)로.'}
+<div class=kpi><div class=l>누적(풀)</div><div class="v {C(av[0])}">{av[0]*100:+.0f}%</div></div>
+<div class=kpi><div class=l>CAGR</div><div class="v">{av[1]*100:.1f}%</div></div>
+<div class=kpi><div class=l>QQQ 누적</div><div class="v">{qq[0]*100:+.0f}%</div></div>
+<div class=kpi><div class=l>MDD</div><div class="v neg">{av[2]*100:.0f}%</div></div>
+<div class=kpi><div class=l>Sharpe</div><div class="v">{av[3]:.2f}</div></div>
 </div>
 
-<h2>⚙️ V4는 어떻게 작동하나</h2>
+<h2>🏆 이겼나? (정직 판정)</h2>
+<div class="box {'win' if beat else 'warn'}">
+<b>{'✅ in-sample QQQ raw 넘음 — 네 공격 바(beat SPY+QQQ)로는 *이겼다*.' if beat else '❌ QQQ 못 넘음.'}</b>
+V5 +{av[0]*100:.0f}% vs QQQ +{qq[0]*100:.0f}% vs SPY +{F['SPY'][0]*100:.0f}% · MDD {av[2]*100:.0f}%(QQQ {qq[2]*100:.0f}%).<br><br>
+<b>단, 가짜 승리 안 만든다 — 정직히:</b><br>
+① <b>알파 아니라 레버다.</b> Sharpe {av[3]:.2f} ≈ QQQ {qq[3]:.2f} → 위험조정 우위 0. 더 번 건 시장노출(레버)을 더 산 것.<br>
+② <b>−{abs(av[2]*100):.0f}% MDD는 2016-26 *benign* 조건부.</b> 2000-02 Nasdaq −78%·2008 GFC 미포함. <b>forward tail = −70%+ 가능</b>(레버×크래시).<br>
+③ <b>vol-target은 no-ruin floor 아님</b> — 손실*속도* 완화일 뿐, 1일 갭엔 무력(−20%갭@현레버 = 북 −{abs(0.20*float(ajson.get('cur_lever',1.6))*100):.0f}% 즉시).<br>
+④ <b>진짜 승패는 12개월 forward.</b> 수익만 좋고 DD/회복 가드레일 깨지면 = FAIL(수익-only 합격 금지).
+</div>
+
+<h2>📈 성장 (log)</h2><div class=card><img src="data:image/png;base64,{ch}"></div>
+
+<h2>📊 비교 (풀사이클 + 3M)</h2>
+<div class=card><table><tr><th>북</th><th class=num>누적</th><th class=num>CAGR</th><th class=num>MDD</th><th class=num>Sharpe</th><th class=num>3M</th></tr>
+{row("V5 Aggressive")}{row("QQQ")}{row("SPY")}{row("Core Beta 1.0x")}</table>
+<div class=muted style=margin-top:6px>Core Beta 1.0x = PRODUCTION_SAFE 후보(레버 없는 정직 베타). V5 Aggressive = 그 위 레버 연구레이어.</div></div>
+
+<h2>🔬 상태 & 가드레일</h2>
 <div class=card><ul>
-<li><b>Production = Core Beta Forward Book</b> — SPY/QQQ 50/50, 1.0x. 알파 아니라 *규율 있는 베타.* (Phase 1·1.5: trend+LETF 위성 = 노이즈 → 뺌.)</li>
-<li><b>레버는 격리 sleeve</b> — −20/−35/−50% 시나리오는 *PRODUCTION_UNSAFE*(shock-replay+cap 전 자본금지). 레버는 risk cap 아니라 backward knob(Codex).</li>
-<li><b>Research OPEN</b> — 자본권한 0으로 알파 후보 탐색(Active 1개). MR thread 1 = <b>REJECT</b>(아래).</li>
-<li><b>결정적 risk veto·next-bar·attribution·사람 자본게이트·LLM off-path.</b></li>
+<li><b>라벨(Codex):</b> RESEARCH_ONLY / PRODUCTION_UNSAFE. 2.0x = paper max, <b>live cap 1.25~1.5x(crash-pack 통과 후)</b>. target vol = 목표 아니라 tuning hypothesis.</li>
+<li><b>가장 중요한 가드레일:</b> 레버 cap은 *crash-loss budget*(1987갭·2000-02·2008·2020·2022 사전등록 pack)로 정한다, CAGR로 정하지 않는다.</li>
+<li><b>알파 research-OPEN:</b> MR thread1 = REJECT(turnover 3660%). 다음: quality 레짐 / MR 변형. 알파 찾으면 레버 덜 써도 됨.</li>
+<li><b>12mo STOP:</b> forward 가드레일 못 지키면 목표 또 안 바꾸고 "쉬운 알파 없음·Core Beta 1.0x만 production-safe" 수용.</li>
 </ul></div>
 
-<h2>🛒 현재 타깃 (paper)</h2>
-<div class=card><b>Production 기본:</b> SPY 50% / QQQ 50% (1.0x). <span class=muted>as-of {tgt.get('asof','?')} · 추세 ON {len(tgt.get('trend_on',[]))}/15</span>
-<table style=margin-top:8px><tr><th>레버 시나리오(격리·UNSAFE)</th><th class=num>레버</th><th class=num>CAGR</th><th class=num>MDD</th><th class=num>Sharpe</th></tr>{scen_rows}</table>
-<div class=muted style=margin-top:6px>※ 레버 행은 2016-26 benign 과거 MDD 기준 — forward 낙폭 더 클 수 있음(2008 미포함). shock-stress 전 자본 금지.</div></div>
-
-<h2>🔬 Research 상태</h2>
-<div class=card><b>Active thread 1: mean-reversion</b> → <span class=neg>REJECT</span><br>
-<span class=muted>{mr}</span><br>
-파이프: 등록→스크린→paper sandbox→attribution→OOS/비용후→promotion. 다음 후보: quality 레짐 retest / MR 변형(longer-horizon·no-trade band).</div>
-
-<div class=warn style=margin-top:14px>⚠️ <b>정직 고지:</b> paper·NO LIVE. Core Beta는 *베타북*(SPY/QQQ를 탄다)이지 알파 아님 — QQQ를 못 넘는다. 레버로 "넘기"는 리스크지 엣지 아님. forward reconciliation: {recon.get('note') or ('OK' if recon.get('ok') else '2nd피드 wiring 필요(stooq)')}. 실거래는 12개월 forward+사람 게이트 전 금지.</div>
-<div class=muted style=margin-top:10px>데이터 Sharadar(backtest)·생성 production_dashboard.py · 정본 PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md</div>
+<div class="box warn">⚠️ <b>정직 고지:</b> paper·NO LIVE. 이건 <b>"crash-loss 줄이려는 procyclical 레버드 베타 *실험*"</b>이지 검증된 수익기계 아님. in-sample 승리는 레버+benign 샘플. 실거래는 crash-pack로 cap 정하고 12개월 forward 가드레일 통과 + 사람 게이트 전 금지.</div>
+<div class=muted style=margin-top:10px>데이터 Sharadar · 생성 production_dashboard.py · 정본 PRAMANA_V4/PRAMANA_V5_Problem_Frame_v0.2.md</div>
 </div></body></html>"""
 out=os.path.join(data.PHASE1A,"outputs","production_dashboard.html"); open(out,"w").write(html)
-print(f"✅ 대시보드 → {out} ({os.path.getsize(out)//1024}KB)")
-print(f"  3M: Core Beta {s3['Core Beta'][0]*100:+.2f}% · SPY {s3['SPY'][0]*100:+.2f}% · QQQ {s3['QQQ'][0]*100:+.2f}% → {verdict}")
-print(f"  beat both = {trigger} → {'유지' if trigger else 'v5 재정의 트리거(directive)'}")
+print(f"✅ v5 대시보드 → {out} ({os.path.getsize(out)//1024}KB)")
+print(f"  V5 Aggressive 누적 {av[0]*100:+.0f}% vs QQQ {qq[0]*100:+.0f}% · MDD {av[2]*100:.0f}% · Sharpe {av[3]:.2f} · beat QQQ={beat}")

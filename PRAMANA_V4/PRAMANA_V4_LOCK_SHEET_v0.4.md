@@ -122,7 +122,7 @@
 - ✅ **Research thread1 mean-reversion = REJECT** (research_meanrev.py·net −4%·turnover 3660%·IC-IR 0.002·Core 한계기여 −0.027). 리서치 기계 정상작동(사전등록 kill·정직 negative). Codex가 kill 6개 추가 권고(net≤레버없는Core·tail집중·chop사후·half-life·2x비용·episode집중) → MR 변형 재시도 시 적용.
 - ✅ forward reconciliation 프레임(forward_reconcile.py) — stooq 404 → **2nd 무료소스 wiring TODO**, 0체크=UNKNOWN 정직보고. ✅ 대시보드 production_dashboard.html.
 - ⚠️ **3개월 sim: Core Beta +10.9% > SPY +7.6%, QQQ +14.3%엔 짐** → 사용자 directive(SPY·QQQ 둘 다 못넘으면 재정의)대로 **v5 재정의 트리거.**
-- ▶ **다음 = v5 문제 재정의** (Codex 회의 중): 'SPY+QQQ 둘 다 넘기'가 솔로에 가능한가 / 목표 재정의(낮은낙폭 매칭·합의 레버·regime) / 무한 재정의 루프 회피 기준. → v5 frame + 사용자 결정. **베타북은 자기 벤치(QQQ) 못 넘음=설계상; 넘는 길=레버(리스크) or 미발견 알파.**
+- ▶ **v5 = Aggressive Leveraged Core Beta Book** (용하 승인: 공격·리스크수용·유연 / Codex 3회 REVISE → SHIP-as-paper) → `PRAMANA_V4/PRAMANA_V5_Problem_Frame_v0.2.md`. in-sample 2016-26 +625% > QQQ +539%(beat!) but **레버지 알파 아님(Sharpe≈QQQ)·MDD −32% benign-conditional·forward −70%+ 가능.** RESEARCH_ONLY·live cap 1.25~1.5x(crash-pack 후). **다음 = forward 12개월 사전등록 판정표**(수익-only 합격 금지). 베타북은 QQQ를 알파로 못 넘음=설계상; 레버로 넘긴 것.
 
 > **한 줄:** V4 = **유연한 연구 + 엄격한 자본권한.** Production = 정직한 Core Beta Forward Book(단순·단단), Research = 격리·개방(후보 살려 증거축적), 승격 천천히, 비중 연속, 변경은 attribution 근거로.
 
