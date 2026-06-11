@@ -1,0 +1,2 @@
+edge,events,ic,icir,net_lo_ew_%,net2_lo_ew_%,net_ls_%,rec_icir,liq_lo_%,liq_hi_%,verdict,kills
+true_pead_v1,60862,-0.0153,-0.168,-2.25,-4.61,-7.91,-0.107,-4.48,-11.57,FAIL → True PEAD(이 정의) 종료/보류,"net active(long-only vs 벤치)≤0;2021-26 사망(net-0.2%,IC-IR-0.107);IC-IR<0.20(-0.168);2x cost(round-trip) 사망"

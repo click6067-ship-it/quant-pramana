@@ -1,0 +1,4 @@
+model,verdict,net_cw_%,icir,rec_icir,rec_net_%,to_%,kills
+A_simple_blend,FAIL,-2.44,0.2,0.306,-0.92,238.0,net active vs CW≤0;2016-20에만 집중(2021-26 net≤0);sector중립화후 net≤0;long-only vs CW 음수
+B_constrained_rank,FAIL,-3.55,0.19,0.297,-1.0,248.0,net active vs CW≤0;2016-20에만 집중(2021-26 net≤0);long-only vs CW 음수
+C_ridge_OOS,FAIL,-0.69,0.014,-0.099,-4.83,229.0,net active vs CW≤0;2021-26 IC-IR<0.10(-0.099);2016-20에만 집중(2021-26 net≤0);long-only vs CW 음수

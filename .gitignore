@@ -7,9 +7,13 @@
 *secret*
 *password*
 
-# ── 라이선스 데이터 + 생성물 (Sharadar raw 등, 푸시 제외) ──
-outputs/
-**/outputs/
+# ── 라이선스 bulk 데이터만 제외 (Sharadar raw 1.2GB·동결 스냅샷). 파생 결과/대시보드는 추적 ──
+outputs/raw/
+**/outputs/raw/
+outputs/snapshots/
+**/outputs/snapshots/
+outputs/*.log
+**/outputs/*.log
 *.csv.gz
 
 # ── 환경/캐시 ──

@@ -1,5 +1,7 @@
 .ndl_key
 .venv/
 __pycache__/
-outputs/
+outputs/raw/
+outputs/snapshots/
+outputs/*.log
 *.pyc
