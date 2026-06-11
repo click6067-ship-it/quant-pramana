@@ -1,6 +1,6 @@
 # PROJECT_STATE — PRAMANA V4
 > 현재 상태 스냅샷. **갱신일: 2026-06-12.** 상태가 바뀌면 이 파일부터 갱신. *Codex: 이 날짜가 오늘과 많이 떨어졌으면 먼저 "stale 가능" 경고하고 시작.*
-> 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.2.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
+> 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.3.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
 
 ## 한 줄
 core-satellite 재설계(V4). **Production = Core(SPY/QQQ) 중심·일봉·paper forward. Research = 자본권한 0으로 개방.** 확인된 알파 위성은 *아직 없음.*

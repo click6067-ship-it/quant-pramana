@@ -1,5 +1,5 @@
 # LOCKS — PRAMANA V4 (digest)
-> **정본 + 근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.2.md`.** 여긴 빠른 참조용 한 줄 다이제스트. 충돌 시 락시트 우선.
+> **정본 + 근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.3.md`.** 여긴 빠른 참조용 한 줄 다이제스트. 충돌 시 락시트 우선.
 
 ## Hard LOCK (불변)
 NO LIVE · US only(crypto 제외) · **core-satellite**(SPY 버리고 이기기 금지) · 목적 max 초과수익 s.t. MDD≤X · **next-bar**(same-close 금지) · **attribution 필수** · **risk engine 최종 veto** · **LLM/TSFM 직접 트레이딩 금지**(off-path만) · **baseline 우선**(복잡 모델/allocator는 1/N·고정비중 OOS 비용후 이겨야) · production **일봉** · 데이터 무결성(실자본 전 2 독립피드) · **사람이 자본 게이트.**
