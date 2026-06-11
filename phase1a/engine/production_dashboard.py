@@ -57,9 +57,9 @@ h2{{font-size:1.1em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:2
 <div class=kpi><div class=l>Sharpe</div><div class="v">{av[3]:.2f}</div></div>
 </div>
 
-<h2>🏆 이겼나? (정직 판정)</h2>
-<div class="box {'win' if beat else 'warn'}">
-<b>{'✅ in-sample QQQ raw 넘음 — 네 공격 바(beat SPY+QQQ)로는 *이겼다*.' if beat else '❌ QQQ 못 넘음.'}</b>
+<h2>🏁 in-sample raw-return 체크 (forward 판정 아님)</h2>
+<div class="box warn">
+<b>raw return으로만 PASS · forward 자본 기준(MDD/ulcer/회복/체결/reconcile)은 FAIL/UNKNOWN.</b> {'(in-sample서 QQQ raw 넘김 — 단 아래 ①처럼 레버지 알파 아님)' if beat else '(QQQ 못 넘음)'}
 V5 +{av[0]*100:.0f}% vs QQQ +{qq[0]*100:.0f}% vs SPY +{F['SPY'][0]*100:.0f}% · MDD {av[2]*100:.0f}%(QQQ {qq[2]*100:.0f}%).<br><br>
 <b>단, 가짜 승리 안 만든다 — 정직히:</b><br>
 ① <b>알파 아니라 레버다.</b> Sharpe {av[3]:.2f} ≈ QQQ {qq[3]:.2f} → 위험조정 우위 0. 더 번 건 시장노출(레버)을 더 산 것.<br>

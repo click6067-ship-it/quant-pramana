@@ -51,13 +51,24 @@ def main():
     # ── 판정표 자동채점 (forward) ──
     spy=CAP*(1+ret["SPY"].reindex(days).fillna(0)).cumprod(); qqq=CAP*(1+ret["QQQ"].reindex(days).fillna(0)).cumprod()
     def mdd(s): return (s/s.cummax()-1).min()
-    qup=(qqq.iloc[-1]/qqq.iloc[0]-1); vup=(NAV.iloc[-1]/NAV.iloc[0]-1)
-    upcap=(vup/qup) if qup>0 else float('nan')
-    card=[("상방참여 vs QQQ","≥80%",f"{upcap*100:.0f}%",upcap>=0.80 if upcap==upcap else None),
-          ("MDD","≤−40%(kill −50%)",f"{mdd(NAV)*100:.0f}%",mdd(NAV)>=-0.40),
+    qup=(qqq.iloc[-1]/qqq.iloc[0]-1); vup=(NAV.iloc[-1]/NAV.iloc[0]-1)   # 전체(워밍 포함) = KPI 맥락용
+    # 판정표 = LIVE-only (inception_live 이후). live 짧으면 PENDING. 미구현=UNKNOWN=불합격 (Codex audit fix)
+    ls=pd.Timestamp(state["inception_live"]); live=NAV.index[NAV.index>=ls]; nlive=len(live); SHORT=nlive<20
+    pend=lambda v:(f"PENDING(live {nlive}일·12mo 필요)" if SHORT else v); pok=lambda ok:(None if SHORT else ok)
+    if not SHORT:
+        nv=NAV.reindex(live); nq=qqq.reindex(live); lq=nq.iloc[-1]/nq.iloc[0]-1
+        lupcap=((nv.iloc[-1]/nv.iloc[0]-1)/lq) if lq>0 else float('nan'); lmdd=mdd(nv)
+    else: lupcap=lmdd=float('nan')
+    upcap=lupcap
+    card=[("상방참여 vs QQQ(live)","≥80%",pend(f"{lupcap*100:.0f}%"),pok(lupcap>=0.80)),
+          ("MDD(live)","≤−40%(kill −50%)",pend(f"{lmdd*100:.0f}%"),pok(lmdd>=-0.40)),
           ("레버 cap breach","=0(≤2.0x)",f"max {max(levs) if levs else 1:.2f}x",(max(levs) if levs else 1)<=2.0001),
+          ("Ulcer index","≤QQQ×1.2","NOT_IMPLEMENTED→UNKNOWN",None),
+          ("회복일수","≤QQQ×1.5","NOT_IMPLEMENTED→UNKNOWN",None),
+          ("체결오차/슬리피지","budget 내","NOT_IMPLEMENTED→UNKNOWN",None),
+          ("funding/borrow","반영","NOT_IMPLEMENTED→UNKNOWN",None),
           ("reconciliation","2nd 피드","UNKNOWN(stooq 404·TODO)",None),
-          ("데이터 무결성","fail-closed",f"{'OK' if not health else health}",not health)]
+          ("missed-run/무결성","fail-closed",f"{'OK' if not health else 'FAIL'}",not health)]
     # ── 대시보드 ──
     plt.style.use("dark_background"); plt.rcParams.update({"axes.facecolor":"#0d1326","figure.facecolor":"#0d1326","grid.alpha":.15,"font.size":9})
     f=plt.figure(figsize=(11,3.6))
@@ -95,5 +106,5 @@ h2{{font-size:1.05em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:
 </div></body></html>"""
     open(DASH,"w").write(html)
     print(f"✅ v5 forward {today}·누적{vup*100:+.1f}%(QQQ{qup*100:+.1f}%)·MDD{mdd(NAV)*100:.0f}%·레버{curL:.2f}x·라이브인셉션{state['inception_live']}")
-    print(f"   판정표: 상방참여{upcap*100:.0f}%·레버max{max(levs) if levs else 1:.2f}x·reconcile=UNKNOWN(TODO) → {DASH}")
+    print(f"   판정표(LIVE-only): {('PENDING(live %d일)'%nlive) if SHORT else ('상방참여%.0f%%'%(upcap*100))}·레버max{max(levs) if levs else 1:.2f}x·ulcer/회복/체결/funding=NOT_IMPLEMENTED·reconcile=UNKNOWN → {DASH}")
 if __name__=="__main__": main()

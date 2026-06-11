@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PRAMANA V5 — Aggressive Leveraged Core Beta Book (용하: 공격적 수익극대화·리스크수용·유연).
 정직: 레버드 베타지 알파 아님 — 시장노출↑로 수익↑(리스크도↑). '리스크수용 ≠ 파산수용'.
-no-ruin floor = vol-target(레버 변동성따라 유연·regime-responsive) + DD ladder(낙폭 깊을수록 디레버)
+loss-speed dampener (NOT a no-ruin floor — gap엔 무력) = vol-target(레버 변동성따라 유연) + DD ladder(낙폭 깊을수록 디레버)
   + 하드 레버캡 2.0x + shock-replay(2018Q4/2020/2022) 검증. 12mo STOP 기준 적용(v5 frame).
 paper·비용후·next-bar·financing 5%. cached SFP_FUNDS."""
 import os, sys, json, numpy as np, pandas as pd
