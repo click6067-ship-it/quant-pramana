@@ -1,0 +1,38 @@
+{
+  "asof": "2026-06-10",
+  "production_default": {
+    "book": "Core Beta 1.0x",
+    "target": {
+      "SPY": 0.5,
+      "QQQ": 0.5
+    },
+    "label": "PRODUCTION_SAFE candidate(paper)",
+    "note": "\uc815\uc9c1\ud55c \ubca0\ud0c0\ubd81 \uae30\ubcf8 \u2014 NOT alpha. Core>SPY=QQQ tilt(regime, LOCK C6)."
+  },
+  "beta_leverage_sleeve": {
+    "scenario": "Aggressive_-35%",
+    "lever": 1.151,
+    "target": {
+      "SPY": 0.576,
+      "QQQ": 0.576
+    },
+    "label": "PRODUCTION_UNSAFE",
+    "gate": "shock-replay(2018Q4/2020/2022)+gross-lev cap+financing+gap stress+fail-closed \uace0\uc815 \uc804 \uc790\ubcf8 \uae08\uc9c0"
+  },
+  "trend_overlay": "OFF (\ud55c\uacc4\uae30\uc5ec \u22120.14%/yr=\ub178\uc774\uc988; \ucf1c\ub824\uba74 \ubaa9\uc801=drawdown-shape\uc9c0 return \uc544\ub2d8)",
+  "trend_on": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "DIA",
+    "XLK",
+    "XLE",
+    "XLV",
+    "XLI",
+    "XLP",
+    "XLB",
+    "XLRE"
+  ],
+  "vol_regime": 1.0,
+  "caveat": "\u221235% MDD = 2016-26 benign \uacfc\uac70 \uc0d8\ud50c(2008 \ubbf8\ud3ec\ud568) \u2192 forward MDD \ub354 \ud074 \uc218 \uc788\uc74c. \ub808\ubc84=\uacfc\uac70\ub370\uc774\ud130 knob\uc774\uc9c0 forward risk cap \uc544\ub2d8(Codex)."
+}

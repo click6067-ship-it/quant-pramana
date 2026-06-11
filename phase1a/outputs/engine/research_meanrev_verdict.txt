@@ -1,0 +1,2 @@
+mean-reversion(레짐게이트 단기 ETF L/S) · REJECT
+net -4.0%/yr·Sharpe -1.07·turnover 3660%·IC-IR +0.002·Core한계기여 -0.027·KILL ['K1 net≤0', 'K2 IC-IR<0.2', 'K3 turnover>600%', 'K5 Core 한계기여≤0']

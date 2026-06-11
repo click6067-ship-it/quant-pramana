@@ -116,12 +116,13 @@
 
 ---
 
-## I. BUILD STATUS & 다음
-- ✅ Phase 1·1.5 — 위성=알파 아님(C1·C2). ✅ 공유 기억 체계 커밋·푸시.
-- ▶ **Production = "Core Beta Forward Book" (알파북 아님 — 정직한 명명).**
-  - 정체 = SPY/QQQ 베타 + (선택적) 약한 낙폭 오버레이의 *규율* 포워드북. **알파 시스템 아님**(Core>SPY는 QQQ 틸트=레짐, C6). 자기기만 방지용 명명.
-  - A1 시나리오(현 −35%)로 레버/오버레이 결정 → forward 투입. Phase 1.5서 −35%에 Core 20.25%·CoreSat 20.40%(거의 동일) → 위성은 *선택적* 가벼운 오버레이.
-- ▶ **Research 첫 스레드 = mean-reversion(★1순위).** Active 1개로. (quality는 2순위.) 동시에 sentiment/기관/intraday 데이터는 passive 수집 가능.
+## I. BUILD STATUS & 다음 (2026-06-12 — "v4 build complete; alpha research open & capital-isolated")
+- ✅ Phase 1·1.5 · 공유 기억 체계 · Codex 2회 REVISE 수용.
+- ✅ **Production = Core Beta 1.0x** (production_book.py·target JSON). 정직 명명: 베타북, NOT 알파(Core>SPY=QQQ 틸트, C6). **레버는 격리 sleeve·PRODUCTION_UNSAFE**(Codex: −35% 레버=backward knob지 risk cap 아님 → shock-replay[2018Q4/2020/2022]+gross-lev cap+financing+gap stress+fail-closed 고정 전 자본 금지). overlay OFF(−0.14%=노이즈).
+- ✅ **Research thread1 mean-reversion = REJECT** (research_meanrev.py·net −4%·turnover 3660%·IC-IR 0.002·Core 한계기여 −0.027). 리서치 기계 정상작동(사전등록 kill·정직 negative). Codex가 kill 6개 추가 권고(net≤레버없는Core·tail집중·chop사후·half-life·2x비용·episode집중) → MR 변형 재시도 시 적용.
+- ✅ forward reconciliation 프레임(forward_reconcile.py) — stooq 404 → **2nd 무료소스 wiring TODO**, 0체크=UNKNOWN 정직보고. ✅ 대시보드 production_dashboard.html.
+- ⚠️ **3개월 sim: Core Beta +10.9% > SPY +7.6%, QQQ +14.3%엔 짐** → 사용자 directive(SPY·QQQ 둘 다 못넘으면 재정의)대로 **v5 재정의 트리거.**
+- ▶ **다음 = v5 문제 재정의** (Codex 회의 중): 'SPY+QQQ 둘 다 넘기'가 솔로에 가능한가 / 목표 재정의(낮은낙폭 매칭·합의 레버·regime) / 무한 재정의 루프 회피 기준. → v5 frame + 사용자 결정. **베타북은 자기 벤치(QQQ) 못 넘음=설계상; 넘는 길=레버(리스크) or 미발견 알파.**
 
 > **한 줄:** V4 = **유연한 연구 + 엄격한 자본권한.** Production = 정직한 Core Beta Forward Book(단순·단단), Research = 격리·개방(후보 살려 증거축적), 승격 천천히, 비중 연속, 변경은 attribution 근거로.
 
