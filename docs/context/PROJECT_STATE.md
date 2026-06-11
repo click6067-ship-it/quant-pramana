@@ -31,10 +31,16 @@ core-satellite 재설계(V4). **v4 build complete; alpha research open & capital
 - 정본 = `PRAMANA_V4/PRAMANA_V5_Problem_Frame_v0.2.md`(+ forward 정량 판정표). 대시보드 production_dashboard.html.
 - 라벨: RESEARCH_ONLY/PRODUCTION_UNSAFE. live cap 1.25~1.5x(crash-pack 후). 2.0x=paper max.
 
+## v5 forward 배선 완료 (2026-06-12)
+- **forward_runner_v5.py = v5 북 실제 무인 forward** (free yfinance·fail-closed·append-only·라이브 인셉션 2026-06-11). cron `0 6 * * 2-6`면 일1회 자동.
+- **판정표 자동채점** 내장(상방참여/MDD/레버breach/reconcile/무결성). 워밍 윈도우 현재 상방참여 60%=❌(아직 미달·QQQ에 짐) → 정직히 표기. **라이브 12개월 트랙으로 판정.**
+- 대시보드: v5_forward_dashboard.html(라이브)·production_dashboard.html(백테스트)·multi_anchor_v5.html(12/6/3개월 진입).
+- multi-anchor: V5가 12mo 진입 QQQ 넘음(+38% vs +31%)·3mo ~동률·6mo 짐(+7.5% vs +11.3%)·세 구간 다 MDD↑·Sharpe<QQQ = 레버드 베타 양면.
+
 ## 다음 행동
-1. **forward 12개월 가동** — 사전등록 판정표(상방참여≥80%·MDD≤−40%·ulcer·회복·레버breach=0·체결오차·funding·reconciliation·missed-run) 통과해야 'win'. **수익-only 합격 금지.**
-2. **데이터 reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표의 reconciliation 항목 필수.
-3. 알파 research-OPEN: MR 변형/quality 레짐(Active 1개). 알파 찾으면 레버 덜.
-4. **behavior 규율: 12개월 전 목표 또 안 바꿈·−30% 근처 수동 override 금지**(Codex behavior kill).
+1. **cron 등록 → forward 12개월 무인 가동.** 판정표 통과해야 'win'(수익-only 합격 금지).
+2. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
+3. 알파 research-OPEN(Active 1개): MR 변형/quality 레짐. 알파 찾으면 레버 덜.
+4. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
 2. (보류) Research 후보: quality 레짐 retest / MR 변형(longer-horizon·no-trade band) — v5 방향 정해진 뒤.
 3. (TODO) forward reconciliation 2nd 무료소스 wiring(stooq 대체).
