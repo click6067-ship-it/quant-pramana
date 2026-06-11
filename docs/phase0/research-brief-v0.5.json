@@ -1,0 +1,25 @@
+{
+  "version": "phase0_research_brief_v0.5",
+  "updated_context_date": "2026-05-31",
+  "user_request_summary": {
+    "one_sentence": "최신 퀀트 트레이딩 및 자동화매매 시스템이 실제로 어떤 거시적 구조로 작동하는지, 공신력 있는 성과자료가 있는 대형·프론티어·소규모 사례 총 9개를 분석해 수익률 극대화 관점의 Phase 0 벤치마킹 보고서를 만든다."
+  },
+  "research_universe": {
+    "final_target_count": 9,
+    "groups": {
+      "A_large_systematic": { "count": 3, "candidates": ["Renaissance Technologies", "D.E. Shaw", "Two Sigma", "Man AHL", "AQR"] },
+      "B_frontier_mm_prop": { "count": 3, "fixed": ["XTX Markets"], "candidates": ["XTX Markets", "Jane Street", "Citadel Securities", "HRT", "Jump", "Tower", "Optiver", "IMC", "DRW"] },
+      "C_small_individual": { "count": 3, "allowed": ["개인 systematic trader", "극소수 팀", "소형 CTA", "소형 systematic fund", "공식 대회 우승자", "브로커 인증 실계좌", "장기 검증된 공개 실거래 기록"] }
+    },
+    "goldman": "참고 레퍼런스(본문 9개 아님)"
+  },
+  "objectives": { "primary": "수익률 극대화", "secondary": "개인/소규모(클라우드 GPU+개인 PC) 응용가능성=평가항목(하드제약 아님)", "mdd": "MDD 25% strong preference (hard filter 아님)" },
+  "markets": { "primary": ["한국주식", "미국주식"], "reference": ["선물", "옵션"], "excluded": ["크립토"] },
+  "strategy_scope": { "included": ["수분 intraday", "일중 리밸런싱", "daily swing", "중기/장기 systematic", "momentum", "stat arb", "cross-sectional equity", "event-driven", "news/sentiment", "portfolio allocation"], "reference_only": ["HFT", "market making", "초저지연"], "long_short": "제한적 허용", "options": "데이터 신호로만(naked selling 제외)" },
+  "automation_governance": { "level": "높음", "normal_orders": "인간승인 없이 자동", "mode_switch": "사전정의 조건이면 자동전환, 그외 인간승인", "human_points": ["예외", "모드전환", "전략배포 승인", "리스크 한도 승인", "kill switch"] },
+  "llm_council": { "role": "alpha contributor + research automation + adversarial critic + governance/veto/escalation. 최종 결정자 아님(optimizer/risk engine 위 review layer)", "veto": "사전정의 위험조건에서만 hard veto", "avoid": ["LLM이 매주문 최종결정", "hallucination 주문", "비재현 결정", "risk engine보다 LLM 우위"] },
+  "report": { "tone": "창업자/시스템설계자용 전략보고서", "sections": "0 ExecSummary, 1 문제정의/범위, 2 자료신뢰도/선정기준, 3 Longlist+탈락사유, 4 9개 요약매트릭스, 5 개별 CaseStudy 9, 6 Cross-case Synthesis, 7 모델링/AI/LLM 위치, 8 Frontier Operating Model, 9 Scorecard, 10 Phase0 결론", "excluded": "사용자 구상 직접비교 섹션 제외" },
+  "scorecard_dims": ["수익검증성", "수익잠재력", "자동화수준", "프론티어성", "자료신뢰도", "개인응용가능성", "데이터우위", "execution난이도", "리스크통제력", "LLM-agent결합적합성"],
+  "source_quality": { "tier1": "공식/규제/감사/실적/투자자서한", "tier2": "신뢰언론/논문/특허/기술블로그/채용자료", "tier3": "검증인터뷰/컨퍼런스/공식대회/외부검증 실거래", "excluded": ["미검증 블로그", "유튜브", "트위터", "성과인증없는 백테스트", "출처불명 수익률캡처"] },
+  "selection": { "longlist_required": true, "eliminated_required": true, "if_fail": "신뢰도/검증성 부족시 탈락→같은 카테고리 재탐색" }
+}

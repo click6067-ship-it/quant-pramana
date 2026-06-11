@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pythia 🔮 — leakage-safe KR quant</title>
+<style>
+  :root{
+    --bg0:#070a12; --bg1:#0d1322; --bg2:#121a2e;
+    --ink:#e8ecf5; --ink-dim:#9aa6c0; --ink-faint:#5d6987;
+    --cyan:#22d3ee; --teal:#2dd4bf; --violet:#a78bfa; --pink:#f472b6;
+    --green:#34d399; --amber:#fbbf24; --red:#f87171;
+    --line:rgba(140,160,200,.14); --card:rgba(255,255,255,.035);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden}
+  body{
+    background:radial-gradient(1200px 800px at 80% -10%, #16203a 0%, var(--bg0) 55%) fixed;
+    color:var(--ink);
+    font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased; letter-spacing:-.01em;
+  }
+  /* progress + chrome */
+  #bar{position:fixed;top:0;left:0;height:3px;width:0;z-index:50;
+    background:linear-gradient(90deg,var(--cyan),var(--violet),var(--pink));transition:width .4s cubic-bezier(.4,0,.2,1)}
+  #chrome{position:fixed;bottom:22px;right:26px;z-index:50;display:flex;gap:10px;align-items:center;color:var(--ink-faint);font-size:13px}
+  #chrome button{background:var(--card);border:1px solid var(--line);color:var(--ink-dim);
+    width:34px;height:34px;border-radius:9px;cursor:pointer;font-size:15px;transition:.15s}
+  #chrome button:hover{color:var(--ink);border-color:var(--cyan);background:rgba(34,211,238,.08)}
+  #count{font-variant-numeric:tabular-nums;min-width:46px;text-align:center}
+  #dots{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:7px}
+  #dots i{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);opacity:.5;cursor:pointer;transition:.2s}
+  #dots i.on{background:var(--cyan);opacity:1;width:22px;border-radius:4px}
+  #hint{position:fixed;bottom:24px;left:26px;z-index:50;color:var(--ink-faint);font-size:12.5px}
+  kbd{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:11px;color:var(--ink-dim)}
+
+  /* slides */
+  .deck{position:relative;height:100vh;width:100vw}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+    padding:7vh 9vw;opacity:0;visibility:hidden;transform:translateY(24px) scale(.99);
+    transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.2,1),visibility .5s}
+  .slide.on{opacity:1;visibility:visible;transform:none}
+  .slide.on .rise{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .slide.on .rise:nth-child(2){animation-delay:.07s}
+  .slide.on .rise:nth-child(3){animation-delay:.14s}
+  .slide.on .rise:nth-child(4){animation-delay:.21s}
+  .slide.on .rise:nth-child(5){animation-delay:.28s}
+  @keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+  .kick{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);font-weight:700;margin-bottom:18px}
+  h1{font-size:clamp(40px,7vw,92px);line-height:1.02;font-weight:850;letter-spacing:-.03em}
+  h2{font-size:clamp(30px,4.4vw,56px);line-height:1.08;font-weight:820;letter-spacing:-.025em;margin-bottom:26px}
+  .grad{background:linear-gradient(100deg,var(--cyan),var(--teal) 40%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lead{font-size:clamp(18px,2vw,25px);color:var(--ink-dim);line-height:1.5;max-width:60ch;font-weight:450}
+  .lead b{color:var(--ink);font-weight:700}
+  .big-quote{font-size:clamp(26px,3.6vw,46px);line-height:1.25;font-weight:800;letter-spacing:-.02em;max-width:24ch}
+  .small{font-size:14px;color:var(--ink-faint)}
+  .mt{margin-top:28px}.mt2{margin-top:44px}
+  em{color:var(--teal);font-style:normal;font-weight:600}
+  strong{color:var(--amber)}
+
+  .cards{display:grid;gap:18px;margin-top:34px}
+  .c3{grid-template-columns:repeat(3,1fr)}.c2{grid-template-columns:repeat(2,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 24px;transition:.25s;position:relative;overflow:hidden}
+  .slide.on .card{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
+  .slide.on .card:nth-child(2){animation-delay:.1s}.slide.on .card:nth-child(3){animation-delay:.2s}.slide.on .card:nth-child(4){animation-delay:.3s}
+  .card:hover{border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.05);transform:translateY(-4px)}
+  .card h3{font-size:20px;font-weight:750;margin-bottom:10px;display:flex;align-items:center;gap:9px}
+  .card p{font-size:15px;color:var(--ink-dim);line-height:1.5}
+  .ic{font-size:24px}
+
+  /* stat counters */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:40px}
+  .stat .n{font-size:clamp(38px,5.5vw,72px);font-weight:850;font-variant-numeric:tabular-nums;
+    background:linear-gradient(180deg,var(--ink),var(--cyan));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .l{font-size:14px;color:var(--ink-faint);margin-top:4px;font-weight:600}
+
+  /* arch diagram */
+  .arch{display:flex;align-items:stretch;gap:14px;margin-top:36px;flex-wrap:wrap}
+  .node{flex:1;min-width:200px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;position:relative}
+  .node .t{font-weight:750;font-size:18px;margin-bottom:8px}
+  .node .d{font-size:13.5px;color:var(--ink-dim);line-height:1.45}
+  .node.gate{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.07)}
+  .arrow{display:flex;align-items:center;color:var(--cyan);font-size:26px;font-weight:800}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;margin-top:28px;font-size:clamp(14px,1.5vw,18px)}
+  th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line)}
+  th{color:var(--ink-faint);font-weight:650;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+  td:first-child{font-weight:600}
+  .v-kill{color:var(--red);font-weight:700}.v-pass{color:var(--green);font-weight:700}
+  .v-cont{color:var(--amber);font-weight:700}.v-win{color:var(--cyan);font-weight:800}
+  .pill{display:inline-block;padding:3px 11px;border-radius:999px;font-size:12.5px;font-weight:700}
+  .pill.k{background:rgba(248,113,113,.14);color:var(--red)}
+  .pill.w{background:rgba(34,211,238,.14);color:var(--cyan)}
+
+  .row{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .tag{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 18px;font-size:15px;color:var(--ink-dim)}
+  .tag b{color:var(--ink)}
+  .score{display:flex;align-items:baseline;gap:12px;margin:10px 0}
+  .score .lab{width:170px;color:var(--ink-dim);font-size:15px}
+  .score .track{flex:1;height:9px;background:rgba(255,255,255,.06);border-radius:6px;overflow:hidden}
+  .score .fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--cyan),var(--violet));width:0;transition:width 1s cubic-bezier(.2,.7,.2,1)}
+  .score .num{width:36px;text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+  .glow{text-shadow:0 0 32px rgba(34,211,238,.4)}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<div class="deck" id="deck">
+
+  <!-- 1 TITLE -->
+  <section class="slide">
+    <div class="kick rise">Claude × Codex 공동제작 · 2026</div>
+    <h1 class="rise">pythia <span style="font-size:.7em">🔮</span></h1>
+    <p class="lead mt rise" style="font-size:clamp(20px,2.4vw,30px)">진짜 돈이 현실에서 <em>누수 없이</em> 살아남는지를 <b>증명</b>하는<br>창피할 만큼 정직한 <span class="grad">KR 퀀트 검증 하니스</span>.</p>
+    <div class="row rise mt2">
+      <div class="tag"><b>212</b> commits</div>
+      <div class="tag"><b>629</b> tests green</div>
+      <div class="tag"><b>17.5k</b> LOC (테스트 &gt; 코드)</div>
+      <div class="tag">LLM 주문권 <b>0</b></div>
+    </div>
+  </section>
+
+  <!-- 2 THE ANTI-CLAIM -->
+  <section class="slide">
+    <div class="kick rise">우리의 차별점은 자랑이 아니라 절제다</div>
+    <p class="big-quote rise">우리는 알파를 <span class="grad">발견</span>했다고<br>말하지 않는다.</p>
+    <p class="lead mt rise">14개 전략 후보를 정직히 심판해 — <b style="color:var(--red)">13개를 기각</b>했다.<br>자기 시스템의 <em>최강 가설</em>까지, 자기 <em>계측 버그</em>까지 잡아내며.</p>
+    <p class="lead mt rise">남은 1개(monthly momentum)도 "모뎀하고 해자 아님"이라 정직히 라벨링.<br><b>가치는 수익 주장이 아니라 — 자기를 안 속이는 규율이다.</b></p>
+  </section>
+
+  <!-- 3 THE PROBLEM -->
+  <section class="slide">
+    <div class="kick rise">왜 정직한 검증인가</div>
+    <h2 class="rise">"Profit Mirage" — 환상은 기본값이다</h2>
+    <div class="cards c2">
+      <div class="card"><h3><span class="ic">📉</span> 50–72% 붕괴</h3><p>LLM 트레이딩 백테스트는 out-of-sample에서 수익이 50–72% 사라진다 (arXiv 2510.07920). 모델이 <em>사후지식을 암송</em>할 뿐 — 진짜 예측이 아니다.</p></div>
+      <div class="card"><h3><span class="ic">🎭</span> 좋아 보일수록 의심</h3><p>백테스트가 "너무 좋으면" 십중팔구 lookahead·snooping·생존편향. 시장은 과적합을 <strong>진짜 돈</strong>으로 처벌한다.</p></div>
+    </div>
+    <p class="lead mt2 rise">그래서 pythia의 1순위는 알파가 아니라 — <b>"이게 진짜인가?"를 강제하는 관문</b>이다.</p>
+  </section>
+
+  <!-- 4 ARCHITECTURE -->
+  <section class="slide">
+    <div class="kick rise">구조 — 2 레이어 + 관문</div>
+    <h2 class="rise">LLM은 리서처. 집행은 결정론.</h2>
+    <div class="arch">
+      <div class="node rise"><div class="t">① 리서치 · 카운슬</div><div class="d">멀티-LLM 병렬 비평 + 결정론 팩터. 누수·과적합·환각 적발. <em>주문권 0.</em></div></div>
+      <div class="arrow rise">→</div>
+      <div class="node gate rise"><div class="t">⚡ leak-gate</div><div class="d">연구↔집행 <em>필수 관문</em>. 통과 못 하면 거래 불가.</div></div>
+      <div class="arrow rise">→</div>
+      <div class="node rise"><div class="t">② 결정론 집행</div><div class="d">Session 스파인 · 리스크 게이트 작동 · KIS 모의투자 · crash-safe · 멱등.</div></div>
+    </div>
+    <p class="lead mt2 rise"><b>핵심:</b> "LLM=리서처 + 결정론 집행"만으론 부족 — 연구과정 누수는 <em>leak-gate</em>가 막는다. (Codex 지적 수용)</p>
+  </section>
+
+  <!-- 5 LEAK-GATE -->
+  <section class="slide">
+    <div class="kick rise">핵심 IP — leak-gate</div>
+    <h2 class="rise">단계별 독립 심판 (단일 배지 금지)</h2>
+    <div class="cards c4">
+      <div class="card"><h3>1 · in-sample</h3><p>연환산 Sharpe ≥ 0.5? 엣지가 있긴 한가.</p></div>
+      <div class="card"><h3>2 · cutoff-decay</h3><p>LLM cutoff 전후 50%↑ 붕괴 = 누수 → 기각.</p></div>
+      <div class="card"><h3>3 · baseline</h3><p>OOS에서 벤치를 paired-t로 이기나.</p></div>
+      <div class="card"><h3>4 · walk-forward</h3><p>5 fold 중 ≥⅔에서 이겨야 robust — 단일 창의 운 제거.</p></div>
+    </div>
+    <p class="lead mt2 rise"><b>prereg lockbox:</b> 전략·파라미터공간·trial_count·kill 규칙을 결과 보기 <em>전</em> 동결(해시) → p-hacking 회계. <span class="small">계측 버그(일간 Sharpe에 연환산 바)까지 스스로 잡음.</span></p>
+  </section>
+
+  <!-- 6 EDGE SEARCH RESULT -->
+  <section class="slide">
+    <div class="kick rise">정직한 결과 — 5 family · 14 config (비용후)</div>
+    <h2 class="rise">robust 통과 = <span class="grad">단 하나</span></h2>
+    <table>
+      <tr><th>전략 family</th><th>최강 결과</th><th>판정</th></tr>
+      <tr><td>단순 팩터 6개</td><td>momentum/monthly만 4/5 fold</td><td><span class="pill w">SURVIVE · 모뎀·해자아님</span></td></tr>
+      <tr><td>앙상블 (mom+low_vol)</td><td>momentum 희석</td><td><span class="v-kill">KILL</span></td></tr>
+      <tr><td>이벤트 (공시 PEAD)</td><td>title-only 데이터 한계</td><td><span class="v-kill">KILL</span></td></tr>
+      <tr><td>투자자플로 (외국인+기관)</td><td>≈ momentum (개선 없음)</td><td><span class="v-kill">KILL</span></td></tr>
+    </table>
+    <p class="lead mt2 rise">병목이 <b>"팩터 영리함" → "데이터 풍부함"</b>으로 이동. 싸구려데이터 retail 엣지는 <em>marginal</em> — KR 학술 증거와 일치. <b>이건 실패가 아니라 정직한 증명.</b></p>
+  </section>
+
+  <!-- 7 THE NICHE -->
+  <section class="slide">
+    <div class="kick rise">전략방향 회의 D+E — 작음이 무기다</div>
+    <h2 class="rise">기관이 못 들어가는 전장을 고른다</h2>
+    <p class="lead rise">KR 리테일은 구조적으로 진다 (회전율 1,600%+·수수료前에도 음수). 개인은 이상현상을 <em>반대로</em> 거래하고, 외국인·기관이 수확한다.</p>
+    <div class="cards c2 mt">
+      <div class="card"><h3><span class="ic">🎯</span> 용량 니치</h3><p>₩10M의 <strong>작음이 한계가 아니라 이점</strong> — 기관이 사이즈를 못 싣는 저용량 행태 왜곡을 작은 자본이 수확. = "안 불리한 전장."</p></div>
+      <div class="card"><h3><span class="ic">📡</span> 공개·저렴 데이터</h3><p>투자자별 매매·외국인 플로 = 유료 alt-data 아님. 단 <em>가설, 미증명</em> — 라이브로 검증할 것.</p></div>
+    </div>
+  </section>
+
+  <!-- 8 DIFFERENTIATION -->
+  <section class="slide">
+    <div class="kick rise">차별화 무기</div>
+    <h2 class="rise">아무도 <span class="grad">이 셋을 함께</span> 하지 않는다</h2>
+    <div class="cards c3">
+      <div class="card"><h3><span class="ic">🛡️</span> leak-gate</h3><p>TradingAgents류는 Profit Mirage(50–72% 누수). pythia는 정반대로 <em>기각 규율</em> — cutoff-decay + walk-forward + prereg lockbox.</p></div>
+      <div class="card"><h3><span class="ic">🇰🇷</span> KR-특화</h3><p>PIT 멤버십·투자자플로·시장별 세금·소자본 니치. 범용 백테스트(LEAN·Zipline)가 안 다루는 곳.</p></div>
+      <div class="card"><h3><span class="ic">🪞</span> 반자기기만</h3><p>자기 버그·자기 최강 가설까지 정직 기각. 가짜수익 자축 0. <strong>= 진짜 해자.</strong></p></div>
+    </div>
+    <p class="lead mt2 rise glow">"Profit Mirage 시대의, 창피할 만큼 정직한 시스템."</p>
+  </section>
+
+  <!-- 9 PHASE-1 -->
+  <section class="slide">
+    <div class="kick rise">Phase-1 — live-forward 증명 시스템</div>
+    <h2 class="rise">백테스트가 못 보는 것을 측정한다</h2>
+    <p class="lead rise">사전등록 3-arm 페이퍼(A 벤치·B momentum·C 플로)를 매 영업일 전진. 실 타이밍·체결·비용·degradation을 <em>정직하게</em>.</p>
+    <div class="row mt rise">
+      <div class="tag"><b style="color:var(--ink-faint)">INSUFFICIENT</b> 표본 미달</div>
+      <div class="tag"><b style="color:var(--amber)">CONTINUE</b> 양엣지·실행표본 누적중</div>
+      <div class="tag"><b style="color:var(--green)">PASS</b> → 다음 staging만 (수익주장 아님)</div>
+      <div class="tag"><b style="color:var(--red)">KILL</b> 음엣지/비용/리스크</div>
+    </div>
+    <p class="lead mt2 rise"><b>안전:</b> KIS broker는 모의투자(vps) 도메인 하드코딩 → 실자본 주문 <em>물리적 불가</em>. 비동기 체결은 영속상태로 크로스프로세스 reconcile.</p>
+  </section>
+
+  <!-- 10 CODEX HARDENING -->
+  <section class="slide">
+    <div class="kick rise">규율이 작동하는 모습</div>
+    <h2 class="rise">Codex 적대 리뷰 → 버그 <span class="grad">16개</span> 적발·수정</h2>
+    <div class="cards c2">
+      <div class="card"><h3><span class="ic">🔧</span> Session 스파인 (8)</h3><p>sweep 누적합산·손실 oversweep·새날 day_start·정지vs데이터누락·초과매도 short … → 전부 수정 → <b style="color:var(--green)">APPROVED</b>.</p></div>
+      <div class="card"><h3><span class="ic">🔧</span> 라이브 하니스 (8)</h3><p>체결 cost=0·부분체결·크로스프로세스 상태·중복마크·report-reconcile·스케줄·walk-forward baseline·refresh 멱등 → 수정.</p></div>
+    </div>
+    <p class="lead mt2 rise">opus 단독이 놓친 회계 버그를 Codex가 적발. <b>"core ⊇ 엔진·카운슬·라이브"는 codex review 필수 — 실증.</b></p>
+  </section>
+
+  <!-- 11 STATS -->
+  <section class="slide">
+    <div class="kick rise">규모</div>
+    <h2 class="rise">한 사람 + 두 AI, 정직하게</h2>
+    <div class="stats">
+      <div class="stat"><div class="n" data-to="212">0</div><div class="l">commits</div></div>
+      <div class="stat"><div class="n" data-to="629">0</div><div class="l">tests green</div></div>
+      <div class="stat"><div class="n" data-to="92">0</div><div class="l">modules</div></div>
+      <div class="stat"><div class="n" data-to="14">0</div><div class="l">전략 심판</div></div>
+    </div>
+    <p class="lead mt2 rise">테스트 10.2k LOC &gt; 코드 7.3k LOC. TDD·codex review·prereg·append-only ledger·crash-safe. <span class="small">DL/GPU·관측 SaaS 불채택 — 자체 해시·RunManifest.</span></p>
+  </section>
+
+  <!-- 12 HONEST ASSESSMENT -->
+  <section class="slide">
+    <div class="kick rise">정직한 완성도 (Claude×Codex 루브릭)</div>
+    <h2 class="rise">우수한 것과 미달인 것 — 그대로</h2>
+    <div style="max-width:760px">
+      <div class="score"><div class="lab">반자기기만 규율</div><div class="track"><div class="fill" data-w="88"></div></div><div class="num">8.5</div></div>
+      <div class="score"><div class="lab">코드·엔지니어링</div><div class="track"><div class="fill" data-w="70"></div></div><div class="num">7</div></div>
+      <div class="score"><div class="lab">방법론 엄밀</div><div class="track"><div class="fill" data-w="70"></div></div><div class="num">7</div></div>
+      <div class="score"><div class="lab">KR-특화 · 실행현실</div><div class="track"><div class="fill" data-w="60"></div></div><div class="num">6</div></div>
+      <div class="score"><div class="lab">시연된 엣지</div><div class="track"><div class="fill" data-w="20"></div></div><div class="num">2</div></div>
+    </div>
+    <p class="lead mt2 rise"><b>시스템은 빌드 완료, 증명은 라이브 후.</b> "장치는 끝, 증거 수집은 시작 전." — 이 정직함이 곧 시스템의 윤리.</p>
+  </section>
+
+  <!-- 13 CLOSE -->
+  <section class="slide">
+    <div class="kick rise">다음 한 걸음</div>
+    <h1 class="rise" style="font-size:clamp(34px,5.5vw,76px)">다음 영업일,<br><span class="grad">진짜가 시작된다.</span></h1>
+    <p class="lead mt rise">종가 결정 → 다음 세션 체결. 3줄이면 첫 live-forward가 돈다.</p>
+    <div class="row mt2 rise">
+      <div class="tag">refresh_today</div>
+      <div class="tag">--mode <b>live</b></div>
+      <div class="tag">--mode <b>report</b> → verdict 표</div>
+    </div>
+    <p class="lead mt2 rise" style="color:var(--ink-faint)">정직한 시스템으로, 끝까지. — pythia 🔮</p>
+  </section>
+
+</div>
+
+<!-- chrome -->
+<div id="dots"></div>
+<div id="hint"><kbd>←</kbd> <kbd>→</kbd> 이동 · <kbd>F</kbd> 전체화면</div>
+<div id="chrome">
+  <button id="prev">‹</button><span id="count">1 / 13</span><button id="next">›</button>
+  <button id="fs">⛶</button>
+</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+const dots=document.getElementById('dots');
+let i=0;
+slides.forEach((_,k)=>{const d=document.createElement('i');d.onclick=()=>go(k);dots.appendChild(d)});
+const dotEls=[...dots.children];
+function go(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('on',k===i));
+  dotEls.forEach((d,k)=>d.classList.toggle('on',k===i));
+  document.getElementById('bar').style.width=((i)/(slides.length-1)*100)+'%';
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+  animate(slides[i]);
+}
+function animate(s){
+  s.querySelectorAll('.n[data-to]').forEach(el=>{
+    const to=+el.dataset.to;let t0=null;const dur=1100;
+    function tick(ts){if(!t0)t0=ts;const p=Math.min(1,(ts-t0)/dur);
+      el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(tick)}
+    el.textContent='0';requestAnimationFrame(tick);
+  });
+  s.querySelectorAll('.fill[data-w]').forEach(el=>{el.style.width='0';
+    setTimeout(()=>el.style.width=el.dataset.w+'%',120)});
+}
+document.getElementById('next').onclick=()=>go(i+1);
+document.getElementById('prev').onclick=()=>go(i-1);
+document.getElementById('fs').onclick=()=>{
+  if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()};
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();go(i+1)}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(i-1)}
+  else if(e.key==='Home')go(0);else if(e.key==='End')go(slides.length-1);
+  else if(e.key.toLowerCase()==='f'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()}
+});
+let sx=0;addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
+addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)go(i+(dx<0?1:-1))},{passive:true});
+go(0);
+</script>
+</body>
+</html>

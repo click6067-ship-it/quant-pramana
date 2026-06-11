@@ -1,0 +1,25 @@
+# ── secrets (절대 커밋 금지) ──
+.ndl_key
+**/.ndl_key
+*.key
+.env
+**/.env
+*secret*
+*password*
+
+# ── 라이선스 데이터 + 생성물 (Sharadar raw 등, 푸시 제외) ──
+outputs/
+**/outputs/
+*.csv.gz
+
+# ── 환경/캐시 ──
+.venv/
+**/.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store
+
+# ── 대용량 데이터 확장자(안전망) ──
+# 코드/문서(.py·.md·requirements·registry csv)는 추적, raw 데이터 csv는 outputs/에 있어 위에서 제외됨

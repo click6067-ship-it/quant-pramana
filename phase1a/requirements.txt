@@ -1,0 +1,11 @@
+# Pramana US-only research engine — pinned deps (Python 3.12.3)
+# 엔진 코어(engine/)는 pandas+numpy만 필요 · API 호출 0 (캐시 snapshot으로 동작).
+# Nasdaq-Data-Link는 신규 데이터 pull / TICKERS 동결(snapshot-tickers)에만 필요.
+pandas==3.0.3
+numpy==2.4.6
+# 신규 데이터 pull · TICKERS 동결 시에만 (engine 재현엔 불필요):
+Nasdaq-Data-Link==1.0.4
+requests==2.34.2
+urllib3==2.7.0
+# free dry-run (키 없이, legacy/b0_benchmark_sanity.py)용:
+yfinance==1.4.1

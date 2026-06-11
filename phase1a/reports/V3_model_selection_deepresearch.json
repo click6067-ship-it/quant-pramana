@@ -1,0 +1,329 @@
+{
+  "summary": "Deep research harness — fan-out web searches, fetch sources, adversarially verify claims, synthesize a cited report.",
+  "agentCount": 105,
+  "logs": [
+    "Q: Adversarial evidence review for a model-selection decision in a SOLO automated U…",
+    "Decomposed into 5 angles: academic/primary — ML asset pricing canonical evidence, contrarian/skeptical — failed replications, data snooping, cost erosion, methodology/overfitting controls — validation statistics, practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral, survivorship/operational — what makes solo systematic books survive vs blow up",
+    "academic/primary — ML asset pricing canonical evidence: 6 results",
+    "contrarian/skeptical — failed replications, data snooping, cost erosion: 6 results",
+    "contrarian/skeptical — failed replications, data snooping, cost erosion: 4 novel (2 filtered)",
+    "methodology/overfitting controls — validation statistics: 6 results",
+    "methodology/overfitting controls — validation statistics: 5 novel (1 filtered)",
+    "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral: 6 results",
+    "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral: 4 novel (2 filtered)",
+    "survivorship/operational — what makes solo systematic books survive vs blow up: 6 results",
+    "survivorship/operational — what makes solo systematic books survive vs blow up: 4 novel (2 filtered)",
+    "Fetched 23 sources → 113 claims → verifying top 25",
+    "\"On nearly 30,000 US stocks over 1957-2016 with 94 …\": 3-0 ✓",
+    "\"The headline economic gains are reported as GROSS …\": 3-0 ✓",
+    "\"The paper itself flags the cost/illiquidity vulner…\": 3-0 ✓",
+    "\"ML methods (trees and neural networks) roughly DOU…\": 0-3 ✗",
+    "\"The incremental predictive R^2 of ML over linear f…\": 3-0 ✓",
+    "\"The headline ML gains are PRE-COST gross Sharpes; …\": 3-0 ✓",
+    "\"Deep-learning ML stock-return signals derive most …\": 3-0 ✓",
+    "\"After realistic transaction costs, ML long-short s…\": 1-2 ✗",
+    "\"ML/SDF strategies look strong only on gross, frict…\": 3-0 ✓",
+    "\"Sophisticated ML anomaly-combination strategies re…\": 1-2 ✗",
+    "\"After jointly accounting for transaction costs, po…\": 0-3 ✗",
+    "\"The best ML strategy (single-hidden-layer LSTM) de…\": 0-3 ✗",
+    "\"In the Chinese stock market, machine-learning mode…\": 3-0 ✓",
+    "\"The authors claim ML out-of-sample portfolio perfo…\": 3-0 ✓",
+    "\"Short-term ML return predictability in China is dr…\": 0-3 ✗",
+    "\"Conventional machine-learning asset-pricing models…\": 3-0 ✓",
+    "\"In-sample variable importance from ML models overf…\": 0-3 ✗",
+    "\"Machine learning delivers robust asset-pricing ins…\": 2-1 ✓",
+    "\"Under multiple testing, even strategies with a TRU…\": 3-0 ✓",
+    "\"The benchmark to deflate against is the expected m…\": 3-0 ✓",
+    "\"The Deflated Sharpe Ratio is formally defined as D…\": 1-2 ✗",
+    "\"Selection bias combined with backtest overfitting …\": 3-0 ✓",
+    "\"Of 296 published significant cross-sectional equit…\": 3-0 ✓",
+    "\"Because of extensive data mining across hundreds o…\": 3-0 ✓",
+    "\"Contrary to the skeptical Avramov et al. (2022) vi…\": 1-2 ✗",
+    "Verify done: 25 claims → 16 confirmed, 9 killed"
+  ],
+  "result": {
+    "question": "Adversarial evidence review for a model-selection decision in a SOLO automated US-equity systematic trading book that uses ONLY daily Sharadar-grade data (adjusted prices + quarterly fundamentals SF1 + basic events/estimates), objective = aggressive absolute return on ~$75k (₩100M) paper capital, current best edge = a sector-neutral market-neutral long-short composite (momentum+quality+earnings-revision) with realistic-cost net Sharpe ~0.33 (CAGR +2.9%/yr, maxDD -21%), which dies at 5x costs. KEY QUESTION: does adding machine learning (gradient boosting/XGBoost-LightGBM, regularized linear ridge/lasso/elastic-net, random forests, shallow neural nets) to forecast cross-sectional forward returns produce ROBUST incremental OUT-OF-SAMPLE PORTFOLIO-LEVEL alpha over a simple linear/rank factor composite — or is it predominantly overfitting theater on this kind of thin daily data? Cover with citations and adversarial verification: (1) empirical evidence ML vs linear factor models out-of-sample for monthly/daily cross-sectional US equity return prediction — Gu, Kelly & Xiu 2020 'Empirical Asset Pricing via Machine Learning' AND its critiques/failed-replications/data-snooping concerns (e.g., Leippold/Avramov, Harvey, transaction-cost erosion of ML gains); how much of ML R^2/Sharpe survives realistic costs and is it concentrated in microcaps/illiquid names; (2) realistic after-cost Sharpe ceilings for daily/monthly cross-sectional equity long-short run by a solo with cheap data — what is actually achievable vs marketing; (3) mandatory overfitting controls before trusting any ML model: Deflated Sharpe Ratio (Bailey-Lopez de Prado), PBO/CSCV, explicit trial ledger / multiple-testing, walk-forward with purge/embargo; (4) can a modest (Sharpe 0.3-0.5) market-neutral book be safely LEVERAGED for higher absolute return, and what are the real failure modes (leverage scales vol not Sharpe, borrow/financing drift, vol-targeting procyclicality, tail/gap risk, leveraged-ETF daily-reset path dependency, futures roll yield); (5) what empirically distinguishes solo/small systematic books that SURVIVE from those that blow up (operational/plumbing risk, leverage discipline, capacity, regime decay). Verdict needed: is opening the model space to ML/deep worth it here, or should the model factory be constrained to regularized-linear/GBM-as-challenger only under a strict trial ledger, with effort redirected to execution realism and risk engineering? Default skeptical: treat ML as guilty until it proves incremental OOS portfolio value after costs.",
+    "summary": "Default skeptical position is VINDICATED: opening the model space to unconstrained ML/deep learning is NOT worth it for this solo $75k US-equity book on thin daily Sharadar-grade data. The flagship pro-ML evidence (Gu-Kelly-Xiu 2020) reports tiny stock-level OOS R^2 ceilings (best NN 0.40%/month, trees/RF 0.33-0.34%, regularized-linear 0.11-0.27%, deeper-is-NOT-better) and its headline Sharpes (NN 1.35 value-weighted / 2.45 equal-weighted vs OLS 0.61/0.83) are PRE-COST gross numbers concentrated in micro-caps — the equal-weight edge collapses to 1.69 excluding sub-20th-NYSE-percentile names and runs 110-130%/month turnover. Peer-reviewed follow-ups (Avramov-Cheng-Metzker 2023 Mgmt Sci; FAJ 2026) show ML/deep value-weighted alpha falls 66-78% once micro-caps/distressed firms are excluded and NO deep method survives after excluding distressed firms, so ML's edge lives precisely where a solo with cheap data cannot trade cheaply. Mandatory overfitting controls are well-founded: the False Strategy Theorem (Bailey-Lopez de Prado) proves the max selected Sharpe across N trials is positive/significant even at true Sharpe zero, Harvey-Liu-Zhu (2016) require t>3.0 (not 2.0) after multiple testing, and a trial ledger / Deflated-Sharpe / PBO gate is non-negotiable before trusting any searched model. CRITICAL local corroboration: this project's own walk-forward OOS bake-off (outputs/engine/model_bakeoff.csv) already found ridge +0.15 and GBM +0.02 net Sharpe — neither beating the curated 3-feature linear book's 0.33 — empirically confirming on THIS data that ML adds no robust incremental portfolio alpha; the correct decision is to constrain the factory to regularized-linear/GBM-as-challenger under a strict trial ledger and redirect effort to execution realism and risk/leverage engineering.",
+    "findings": [
+      {
+        "claim": "The incremental cross-sectional predictive edge of ML over regularized-linear is REAL but TINY in absolute terms, and 'deeper' is not better. On ~30,000 US stocks (1957-2016, 94 characteristics), best monthly stock-level OOS R^2 ceilings are: best neural net (NN3) 0.40%, trees/random forests 0.33-0.34%, regularized-linear (ENet/PCR/PLS) 0.11-0.27%, vs ~0.16% for the simple linear Lewellen/OLS-3 benchmark; a naive OLS with 900+ predictors goes NEGATIVE out-of-sample, and 4-5 layer nets fail to beat NN3. The edge depends on regularization/nonlinear INTERACTIONS, not the model class per se (GLM with splines but no interactions fails to robustly outperform linear).",
+        "confidence": "high",
+        "sources": [
+          "https://dachxiu.chicagobooth.edu/download/ML.pdf",
+          "https://academic.oup.com/rfs/article/33/5/2223/5758276"
+        ],
+        "evidence": "Merge of claims [0] and [3], both 3-0 unanimous against the primary RFS 2020 source (Gu-Kelly-Xiu, 'Empirical Asset Pricing via Machine Learning'), verified verbatim from the author-hosted PDF. Abstract: 'trees and neural networks unambiguously improve return prediction with monthly stock-level R2's between 0.33% and 0.40%'; 'R2 oos is 0.33% for NN1 and peaks at 0.40% for NN3'; 'Boosted trees and random forests are competitive with PCR, producing fits of 0.34% and 0.33%'; 'elastic net pulls the out-of-sample R2 into positive territory at 0.11% ... PCR and PLS ... 0.26% and 0.27%'; benchmark linear (Lewellen) 0.16%; expanding OLS to 900+ predictors makes R2 drop 'deeply into negative territory'; 'the benefits of deep learning are limited, as four- and five-layer models fail to improve over NN3.' These are STOCK-LEVEL R^2 on a 60-year full CRSP cross-section incl. small/illiquid names — NOT portfolio-level after-cost alpha on a liquid tradable universe."
+      },
+      {
+        "claim": "The headline ML economic gains are PRE-COST GROSS Sharpes concentrated in micro-caps — exactly the names a solo with cheap data cannot trade cheaply. GKX's NN long-short decile spread earns annualized OOS Sharpe 1.35 value-weighted / 2.45 equal-weighted vs 0.61/0.83 for the OLS benchmark, but NO after-cost net Sharpe appears in the main text, value-weight is explicitly chosen as 'less sensitive to trading cost considerations,' the spectacular 2.45 equal-weight figure is flagged as micro-cap-driven (falling to 1.69 excluding sub-20th-NYSE-percentile names), and NN turnover runs 110-130% per month.",
+        "confidence": "high",
+        "sources": [
+          "https://dachxiu.chicagobooth.edu/download/ML.pdf",
+          "https://academic.oup.com/rfs/article/33/5/2223/5758276"
+        ],
+        "evidence": "Merge of claims [1], [2], [4], all 3-0 unanimous against the primary GKX 2020 paper. Verbatim: 'annualized out-of-sample Sharpe ratio of 1.35 (value-weighted) and 2.45 (equal-weighted) ... benchmark OLS model delivers Sharpe ratios of 0.61 and 0.83'; 'While value-weight portfolios are less sensitive to trading cost considerations ... the Sharpe ratios are substantially higher [equal-weighted]'; 'To identify the extent to which equal-weight results are driven by micro-cap stocks, Table A.10 ... reports equal-weight portfolio [results]' — NN4 spread falls to 1.69 excluding sub-20th-percentile NYSE names. Turnover (Table 8) for NN1-NN5 value-weighted = 121-127%, equal-weighted = 112-114%. Strings 'transaction cost'/'net of'/'after-cost'/'net Sharpe' appear zero times applied to the headline Sharpes; turnover disclosed but no cost ever netted = gross performance. The huge EW(2.45)-vs-VW(1.35) gap is itself in-paper evidence of size/liquidity concentration."
+      },
+      {
+        "claim": "ML/deep-learning stock-return alpha derives MOST of its profitability from hard-to-arbitrage stocks (micro-caps, distressed, non-rated, high-limits-to-arbitrage states); restricting to a tradable universe sharply attenuates or kills it. GKX (NN3) value-weighted FF6-adjusted return falls 66% excluding micro-caps and 78% excluding distressed firms; NO deep method (GKX/CPZ/CA) produces a significant value-weighted FF6 return after excluding distressed firms. Full-sample value-weighted long-short returns of 1.56%/2.18%/0.95%/1.16% per month (GKX/CPZ/IPCA/CA) and FF6 alphas of 0.92%/1.87%/0.62%/0.75% are exactly the gross figures the literature then shows evaporate under economic restrictions and costs. ML delivers robust insights ONLY when economic restrictions (microcap exclusion, harmful-predictor removal) are imposed.",
+        "confidence": "high",
+        "sources": [
+          "https://si-cheng.net/wp-content/uploads/2023/05/2023-ms-avramov_cheng_metzker-machine-learning-vs.-economic-restrictions.pdf",
+          "https://www.tandfonline.com/doi/full/10.1080/0015198X.2026.2621646"
+        ],
+        "evidence": "Merge of claims [5], [6], [9] (all 3-0) and [10] (2-1). Avramov-Cheng-Metzker 2023 (Management Science 69(5):2587-2619, top-5 journal, verified verbatim from PDF): value-weighted FF6 return 'is 66% (71%, 48%) lower after excluding microcaps ... 78% (69%, 94%) lower after excluding financially distressed firms ... None of the deep learning methods generates significant value-weighted FF6-adjusted returns at the 5% level after excluding distressed firms'; full-sample VW LS return '1.56% (2.18%, 0.95%, 1.16%) per month' with FF6 '0.92% (1.87%, 0.62%, 0.75%)' followed by 'the performance ... deteriorates ... further deteriorates in the presence of reasonable trading costs because of high turnover and extreme positions.' FAJ 2026 (CFA Institute, peer-reviewed): 'Conventional models are dominated by microcaps, which inflate returns and concentrate gains in costly-to-trade stocks; excluding microcaps is essential for meaningful inference'; 'only with economic restrictions can machine learning deliver robust asset pricing insights.' The 2-1 split on [10] is on emphasis (restrictions REMOVE the apparent edge rather than proving ML net-superiority) which STRENGTHENS the constraining conclusion. NUANCE: a residual, much smaller value-weighted/large-cap ML edge can persist (GKX VW NN ~1.35 pre-cost; Chen-Pelger-Zhu deep ~0.9 on largest 550, ~1.4 on largest 1500) — but heavily turnover/cost-eroded; operative rule is the same: evaluate any ML strictly value-weighted, micro-cap-excluded, after realistic costs."
+      },
+      {
+        "claim": "The one positive existence-proof of net-of-cost ML alpha comes from CHINA, a retail-dominated less-efficient market, and is itself entangled with illiquid small stocks — it does NOT transfer to a US book. Chinese ML models find LIQUIDITY to be the single most important predictor (contrasting US studies where price-trend/momentum dominate), and the authors report OOS performance 'remains economically significant after transaction costs' (NN OOS R^2 up to 2.58% vs US ~0.40%) — but driven by retail-dominated short-term predictability concentrated in small stocks.",
+        "confidence": "high",
+        "sources": [
+          "https://www.sciencedirect.com/science/article/pii/S0304405X21003743"
+        ],
+        "evidence": "Merge of claims [7] and [8], both 3-0 against Leippold-Wang-Zhou (2022, JFE 145(2):64-82, top-3 journal). Abstract verbatim: 'Contrasting previous studies for the US market, liquidity emerges as the most important predictor, leading us to closely examine the impact of transaction costs'; 'The out-of-sample performance remains economically significant after transaction costs.' The after-cost survival is tied to small-stock/retail-driven predictability (~99.8% retail accounts), echoing the US micro-cap concern and explicitly NOT a US claim. The single best net-of-cost ML existence-proof in the verified set is therefore both market-specific (China) and concentrated in the same cost-bearing illiquid names that disqualify it for transfer to a liquid solo US book."
+      },
+      {
+        "claim": "Mandatory pre-trust overfitting controls are mathematically well-founded and non-negotiable before believing any searched ML model. The False Strategy Theorem proves that even if ALL tested strategies have true Sharpe = 0, the highest selected backtest Sharpe is positive and 'significant' unless deflated; the deflation benchmark SR_0 = sqrt(V[SR_n]) * ((1-gamma)*Phi^-1[1-1/N] + gamma*Phi^-1[1-1/(Ne)]) scales with the cross-trial Sharpe variance and the (effective) number of trials N — so the more configurations searched (ML hyperparameter grids), the higher the bar; a reported Sharpe must exceed this threshold, NOT zero. Selection bias plus backtest overfitting 'misleads investors into allocating capital to strategies that will systematically lose money,' and the paper explicitly names large ML-driven searches as the enabler.",
+        "confidence": "high",
+        "sources": [
+          "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551"
+        ],
+        "evidence": "Merge of claims [11], [12], [13], all 3-0 against Bailey & Lopez de Prado (2014, J. Portfolio Management 40(5):94-107, 'The Deflated Sharpe Ratio'), the canonical source, verified from the authors' PDF and corroborated by Wikipedia/marti.ai. Verbatim: 'even if all tested strategies have true Sharpe Ratios of zero, the highest observed Sharpe Ratio will typically be positive and statistically significant—unless corrected'; the SR_0 formula with gamma=Euler-Mascheroni constant; 'selection bias combined with backtest overfitting misleads investors into allocating capital to strategies that will systematically lose money'; abstract names 'machine learning and high-performance computing' as the overfitting enabler. Practical caveat (reinforcing, not refuting): effective N is hard to estimate when trials are correlated, which is precisely why an explicit trial LEDGER is required. The full DSR closed-form (which also needs T, skew, kurtosis) was split 1-2 on exact formula transcription but the method and inputs are confirmed; treat DSR as method-locked, threshold calibrated by N and Sharpe dispersion (consistent with this project's DR-3 protocol)."
+      },
+      {
+        "claim": "The factor-discovery literature is dominated by false discoveries, so any new signal/ML predictor is guilty until proven and must clear a multiple-testing-adjusted hurdle of t>3.0 (not the conventional t>2.0). Of 296 published significant cross-sectional equity factors, 158 fail under Bonferroni, 142 under Holm, 132 under BHY(1%), 80 under BHY(5%); the recommended minimum t-hurdle ranges ~2.8 (BHY 5%) to 3.78-4.0 (Bonferroni 2012-2032), with 3.18 as a minimum once unobserved/missing factors are accounted for.",
+        "confidence": "high",
+        "sources": [
+          "https://people.duke.edu/~charvey/Research/Published_Papers/P118_and_the_cross.PDF"
+        ],
+        "evidence": "Merge of claims [14] and [15], both 3-0 against Harvey-Liu-Zhu (2016, RFS 29(1):5-68, RFS Editor's Choice, ~10k citations), verified verbatim. 'of the 296 published significant factors, 158 would be considered false discoveries under Bonferonni, 142 under Holm, 132 under BHY (1%), and 80 under BHY (5%)'; 'A new factor needs to clear a much higher hurdle, with a t-statistic greater than 3.0 ... a t-statistic of 2.0 is too low'; Bonferroni hurdle 'starts at 1.96 and increases to 3.78 by 2012 ... 4.00 in 2032'; BHY 5% '2.78'; 'minimum threshold t-statistic is 3.18.' ADVERSARIAL NUANCE: the 'most findings are false' INTERPRETATION is contested (Chen 2022/2025; Chen-Zimmermann; Jensen-Kelly-Pedersen 2023 estimate FDR ~1% and argue HLZ conflate insignificant with false) — but the specific 158/142/132/80 counts are uncontested arithmetic, and BOTH camps agree multiple-testing correction is mandatory. The operational conclusion (mandate MTC, treat new signals as guilty) is robust across the debate; the true false-discovery rate may be lower than the headline rhetoric implies."
+      },
+      {
+        "claim": "DECISION-RELEVANT LOCAL CORROBORATION: this project's OWN walk-forward OOS, portfolio-level, after-cost model bake-off already ran the exact experiment and confirms ML adds no robust incremental alpha on THIS thin-daily Sharadar data. On 2020-2026 (74 months, walk-forward OOS): baseline (5-feature z-mean including dead value/lowvol, handicapped) net Sharpe -0.11; ridge +0.15 (denoises dead features but does NOT reach the curated 3-feature linear book's 0.33); GBM +0.02 (nonlinearity adds essentially nothing = theater). Zero deployable Sharpes. The current best edge is a sector-neutral market-neutral linear/rank composite at net Sharpe ~0.33 (CAGR +2.86%, maxDD -21%) that dies at 5x costs; the honest path to aggressive absolute return is a LEVERAGED modest edge plus an uncorrelated overlay sleeve, NOT a high-Sharpe ML machine.",
+        "confidence": "high",
+        "sources": [
+          "/home/click/ghq/github.com/click6067-ship-it/quant-pramana/phase1a/outputs/engine/model_bakeoff.csv",
+          "/home/click/ghq/github.com/click6067-ship-it/quant-pramana/integrated/V3_Locked_Decisions_and_Master_Plan_v0.1.md",
+          "/home/click/ghq/github.com/click6067-ship-it/quant-pramana/integrated/DR-4_Final_Model_Candidate_Map_v0.1.md",
+          "/home/click/ghq/github.com/click6067-ship-it/quant-pramana/phase1a/outputs/engine/aggr_book_nav.csv"
+        ],
+        "evidence": "Local primary evidence (not from the verified web-claim set; flagged as project-internal). The milestone log records: 'baseline -0.11 / ridge +0.15 (dead features ignored = denoise, below the live 3-feature book 0.33) / GBM +0.02 ≈ 0 (nonlinear adds nothing = theater). Honest verdict: ML adds no robust incremental OOS alpha on thin edge = matches Codex prediction. Deployable Sharpe = 0. trial ledger: 3 models, 0 tuning.' V3 Codex adversarial review verdict: 'Stop hunting for a magic model. Leverage the thing that works (the market-neutral book) NOW with brutal stress + operational paranoia. ML/deep is guilty until proven. Honest ceiling of aggressive absolute return = a leveraged modest edge, not a discovered high-Sharpe machine.' DR-4 model map classifies tree ensembles as challenger-only under heavier DSR/PBO/trial-registry gates, penalized regression as low-DoF challenger, and deep/TSFM/foundation models as REJECT for Phase-1 core alpha (quarantine overlay only). This local result is consistent with — and directly applies — the global literature verdict to this specific book/data."
+      },
+      {
+        "claim": "VERDICT: constrain the model factory to regularized-linear and GBM-as-challenger ONLY, under a strict trial ledger + DSR/PBO + purged/embargoed walk-forward, and redirect effort to execution realism and risk/leverage engineering. Opening the space to unconstrained ML/deep is not worth it: the evidence shows ML's edge is tiny in R^2, pre-cost, micro-cap-concentrated, turnover-heavy, and disappears on tradable universes after costs. On a Sharpe ~0.3-0.5 market-neutral book, leverage scales VOLATILITY not Sharpe and introduces real failure modes (borrow/financing drift, vol-target procyclicality, gap/tail risk, leveraged-ETF daily-reset path dependency, futures roll yield) — so aggressive absolute return must come from a leveraged proven modest edge plus uncorrelated sleeves, with hard kill-switches, not from chasing ML Sharpe.",
+        "confidence": "high",
+        "sources": [
+          "https://si-cheng.net/wp-content/uploads/2023/05/2023-ms-avramov_cheng_metzker-machine-learning-vs.-economic-restrictions.pdf",
+          "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551",
+          "https://people.duke.edu/~charvey/Research/Published_Papers/P118_and_the_cross.PDF",
+          "/home/click/ghq/github.com/click6067-ship-it/quant-pramana/integrated/V3_Locked_Decisions_and_Master_Plan_v0.1.md"
+        ],
+        "evidence": "Synthesis of all confirmed findings plus local evidence, directly answering the research question's verdict request. The web literature (tiny R^2, pre-cost gross Sharpes, 66-78% micro-cap/distressed attenuation, no deep method surviving distressed-exclusion, mandatory t>3 and DSR/trial-ledger controls) and the project's own bake-off (ridge +0.15, GBM +0.02, neither beating the linear book's 0.33) point the same way under the 'guilty until proven incremental OOS after costs' default. The leverage failure-mode points (leverage scales vol not Sharpe; borrow drift; vol-target procyclicality; LETF daily-reset path dependency; futures roll yield) are explicitly enumerated in this project's V3 Codex review and locked decisions, which also defer futures integration and require direct LETF path modeling, hard leverage caps, DD-based de-risking, cooldowns, and a 4-way separated kill-switch — consistent with the survive-vs-blow-up discipline. Items (4) and (5) of the research question (leverage safety, what distinguishes surviving solo books) are answered primarily from this project's risk-engineering record rather than from the verified web-claim set, hence flagged as lower external-citation density (see caveats)."
+      }
+    ],
+    "caveats": "EVIDENCE-COVERAGE ASYMMETRY: The verified web-claim set is heavily concentrated on research-question parts (1) ML-vs-linear OOS evidence and (3) overfitting controls — both very strongly sourced (multiple primary, peer-reviewed, unanimous votes). Parts (2) realistic after-cost Sharpe CEILINGS, (4) leverage safety/failure modes, and (5) survive-vs-blow-up determinants are NOT directly covered by surviving web claims; they are answered chiefly from this project's internal V3 documents and bake-off, which are primary for THIS book but not externally peer-reviewed citations. Treat findings 7-8 as project-grounded engineering judgment, not literature-citable facts.\n\nREFUTED PRO-ML EVIDENCE (transparency): Four claims asserting ML retains meaningful NET after-cost alpha were voted DOWN (mostly 0-3 or 1-2), including an LSTM '320-anomaly' paper (SSRN 4702406 / AFA) claiming net ~1.42%/month and net Sharpe 0.84. The skeptical default held: net-of-cost ML survival claims did not survive adversarial verification, while the cost-erosion / micro-cap-concentration claims did. Note one Avramov break-even-cost claim was voted 1-2 (not confirmed) — the precise break-even-cost numbers are therefore NOT locked, though the directional 'erodes under reasonable costs' conclusion is (via the confirmed attenuation figures).\n\nINTERPRETATION CONTESTED, OPERATIONAL CONCLUSION ROBUST: The Harvey-Liu-Zhu 'most findings are false' framing is disputed by Chen (2022/2025) and Jensen-Kelly-Pedersen (2023) who estimate far lower false-discovery rates; only the specific 158/296 counts and the t>3 recommendation are uncontested. Do not over-read 'most factors are false' as settled — but DO treat multiple-testing correction as mandatory (both camps agree).\n\nRESIDUAL LARGE-CAP ML EDGE EXISTS (do not overclaim total nullity): The same literature that shows micro-cap concentration also shows a SMALLER residual value-weighted/large-cap ML edge can persist (GKX VW NN ~1.35 pre-cost; Chen-Pelger-Zhu ~0.9-1.4 on largest names). The claim is 'unconstrained ML is micro-cap-inflated overfitting theater on cheap daily data,' NOT 'ML adds literally zero on a tradable universe.' This is why the verdict is CONSTRAIN (GBM-as-challenger under trial ledger) rather than BAN.\n\nTIME-SENSITIVITY: Headline R^2/Sharpe numbers (GKX 2020 over 1957-2016) are an established, non-decaying result. Post-publication factor decay and the post-decimalization high-liquidity regime are real and worsen the after-cost picture over time (one such decay claim was actually voted down for over-optimism on net survival). The project's own quality-factor finding (IC-IR 0.42 in 2016-2020 collapsing to 0.046 in 2021-2026) is concrete local evidence of regime decay.\n\nDATA-SCALE MATCH: The strongest single point for this book is that GKX-style R^2 figures come from a 60-year FULL CRSP cross-section (incl. illiquid names) and are stock-level, not portfolio-level after-cost on a liquid S&P500-grade universe traded with cheap daily Sharadar data — so they do not establish robust incremental after-cost portfolio alpha for THIS book. The project's own walk-forward bake-off on exactly this data (ridge +0.15, GBM +0.02 net Sharpe) is the most directly applicable evidence and agrees with the skeptical verdict.",
+    "openQuestions": [
+      "What is the realistic after-cost net-Sharpe CEILING for a daily/monthly liquid cross-sectional long-short run by a solo with cheap data? The verified claim set does not pin a number; the project's own book sits at net Sharpe ~0.33 (dying at 5x costs) and the literature's net-of-cost ML survival claims were refuted, but no clean external 'ceiling' figure survived verification.",
+      "Can a Sharpe 0.3-0.5 market-neutral book be SAFELY leveraged for aggressive absolute return, and at what leverage do the failure modes (borrow/financing drift, vol-target procyclicality, gap/tail risk, LETF daily-reset path dependency, futures roll yield) dominate? Answered here only from the project's internal Codex review (leverage scales vol not Sharpe; honest ceiling = levered modest edge) — no peer-reviewed citation in the verified set quantifies the safe leverage band.",
+      "What empirically distinguishes solo/small systematic books that SURVIVE from those that blow up (operational/plumbing risk, leverage discipline, capacity, regime decay)? Research-question part (5) is essentially uncovered by surviving web claims; the only evidence is this project's own kill-switch/risk-ledger design and 'research-debt disguised as ambition' warning — external empirical evidence on solo-book survival was not retrieved/verified.",
+      "Does an uncorrelated overlay sleeve (e.g., the project's ETF trend+vol overlay, locally measured at net Sharpe ~0.85 but flagged as 2017-2025 strong-trend regime-flattered) provide durable forward diversification, or is its high Sharpe itself a regime artifact that will not persist out-of-sample at the claimed magnitude?"
+    ],
+    "refuted": [
+      {
+        "claim": "ML methods (trees and neural networks) roughly DOUBLE the gross out-of-sample Sharpe of leading regression strategies for cross-sectional US equity prediction: a value-weighted long-short decile spread on NN forecasts earns annualized OOS Sharpe 1.35 vs 0.61 for the OLS benchmark (equal-weighted: 2.45 vs 0.83). This is the canonical positive evidence FOR opening the model space to ML.",
+        "vote": "0-3",
+        "source": "https://academic.oup.com/rfs/article/33/5/2223/5758276"
+      },
+      {
+        "claim": "After realistic transaction costs, ML long-short strategies do not deliver economically meaningful risk-adjusted payoffs, driven by extreme turnover (monthly turnover at least 87% for GKX, up to 163% for CPZ, 113% IPCA, 148% CA). Break-even costs are only ~0.48-1.12% gross full-sample but collapse to ~0.26-0.54% once microcaps are excluded, versus estimated actual costs of 0.5-0.67% (excluding microcaps 0.64%), so net edge is near zero or negative for a liquid value-weighted universe.",
+        "vote": "1-2",
+        "source": "https://si-cheng.net/wp-content/uploads/2023/05/2023-ms-avramov_cheng_metzker-machine-learning-vs.-economic-restrictions.pdf"
+      },
+      {
+        "claim": "Sophisticated ML anomaly-combination strategies retain economically meaningful net (after-cost) out-of-sample alpha in the modern high-liquidity era: an LSTM model combining anomaly characteristics yields a six-factor net alpha of 1.20% per month with a t-stat of 3.46, directly contradicting prior claims that ML alpha vanishes once trading costs are properly accounted for.",
+        "vote": "1-2",
+        "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4702406"
+      },
+      {
+        "claim": "After jointly accounting for transaction costs, post-publication decay, and post-decimalization high liquidity, ML strategies still earn net out-of-sample monthly returns of up to 1.42%, despite turnover exceeding 50% per month and selecting some difficult-to-arbitrage stocks.",
+        "vote": "0-3",
+        "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4702406"
+      },
+      {
+        "claim": "The best ML strategy (single-hidden-layer LSTM) delivers a gross Sharpe ratio of 0.94 and a net (after-cost) Sharpe of 0.84 — i.e., realistic costs erode only ~0.10 of Sharpe here — and the strategy earns substantially more in recessions than expansions, providing a concrete after-cost Sharpe benchmark for ML cross-sectional equity strategies.",
+        "vote": "0-3",
+        "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4702406"
+      },
+      {
+        "claim": "Short-term ML return predictability in China is driven by the retail-investor-dominated market structure and is concentrated particularly in SMALL stocks; the higher Sharpe ratios from equally-weighted ML portfolios are mostly driven by micro-cap stocks — implying the ML edge concentrates in small/illiquid names rather than large liquid ones.",
+        "vote": "0-3",
+        "source": "https://www.sciencedirect.com/science/article/pii/S0304405X21003743"
+      },
+      {
+        "claim": "In-sample variable importance from ML models overfits and provides little reliable guidance, so feature/variable importance must be evaluated out-of-sample using economic (not statistical) criteria. This is direct evidence that ML on this kind of data is prone to overfitting theater unless judged on OOS economic value.",
+        "vote": "0-3",
+        "source": "https://www.tandfonline.com/doi/full/10.1080/0015198X.2026.2621646"
+      },
+      {
+        "claim": "The Deflated Sharpe Ratio is formally defined as DSR = Φ( ((SR_hat* - SR_0) * sqrt(T-1)) / sqrt(1 - γ®3*SR_0 + ((γ®4-1)/4)*SR_0^2) ), yielding the probability that an observed Sharpe reflects true skill rather than selection bias or overfitting; it requires inputs of trial count N, cross-trial Sharpe variance, sample length T, skewness and kurtosis — a concrete, computable overfitting control.",
+        "vote": "1-2",
+        "source": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551"
+      },
+      {
+        "claim": "Contrary to the skeptical Avramov et al. (2022) view, sophisticated/deep ML anomaly strategies (especially LSTM) remain profitable net of realistic high-frequency bid-ask-spread costs in the high-liquidity post-2005 era, with the best (LSTM1) earning net ~1.42%/month (t=3.99) and a six-factor generalized net alpha of 1.20% (t=3.46) — but only via deep models, value-weighting, and a 320-anomaly feature set.",
+        "vote": "1-2",
+        "source": "https://afajof.org/management/viewp.php?n=75544"
+      }
+    ],
+    "sources": [
+      {
+        "url": "https://dachxiu.chicagobooth.edu/download/ML.pdf",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 5
+      },
+      {
+        "url": "https://academic.oup.com/rfs/article/33/5/2223/5758276",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 5
+      },
+      {
+        "url": "https://si-cheng.net/wp-content/uploads/2023/05/2023-ms-avramov_cheng_metzker-machine-learning-vs.-economic-restrictions.pdf",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 5
+      },
+      {
+        "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4702406",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.sciencedirect.com/science/article/pii/S0304405X21003743",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.tandfonline.com/doi/full/10.1080/0015198X.2026.2621646",
+        "quality": "primary",
+        "angle": "academic/primary — ML asset pricing canonical evidence",
+        "claimCount": 4
+      },
+      {
+        "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — failed replications, data snooping, cost erosion",
+        "claimCount": 5
+      },
+      {
+        "url": "https://people.duke.edu/~charvey/Research/Published_Papers/P118_and_the_cross.PDF",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — failed replications, data snooping, cost erosion",
+        "claimCount": 5
+      },
+      {
+        "url": "https://afajof.org/management/viewp.php?n=75544",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — failed replications, data snooping, cost erosion",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2105.01380",
+        "quality": "primary",
+        "angle": "contrarian/skeptical — failed replications, data snooping, cost erosion",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.davidhbailey.com/dhbpapers/deflated-sharpe.pdf",
+        "quality": "primary",
+        "angle": "methodology/overfitting controls — validation statistics",
+        "claimCount": 5
+      },
+      {
+        "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253",
+        "quality": "primary",
+        "angle": "methodology/overfitting controls — validation statistics",
+        "claimCount": 5
+      },
+      {
+        "url": "https://en.wikipedia.org/wiki/Purged_cross-validation",
+        "quality": "secondary",
+        "angle": "methodology/overfitting controls — validation statistics",
+        "claimCount": 5
+      },
+      {
+        "url": "https://people.duke.edu/~charvey/Research/Published_Papers/P146_Lucky_factors.pdf",
+        "quality": "primary",
+        "angle": "methodology/overfitting controls — validation statistics",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.garp.org/hubfs/Whitepapers/a1Z1W0000054x6lUAA.pdf",
+        "quality": "primary",
+        "angle": "methodology/overfitting controls — validation statistics",
+        "claimCount": 5
+      },
+      {
+        "url": "http://epchan.blogspot.com/2006/10/how-much-leverage-should-you-use.html",
+        "quality": "blog",
+        "angle": "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral",
+        "claimCount": 5
+      },
+      {
+        "url": "https://outcastbeta.com/drawdown-risk-portfolio-volatility-normalized-by-sharpe-ratio/",
+        "quality": "blog",
+        "angle": "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.nber.org/system/files/working_papers/w14465/w14465.pdf",
+        "quality": "primary",
+        "angle": "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.ecb.europa.eu/pub/financial-stability/fsr/focus/2020/html/ecb.fsrbox202005_02~f6616db9be.en.html",
+        "quality": "primary",
+        "angle": "practitioner/implementation — leverage and failure modes of low-Sharpe market-neutral",
+        "claimCount": 4
+      },
+      {
+        "url": "https://www.tandfonline.com/doi/full/10.1080/14697688.2022.2098810",
+        "quality": "primary",
+        "angle": "survivorship/operational — what makes solo systematic books survive vs blow up",
+        "claimCount": 5
+      },
+      {
+        "url": "https://www.fmg.ac.uk/sites/default/files/2020-08/Jeffrey-Pontiff.pdf",
+        "quality": "primary",
+        "angle": "survivorship/operational — what makes solo systematic books survive vs blow up",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/2006.05632",
+        "quality": "primary",
+        "angle": "survivorship/operational — what makes solo systematic books survive vs blow up",
+        "claimCount": 5
+      },
+      {
+        "url": "https://arxiv.org/pdf/1506.02802",
+        "quality": "primary",
+        "angle": "survivorship/operational — what makes solo systematic books survive vs blow up",
+        "claimCount": 5
+      }
+    ],
+    "stats": {
+      "angles": 5,
+      "sourcesFetched": 23,
+      "claimsExtracted": 113,
+      "claimsVerified": 25,
+      "confirmed": 16,
+      "killed": 9,
+      "afterSynthesis": 8,
+      "urlDupes": 2,
+      "budgetDropped": 5,
+      "agentCalls": 105
+    }
+  }
+}
