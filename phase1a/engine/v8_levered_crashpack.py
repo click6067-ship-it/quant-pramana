@@ -4,7 +4,7 @@
 알파 아님=분산 프리미엄 레버=목적함수 이동. cap은 crash-loss budget으로(CAGR 아님·V5 교훈). free yfinance·proxy."""
 import os, warnings; warnings.filterwarnings("ignore")
 import numpy as np, pandas as pd, yfinance as yf
-RF=0.05; W4={"eq":0.50,"mf":0.25,"gold":0.15,"bond":0.10}; GRID=[1.0,1.25,1.35,1.5]; MDD_LIMIT=-0.35
+RF=0.05; W4={"eq":0.50,"mf":0.25,"gold":0.15,"bond":0.10}; GRID=[1.0,1.10,1.15,1.20,1.25,1.35,1.5]; MDD_LIMIT=-0.35
 def dl(ts):
     d=yf.download(ts,period="max",interval="1d",auto_adjust=True,progress=False)
     return (d["Close"] if isinstance(d.columns,pd.MultiIndex) else d).dropna(how="all")
