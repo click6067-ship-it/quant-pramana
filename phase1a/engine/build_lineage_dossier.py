@@ -1,0 +1,148 @@
+#!/usr/bin/env python3
+"""PRAMANA 계보 Dossier (DOCX) — v1~V7 진화·결과물·문제점·트러블슈팅 + 12/6/3개월/풀 멀티앵커 표(실계산).
+free yfinance·비용후. PAPER·RESEARCH_ONLY. python engine/build_lineage_dossier.py → PRAMANA_V4/PRAMANA_Lineage_Dossier.docx"""
+import os, warnings; warnings.filterwarnings("ignore")
+import numpy as np, pandas as pd, yfinance as yf
+from docx import Document; from docx.shared import Pt, RGBColor, Inches; from docx.enum.text import WD_ALIGN_PARAGRAPH
+HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); REPO=os.path.dirname(ROOT)
+OUT=os.path.join(REPO,"PRAMANA_V4","PRAMANA_Lineage_Dossier.docx")
+CAP=1e8; RF=0.05; TVOL=0.28
+# ── 멀티앵커 실계산 (V4~V7 동일 엔진·비용후) ──
+px=yf.download(["SPY","QQQ","DBMF","GLD","IEF"],period="max",interval="1d",auto_adjust=True,progress=False)
+px=(px["Close"] if isinstance(px.columns,pd.MultiIndex) else px).dropna()
+ret=px.pct_change(); core=0.5*ret["SPY"]+0.5*ret["QQQ"]; rvol=core.rolling(20).std()*np.sqrt(252)
+days0=core.dropna().index; days0=days0[days0>=rvol.dropna().index[0]]
+def ddscale(dd): return 0.2 if dd<=-0.40 else 0.4 if dd<=-0.30 else 0.7 if dd<=-0.20 else 1.0
+def v4(days):  # Core Beta 1.0x (SPY/QQQ 50/50·무레버)
+    return CAP*(1+core.reindex(days).fillna(0)).cumprod()
+def lev_book(days, cap, mf):  # V5(mf=0·cap2.0)·V6(mf=0.15·cap1.5)
+    nav=[CAP]; peak=CAP
+    for i in range(1,len(days)):
+        d,p=days[i],days[i-1]; rv=rvol.get(p,np.nan)
+        L=min(cap,TVOL/rv) if (pd.notna(rv) and rv>0) else 1.0; L*=ddscale(nav[-1]/peak-1)
+        r=(1-mf)*(L*core.get(d,0)-(L-1)*RF/252)+mf*ret["DBMF"].get(d,0)
+        nav.append(nav[-1]*(1+r)); peak=max(peak,nav[-1])
+    return pd.Series(nav,index=days)
+W7={"SPY":0.25,"QQQ":0.25,"DBMF":0.25,"GLD":0.15,"IEF":0.10}
+def v7(days):  # 4-sleeve 1.0x
+    b=sum(W7[t]*ret[t] for t in W7); return CAP*(1+b.reindex(days).fillna(0)).cumprod()
+def bh(s,days): return CAP*(1+ret[s].reindex(days).fillna(0)).cumprod()
+def stat(nav):
+    r=nav.pct_change().dropna(); return (nav.iloc[-1]/nav.iloc[0]-1, (nav/nav.cummax()-1).min(), (r.mean()/r.std()*np.sqrt(252) if r.std()>0 else float('nan')))
+end=days0[-1]
+ANCH=[("3개월 전 진입",91),("6개월 전 진입",182),("12개월 전 진입",365),(f"풀사이클 ({days0[0].date()}~)",99999)]
+BOOKS=[("V4 Core Beta 1.0x",lambda d:v4(d)),("V5 Leveraged cap2.0",lambda d:lev_book(d,2.0,0.0)),
+       ("V6 Diversified cap1.5+DBMF",lambda d:lev_book(d,1.5,0.15)),("V7 4-sleeve",lambda d:v7(d)),
+       ("QQQ",lambda d:bh("QQQ",d)),("SPY",lambda d:bh("SPY",d))]
+TABLE={}
+for an,dd in ANCH:
+    start=end-pd.Timedelta(days=dd); sl=days0[days0>=start] if dd<99999 else days0
+    TABLE[an]={nm:stat(fn(sl)) for nm,fn in BOOKS}
+print("멀티앵커 실계산 (누적%/MDD%/Sharpe):")
+for an in TABLE:
+    print(f"\n[{an}]"); [print(f"  {nm:<28}{a[0]*100:>7.1f}{a[1]*100:>7.0f}{a[2]:>7.2f}") for nm,a in TABLE[an].items()]
+
+# ── DOCX ──
+doc=Document()
+def H(t,l=1,c="1F3864"):
+    h=doc.add_heading(t,level=l)
+    for r in h.runs: r.font.color.rgb=RGBColor.from_string(c)
+    return h
+def P(t,b=False,sz=10,c=None,it=False):
+    p=doc.add_paragraph(); r=p.add_run(t); r.bold=b; r.italic=it; r.font.size=Pt(sz)
+    if c: r.font.color.rgb=RGBColor.from_string(c)
+    return p
+def bullet(t,sz=9.5):
+    p=doc.add_paragraph(style="List Bullet"); r=p.add_run(t); r.font.size=Pt(sz); return p
+
+ti=doc.add_heading("PRAMANA — 전략 계보 Dossier",0)
+P("v1~v3 단순팩터 → V4 Core Beta → V5 Leveraged → V6 Diversified → V7 4-sleeve",True,12,"C55A11")
+P("PAPER only · NO LIVE · RESEARCH_ONLY · 솔로+AI · US 주식/ETF · 가상 ₩100M · 2026-06-12",False,9,"808080",True)
+P("이 문서: 각 세대가 무엇을 만들었고(결과물) 무엇이 문제였고(한계) 왜 다음으로 진화했나 + 12/6/3개월·풀 멀티앵커 성과표(실계산) + 트러블슈팅 종합. 한눈에 'V7까지 왜·어떻게'.",False,9.5,it=True)
+
+H("0. 한눈에 — 메타 결론",1)
+for t in ["알파는 아직 0: v1~V7 전부 베타·레버·분산·리스크통제지 *예측 스킬* 아님. '쉬운 알파 없음'을 7세대 반복 실증.",
+          "각 피벗은 이전의 *정직한 실패*에서 나옴 — 가짜 승리를 안 만들고 매번 '이건 알파 아님'을 인정하며 진화.",
+          "V7 4-sleeve = 알파가 아니라 *목적함수 선택*(최대복리 QQQ 포기 → 크래시 생존). 검증은 forward 12개월.",
+          "시스템의 진짜 가치 = *가짜 알파를 거부한 정직성*(데이터/비용/look-ahead 누수까지 잡아 죽임)."]:
+    bullet(t)
+
+H("1. Phase A — 단순팩터 시대 (v1~v3): '쉬운 알파 없음' 실증",1)
+P("결과물 (= 연구 자산):",True,10)
+for t in ["데이터 파이프라인 검증: self-built S&P500 PIT cap-weight가 실제 SPY와 corr 0.998 (survivorship/PIT 정확).",
+          "팩터 6 family(value·momentum·quality·lowvol·event) IC 측정 + 결합(ridge/GBM) + 풀북.",
+          "정직한 negative 리포트 — 시스템이 가짜 알파를 안 만든 게 자산."]: bullet(t)
+P("드러난 문제점:",True,10)
+for t in ["단순/선형 팩터 전부 비용후 SPY/QQQ 못 이김 · Rank IC≈0 · quality만 약하게 생존하다 식음(IC-IR 0.22→0.046).",
+          "결합(blend/ridge)도 OOS cap-weight 못 이김 · v3 풀북도 SPY를 위험조정으로 못 이김(레버지 엣지 아님)."]: bullet(t)
+P("트러블슈팅: same-close 체결 누수 발견 → next-bar 실행으로 수정(Codex REVISE) · survivorship → self-built PIT.",False,9.5,"C00000")
+P("→ 판정: US 단순/선형 팩터 family TERMINATE. → 왜 피벗: 'SPY와 싸워 못 이긴다 → 싸우지 말고 깔고 얹자' = core-satellite (V4로 명명, 내부 v1/v2/v3와 혼동 방지).",True,9.5)
+
+H("2. Phase B — core-satellite·레버·분산 시대 (V4~V7)",1)
+GEN=[("V4 — Core Beta Forward Book","SPY/QQQ 1.0x 베타북 (레버 격리)",
+      ["production_book.py(target JSON) · forward_runner.py(무인 일1회·라이브 2026-06-09)"],
+      ["QQQ를 못 넘음(설계상·베타북) · −35%MDD에 레버 맞추기 = 과거 낙폭에 끼워맞추는 'backward knob'(Codex: PRODUCTION_UNSAFE)"],
+      "레버를 격리 sleeve로 빼고 기본 1.0x · overlay −0.14%=노이즈 OFF",
+      "3M sim: Core Beta +10.9% > SPY +7.6% but QQQ +14.3%엔 짐 → 레버로 넘어보자 (V5)"),
+     ("V5 — Aggressive Leveraged Core Beta","vol-target 28%·캡 2.0x·DD ladder",
+      ["aggressive_book.py · forward_runner_v5.py(라이브 2026-06-11) · forward 정량 판정표 · multi_anchor_v5"],
+      ["레버지 알파 아님(Sharpe≈QQQ) · SPY/QQQ와 *같이* 낙폭(6mo −20%) · forward −70%+ 가능(benign 샘플·2008/닷컴 없음) · no-ruin 아님(gap 무력)"],
+      "vol-target procyclical 발견(저점 디레버·반등 놓침 −6.3%p) · 판정표 라이브-only·상방참여 60% 미달 정직 표기",
+      "'같이 낙폭'이 핵심 문제 → 구조적 분산 (V6)"),
+     ("V6 — Diversified Aggressive","85% 레버드 Core(cap1.5) + 15% managed-futures(DBMF)",
+      ["v6_book.py · forward_runner_v6.py · derisk_diversify_test.py(DBMF 2022 +21.5% 방어)"],
+      ["alpha 아니라 *보험료*(상승장 수익↓·2023 드래그) · 여전히 equity-dominant(85% 주식) · DBMF 짧은 역사(2019~·2008 없음)·MF lost-decade(2011-20)·샘플 의존"],
+      "판정표 라이브-only · no-ruin docstring 제거 · 대시보드 in-sample 프레이밍(Codex 전체검수 fix)",
+      "equity-dominant라 큰 크래시 여전 같이 맞음·'왜 QQQ 대신?' 약함 → 진짜 분산 4-sleeve (V7)"),
+     ("V7 — 4-sleeve Paper Core Candidate (현재)","Eq50(SPY/QQQ)+MF25(DBMF)+Gold15(GLD)+Bond10(IEF) + Risk Throttle + Alpha Lab + Risk Monitor",
+      ["forward_runner_v7.py(4-sleeve 1.0x·라이브 2026-06-11) · Risk Monitor · crash_pack_throttle · Alpha Lab v0(인프라)/v1(DEAD·forward 관찰)/v2(event-driven 로그)"],
+      ["QQQ bull 수익 ~절반 포기(목적함수 선택) · throttle 기각(crash-pack서 static 4-sleeve 못 이김) · Alpha Lab v1 setup DEAD(RVOL 누수·강세장 베타) · forward 0개월 · DBMF/GLD 짧은 역사"],
+      "코어 regime-switch 휩쏘 기각(코어 안 갈아탐) · throttle crash-pack 기각(대시보드 전용) · RVOL look-ahead 누수 수정 · 'Production Core'→'Paper Core Candidate'(Codex)",
+      "(현재) forward 12개월 관찰 + Alpha Lab event-driven paper 로그")]
+for nm,sub,res,prob,trb,nxt in GEN:
+    H(nm,2,"2E5496"); P(sub,True,10,"C55A11")
+    P("결과물:",True,9.5); [bullet(t) for t in res]
+    P("문제점/한계:",True,9.5); [bullet(t) for t in prob]
+    P(f"트러블슈팅: {trb}",False,9.5,"C00000")
+    P(f"→ 왜 다음으로: {nxt}",True,9.5)
+
+H("3. 멀티앵커 성과표 (12/6/3개월·풀 · 비용후 · 실계산)",1)
+P("동일 엔진으로 각 진입 시점부터 현재까지. DBMF(2019~) 제약으로 풀사이클은 2019년부터. 누적·MDD·Sharpe. *in-sample backtest지 forward 판정 아님.*",False,9,"808080",True)
+for an in TABLE:
+    P(an,True,10,"2E5496")
+    tb=doc.add_table(rows=1,cols=4); tb.style="Light Grid Accent 1"
+    hd=tb.rows[0].cells; [setattr(hd[i].paragraphs[0].add_run(x),"bold",True) for i,x in enumerate(["북","누적 %","MDD %","Sharpe"])]
+    for nm,a in TABLE[an].items():
+        c=tb.add_row().cells; c[0].text=nm; c[1].text=f"{a[0]*100:+.1f}"; c[2].text=f"{a[1]*100:.0f}"; c[3].text=f"{a[2]:.2f}"
+    P("",False,4)
+P("읽는 법: V5는 레버로 누적↑지만 MDD도↑·Sharpe는 QQQ급(레버지 알파 아님). V6/V7은 MDD↓·Sharpe↑지만 상승장 누적은 QQQ에 양보(분산=보험료). V7 4-sleeve가 위험조정(Sharpe·MDD) 최선, 누적은 최소.",False,9.5,it=True)
+
+H("4. 트러블슈팅 종합 (전 세대 버그/교정 — 정직성 기록)",1)
+tt=doc.add_table(rows=1,cols=3); tt.style="Light Grid Accent 1"
+h=tt.rows[0].cells; [setattr(h[i].paragraphs[0].add_run(x),"bold",True) for i,x in enumerate(["세대","문제","교정"])]
+for a,b,c in [("v3","same-close 체결 누수","신호 t→진입 t+1 (next-bar)"),
+              ("v1~v3","survivorship/PIT 누수","self-built S&P500 PIT (corr 0.998)"),
+              ("V4","레버 = backward knob","레버 격리 sleeve·기본 1.0x"),
+              ("V5","vol-target procyclical(저점 디레버)","발견·정직 표기·보험료로 수용"),
+              ("V5/V6","판정표 수익-only 합격·no-ruin 과신","판정표 라이브-only·no-ruin 제거"),
+              ("V7","코어 regime-switch = 마켓타이밍","휩쏘 기각·코어 영구 고정"),
+              ("V7","throttle 비대칭(반등 못 켬)","crash-pack 기각·대시보드 전용"),
+              ("Alpha Lab v1","RVOL look-ahead 누수","entry-time 누적 RVOL로 수정"),
+              ("인프라","커밋 email 차단·무료 2nd feed 막힘","click6067 email 고정·2-feed=유료 대기")]:
+    r=tt.add_row().cells; r[0].text=a; r[1].text=b; r[2].text=c
+    for cc in r:
+        for pp in cc.paragraphs:
+            for rr in pp.runs: rr.font.size=Pt(9)
+
+H("5. 현재 위치 / 다음",1)
+for t in ["코어 = 순수 4-sleeve(V7) forward 12개월 관찰 — 그만 만지고 증거 축적.",
+          "Alpha Lab = v0 인프라 유지 · v1 단순 setup DEAD(backtest)지만 폐기 안 하고 forward 관찰 · v2 event-driven momentum forward 로그 4~8주 축적 중.",
+          "유료 intraday(Polygon/Alpaca) = 보류·조건부(forward 안정+병목 확인 후).",
+          "금지: v1 setup 튜닝 · Production 자본 투입 · LIVE. 전부 PAPER·자본권한 0."]:
+    bullet(t)
+P("한 줄: v1~v3 단순팩터(SPY 못 이김·파이프 검증) → V4 베타북 → V5 레버(같이 낙폭) → V6 분산(보험료) → V7 4-sleeve(크래시 생존 선택) + Alpha Lab(급등주 paper 관찰). 알파는 아직 없고, 가치는 정직성.",True,10,"C55A11")
+
+doc.save(OUT)
+print(f"\n✅ DOCX 생성: {OUT}")
+print(f"   섹션: 메타결론·Phase A(v1~3)·Phase B(V4~V7 각 결과물/문제/진화)·멀티앵커표(12/6/3/풀)·트러블슈팅·현재/다음")
+if __name__=="__main__": pass
