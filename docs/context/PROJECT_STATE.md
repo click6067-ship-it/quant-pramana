@@ -44,11 +44,13 @@
 - **빌드:** `forward_runner_v7.py`(4-sleeve 1.0x·free yfinance SPY/QQQ/DBMF/GLD/IEF·fail-closed·라이브 인셉션 2026-06-11)+Risk Monitor 점수(200일선/20일vol/DD→Growth/Caution/Defense/Crash·**정보용·자본 자동전환 금지**)·`outputs/v7_forward_dashboard.html`.
 - **Codex 검수 VERDICT: SHIP-as-paper plan, REVISE label/gate**(STOP 아님). 6지적 전부 반영: ①"Production"→"Paper Core Candidate"+Promotion Gates ②4-sleeve 수치는 crash-pack 전 ③throttle=NEEDS_EVIDENCE ④paper notional 2~5% ⑤게이트 전 차단(실자본·1.25x·throttle 편입) ⑥승격 판정표 §5b.
 - **🔒 Promotion Gates(실자본 전 전부):** crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트.
+- **Alpha Lab v0 = intraday DATA INFRA 착수(2026-06-12·용하 지시 '전략 말고 데이터부터'):** 브레이크(위험시 공격 끄기)+반등(좋아질때 천천히 열기) 두 신호는 **코어가 아니라 *공격 파트*(급등주/VWAP/ORB 단타·position size·하루손실한도·overnight) 허용/중지용**(순수 4-sleeve 영구 면역·갈아타기 ❌). **계좌 브레이크>시장신호**(하루−1%→당일금지·DD−3/5%→중지). 반등=단계적 사다리(scan→intraday→size50→정상). `engine/alpha_lab_v0.py`=yfinance 5m 정규화 append-only 적재+VWAP/ORB/RVOL/premarket+setup 스캐너. **v0 목표='setup이 데이터로 잡히나'=PASS**(10종목 ORB돌파+VWAP 검출·SMCI RVOL5.2). 정직: 10/10 검출=강세장 market-wide·변별력(RVOL/상대강도)은 1단계. **Sharadar=일봉 core/universe/fundamentals 유지·분봉은 별도 벤더**(yfinance 5m=60일한도→일별적재 forward축적; 1단계=Polygon/Alpaca/QuantRocket). 적재 outputs/alpha_lab/(gitignore). 스펙 `PRAMANA_V4/AlphaLab_v0_Design.md`. 자본권한 0·PAPER·kill=paper net 사전등록 못넘으면 폐기.
 - **crash-pack throttle 실험 완료(2026-06-12·사전등록·Codex 적대검증)=throttle 기각:** 장기 proxy(VFINX·RYMFX·GC=F·VFITX)로 2008/2000/2022/1987 stress. brake-only binary throttle(위험신호→공격 LETF overlay만 cash·코어 불변)은 crash MDD/손실은 줄였으나 ① 회복 지연(200일선 아래 반등 놓침) ② thr Sharpe < static 4-sleeve 거의 전구간 → **사전등록 #2·#5 실패 → risk-engine 승격 기각=대시보드 전용 확정.** 더 큰 발견: **이 형태 LETF overlay를 코어 부착=위험조정 손해**(static 4-sleeve가 overlay 붙인 모든 북 이김; trend+LETF +0.15%/yr 노이즈와 같은 방향). Codex 교정 수용: "overlay 모든 형태 무용"은 과잉일반화→죽은 건 *brake-only binary + core-attach LETF*·static 4-sleeve 우월만 robust. 재실험(re-entry/hysteresis/재배분)=새 자유도=config-mining 금지. 리포트 `phase1a/reports/Crashpack_Throttle_result.md`·사전등록 `PRAMANA_V4/Crashpack_Throttle_Protocol_v0.1.md`·코드 `crash_pack_throttle.py`.
 
 ## 다음 행동
-1. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지).
-2. ~~crash-pack throttle~~ **완료=기각(대시보드 전용).** 남은 crash-pack TODO: 4-sleeve *코어 자체*의 2008/2000 robustness(throttle 아닌 순수 분산북)·실 LETF 비용 정밀화는 우선순위 낮음.
+1. **Alpha Lab 1단계 (현재 초점):** ① 계좌 브레이크 paper 시뮬레이터(하루−1%·DD−3/5% halt·position size·overnight 게이트) ② setup 변별력(RVOL/상대강도/유니버스 스캔 — 강세장 market-wide 노이즈 제거) ③ 진짜 intraday 벤더 검토(Polygon/Alpaca/QuantRocket). 사전등록 kill·자본권한 0.
+2. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지). + alpha_lab_v0 일별 적재 cron(forward 축적).
+3. ~~crash-pack throttle~~ **완료=기각(대시보드 전용).** 남은 TODO(우선순위 낮음): 4-sleeve *코어 자체* 2008/2000 robustness(throttle 아닌 순수 분산북).
 3. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
 4. (Research·자본권한 0) Alpha Lab(급등주/VWAP/ORB·intraday infra 필요)·brake-only smoothing·event/revision 팩터. *알파는 베타를 못 넘는 패턴 재확인 위.*
 5. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
