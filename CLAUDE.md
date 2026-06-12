@@ -23,6 +23,7 @@
 
 ## 상태 갱신 규율 (staleness 방지 — 유일한 실패점)
 상태가 바뀌면 `docs/context/PROJECT_STATE.md` + `DECISION_LOG.md` 갱신. rationale는 락시트에만(중복 금지).
+**새 실험/판정은 `PRAMANA_V4/PRAMANA_Conclusions_OneLine.md`에 한 줄 자동 취합**(상세=Ledger·csv).
 
 ## Codex 적대 카운슬 호출
 `./council.sh "질문"` — 현재 컨텍스트(STATE+LOCKS) 자동 주입. 대화 붙여넣기 불필요.
