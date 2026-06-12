@@ -50,9 +50,11 @@
 - **crash-pack throttle 실험 완료(2026-06-12·사전등록·Codex 적대검증)=throttle 기각:** 장기 proxy(VFINX·RYMFX·GC=F·VFITX)로 2008/2000/2022/1987 stress. brake-only binary throttle(위험신호→공격 LETF overlay만 cash·코어 불변)은 crash MDD/손실은 줄였으나 ① 회복 지연(200일선 아래 반등 놓침) ② thr Sharpe < static 4-sleeve 거의 전구간 → **사전등록 #2·#5 실패 → risk-engine 승격 기각=대시보드 전용 확정.** 더 큰 발견: **이 형태 LETF overlay를 코어 부착=위험조정 손해**(static 4-sleeve가 overlay 붙인 모든 북 이김; trend+LETF +0.15%/yr 노이즈와 같은 방향). Codex 교정 수용: "overlay 모든 형태 무용"은 과잉일반화→죽은 건 *brake-only binary + core-attach LETF*·static 4-sleeve 우월만 robust. 재실험(re-entry/hysteresis/재배분)=새 자유도=config-mining 금지. 리포트 `phase1a/reports/Crashpack_Throttle_result.md`·사전등록 `PRAMANA_V4/Crashpack_Throttle_Protocol_v0.1.md`·코드 `crash_pack_throttle.py`.
 
 ## 다음 행동
-1. **[1순위] 순수 4-sleeve forward 12개월 가동 (코어 그만 만짐).** forward_runner_v7 이미 라이브(2026-06-11)·cron 등록은 용하 직접(`0 6 * * 2-6`). 코어는 실험 중단·증거 축적만.
-2. **[2순위] Alpha Lab v2 forward 로그 4~8주 축적** (`alpha_lab_v2_scanner.py` 매일 cron append·v1 원형 관찰+v2 catalyst). backtest 아니라 forward 로그 품질 평가(후보 남발/catalyst 실재/시장베타 분리). **유료 intraday=보류·조건부**(4~8주 안정+병목 확인 후만). **v1 폐기 안 함·forward 관찰 유지**(용하).
-3. *(데이터 없이 가능)* 계좌 브레이크 paper 시뮬레이터(하루−1%·DD−3/5%·strategy-agnostic). 금지: v1 튜닝·Production 자본.
+**관찰 모드 (능동 개발 멈춤·GPT↔Claude 수렴·2026-06-12). 3트랙만:**
+1. **[Track A·코어] 순수 4-sleeve V7 forward 12개월** — forward_runner_v7 라이브(2026-06-11)·cron `0 6 * * 2-6`(용하 직접). QQQ·60/40 대비 누적/MDD/회복/Sharpe·위기방어. **절대 건드리지 말 것: LETF·throttle·core switching(전부 기각).**
+2. **[Track B·Alpha Lab] 무료 forward 로그만** — v1 DEAD 기록+원형 관찰·v2 event-driven 무료 forward 로그 축적(`alpha_lab_v2_scanner.py` 매일)·**튜닝 금지**·4~8주 후 후보 품질 평가.
+3. **[Track C·데이터] 유료 결제 보류** — v2가 *양의 신호* 줄 때만 1개월 파일럿(목적=병목 제거지 알파 구매 아님). Sharadar=daily backbone 유지(universe/유동성/상폐/gap후보/earnings 맥락).
+**금지(합의): universe 확장 수익성 replay(QA만·=mining surface)·v1 튜닝·V8 버전업·계좌 브레이크 등 능동 개발 신규·Production 자본·LIVE.**
 2. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지). + alpha_lab_v0 일별 적재 cron(forward 축적).
 3. ~~crash-pack throttle~~ **완료=기각(대시보드 전용).** 남은 TODO(우선순위 낮음): 4-sleeve *코어 자체* 2008/2000 robustness(throttle 아닌 순수 분산북).
 3. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
