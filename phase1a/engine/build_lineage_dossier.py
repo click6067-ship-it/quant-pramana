@@ -84,7 +84,8 @@ for t in ["next-bar 실행 — same-close 체결 금지·look-ahead 차단",
           "baseline 우선 — 복잡 모델·allocator는 1/N·고정비중을 OOS 비용후 이겨야 채택",
           "LLM · TSFM 직접 트레이딩 금지 (off-path 보조만)",
           "production = 일봉 · 데이터 무결성 = 실자본 전 2 독립피드",
-          "사전등록 kill — 결과 본 뒤 goalpost 이동 금지(= config-mining 금지)"]: bullet(t)
+          "사전등록 kill — 결과 본 뒤 goalpost 이동 금지(= config-mining 금지)",
+          "Macro Emergency Override — 위기 확정 시(QQQ 200일선 하회·고점 −25%·VIX 급등·breadth 붕괴·credit·연속 gap-down) *공격 파트만*(레버·V8 shadow·Alpha Lab 신규 risk-on) 차단 + 사람 리뷰 트리거. **코어 4-sleeve 1.0x는 면역**(자동 코어전환 아님 = regime-switch/throttle 기각 교훈)·후행이라 첫 −25%는 못 피함(예측 아니라 *추가 위험 차단 + 사람 게이트*)"]: bullet(t)
 P("C. 8레이어 아키텍처 (불변 골격)",True,10,"2E5496")
 lt=doc.add_table(rows=1,cols=2); lt.style="Light Grid Accent 1"
 hc=lt.rows[0].cells; [setattr(hc[i].paragraphs[0].add_run(x),"bold",True) for i,x in enumerate(["레이어","역할"])]
@@ -105,6 +106,10 @@ for t in ["Sharadar (유료) = 일봉/PIT/펀더멘털/survivorship-safe *backte
           "yfinance (무료) = forward/probe — intraday 5m는 60일 제약·proof 약함(FAST_REPLAY, NOT_PROOF).",
           "intraday Alpha Lab = 별도 벤더(Polygon/Alpaca/QuantRocket) 필요할 수 있음 — VWAP/ORB/quote는 Sharadar 본업 아님.",
           "결제 판단(불변 기준): ① v2가 무가치면 유료 보류 ② 후보는 잡히나 체결·스프레드·기간 제약으로 판단불가면 1개월 파일럿 ③ 목적 = '알파 구매'가 아니라 '데이터 병목 제거'."]: bullet(t)
+P("E. 위기 데이터 처리 (불변)",True,10,"2E5496")
+for t in ["닷컴(2000-02)·2008 같은 큰 위기 = 학습/파라미터 튜닝엔 *제외 또는 별도 분리*(과최적화 노이즈)·promotion stress 검증엔 **필수 포함**.",
+          "'사람이 알아차리고 뺄 수 있다'는 가정 금지 — 위기는 실시간엔 단순 조정처럼 오고 −20/−30% 후에야 확정. 회피는 감이 아니라 Macro Emergency Override(시스템화·위 B)로만 인정.",
+          "장기 stress proxy 한계 명시(2000 managed-futures sleeve = cash 부재 → 4-sleeve에 불리)·'닷컴 때문에 전부 폐기'도 '닷컴 무시 통과'도 금지 → UNKNOWN 라벨."]: bullet(t)
 P("→ 이 LOCK들은 버전(V8·V9…)이 와도 안 바뀐다. 바뀌면 그건 PRAMANA가 아니라 다른 프로젝트다.",True,9.5,"C00000")
 
 H("2. Phase A — 단순팩터 시대 (v1~v3): '쉬운 알파 없음' 실증",1)
@@ -136,9 +141,14 @@ GEN=[("V4 — Core Beta Forward Book","SPY/QQQ 1.0x 베타북 (레버 격리)",
       "equity-dominant라 큰 크래시 여전 같이 맞음·'왜 QQQ 대신?' 약함 → 진짜 분산 4-sleeve (V7)"),
      ("V7 — 4-sleeve Paper Core Candidate (현재)","Eq50(SPY/QQQ)+MF25(DBMF)+Gold15(GLD)+Bond10(IEF) + Risk Throttle + Alpha Lab + Risk Monitor",
       ["forward_runner_v7.py(4-sleeve 1.0x·라이브 2026-06-11) · Risk Monitor · crash_pack_throttle · Alpha Lab v0(인프라)/v1(DEAD·forward 관찰)/v2(event-driven 로그)"],
-      ["QQQ bull 수익 ~절반 포기(목적함수 선택) · throttle 기각(crash-pack서 static 4-sleeve 못 이김) · Alpha Lab v1 setup DEAD(RVOL 누수·강세장 베타) · forward 0개월 · DBMF/GLD 짧은 역사"],
+      ["QQQ bull 수익 ~절반 포기(목적함수 선택) · throttle 기각(crash-pack서 static 4-sleeve 못 이김) · Alpha Lab v1 setup DEAD(RVOL 누수·강세장 베타) · forward 0개월 · DBMF/GLD 짧은 역사 · ★ 닷컴류 stress: 2019~ MDD −18%는 *benign 샘플*(닷컴/2008 없음)·진짜 닷컴류엔 V7 1.0x도 −39%(2000 MF proxy 부재로 보수적·불완전)"],
       "코어 regime-switch 휩쏘 기각(코어 안 갈아탐) · throttle crash-pack 기각(대시보드 전용) · RVOL look-ahead 누수 수정 · 'Production Core'→'Paper Core Candidate'(Codex)",
-      "(현재) forward 12개월 관찰 + Alpha Lab event-driven paper 로그")]
+      "(현재) forward 12개월 관찰 + Alpha Lab event-driven paper 로그·닷컴 caveat 추가"),
+     ("V8 Candidate — Levered 4-sleeve (UNKNOWN · RESEARCH_ONLY · shadow only)","V7 분산북을 조심스럽게 레버(1.10~1.25x) · 자본권한 0 · 알파 아님",
+      ["v8_levered_crashpack.py(grid crash-pack 1.0~1.5x) · V8_Candidate_Levered4sleeve_Protocol.md"],
+      ["알파 아님 = 분산 프리미엄 레버 = 목적함수 이동(상승참여↑·하락방어) · 닷컴 proxy서 1.25x −49%(단 2000 MF=cash 부재) vs 2008 −32% 통과 = **UNKNOWN** · 1.35x/1.5x 폐기(2008서도 −35%) · forward 레버 꼬리(V5 −70% 교훈)"],
+      "Codex가 equity proxy 결함(VFINX≠SPY/QQQ·QQQ 닷컴 −78% 누락) 잡음 → 실 SPY/QQQ로 수정 → 판정 UNKNOWN(전멸도 통과도 아님)",
+      "1.10~1.25x 자본0 shadow forward로 'UNKNOWN 추적'(승격도 폐기도 아님)·실자본 금지·옵션 컨벡시티는 나중 후보")]
 for nm,sub,res,prob,trb,nxt in GEN:
     H(nm,2,"2E5496"); P(sub,True,10,"C55A11")
     P("결과물:",True,9.5); [bullet(t) for t in res]
@@ -175,18 +185,21 @@ for a,b,c in [("v3","same-close 체결 누수","신호 t→진입 t+1 (next-bar)
             for rr in pp.runs: rr.font.size=Pt(9)
 
 H("6. 현재 위치 / 다음 (3트랙만 — 능동 개발 늘리면 산으로 감)",1)
-P("Track 1 — Core Forward",True,10,"2E5496")
-for t in ["순수 4-sleeve(V7) 12개월 paper forward: QQQ·60/40 대비 누적/MDD/회복기간/Sharpe·위기구간 방어.",
-          "절대 건드리지 말 것: LETF · throttle · core switching (전부 데이터로 기각됨)."]: bullet(t)
-P("Track 2 — Alpha Lab 관찰",True,10,"2E5496")
-for t in ["v1 = DEAD 기록 + 원형 forward 관찰(폐기 안 함) · v2 = event-driven momentum forward 로그 · 튜닝 금지 · 4~8주 후 후보 품질 평가."]: bullet(t)
+P("Track 1 — Core Forward + V8 shadow",True,10,"2E5496")
+for t in ["순수 4-sleeve(V7) 1.0x 12개월 paper forward: QQQ·60/40 대비 누적/MDD/회복/Sharpe·위기방어. 절대 건드리지 말 것: LETF·throttle·core switching(기각됨).",
+          "V8 Candidate 1.10~1.25x = 자본0 shadow forward로 'UNKNOWN 추적'(승격도 폐기도 아님·코어 1.0x와 분리·1.35x+ 폐기)."]: bullet(t)
+P("Track 2 — Alpha Lab + LLM catalyst",True,10,"2E5496")
+for t in ["v1 = DEAD 기록 + 원형 forward 관찰 · v2 = event-driven momentum forward 로그 · 튜닝 금지.",
+          "LLM catalyst 분류 1회 = v2 후보를 실제 뉴스로 A/B/C/D 재분류(proxy C급이 진짜 이유 없는지·매수결정권 0)·또 테마베타면 Alpha Lab 저우선 강등.",
+          "TSFM/Chronos = *나중* meta-labeler challenger(off-path·내일수익 예측 X·setup 메타라벨/tail-risk 후보·얕은 모델보다 OOS 비용후 좋아야 유지)."]: bullet(t)
 P("Track 3 — 데이터 판단",True,10,"2E5496")
 for t in ["Sharadar = 계속 daily backbone(universe/유동성/상폐/gap후보/earnings 맥락에도 재활용).",
           "분봉 = yfinance fast replay 가능하나 proof 약함(NOT_PROOF).",
           "유료 intraday = v2가 ① 무가치면 보류 ② 후보는 잡히나 체결/스프레드/기간 제약으로 판단불가면 1개월 파일럿(목적='데이터 병목 제거'지 '알파 구매' 아님)."]: bullet(t)
 P("금지(불변): v1 setup 튜닝 · Production 자본 투입 · LIVE. 전부 PAPER·자본권한 0.",True,9.5,"C00000")
 P("한 줄: PRAMANA는 '알파를 못 찾은 실패 프로젝트'가 아니라, 가짜 알파를 계속 제거한 끝에 V7 4-sleeve core + 별도 Alpha Lab(paper)으로 분리된 paper research OS다.",True,10,"C55A11")
-P("계보: v1~v3 단순팩터(SPY 못 이김·파이프 검증) → V4 베타북 → V5 레버(같이 낙폭) → V6 분산(보험료) → V7 4-sleeve(크래시 생존 선택) + Alpha Lab(급등주 paper 관찰).",False,9.5,it=True)
+P("계보: v1~v3 단순팩터(SPY 못 이김·파이프 검증) → V4 베타북 → V5 레버(같이 낙폭) → V6 분산(보험료) → V7 4-sleeve(크래시 생존 선택) + Alpha Lab(급등주 paper 관찰) → V8 Candidate(분산북 레버·UNKNOWN shadow).",False,9.5,it=True)
+P("정합(2026-06-12): 닷컴은 학습 노이즈로 제외 가능하나 *리스크 검증 제외 금지*(감 아니라 Macro Emergency Override로 시스템화) · V8은 확정도 폐기도 아닌 UNKNOWN shadow · V7은 닷컴 caveat(−39%) 추가 · 알파는 LLM catalyst 붙인 Alpha Lab에서 계속.",True,9.5,"C55A11")
 
 doc.save(OUT)
 print(f"\n✅ DOCX 생성: {OUT}")

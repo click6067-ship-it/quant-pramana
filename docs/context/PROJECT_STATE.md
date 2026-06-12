@@ -52,8 +52,8 @@
 
 ## 다음 행동
 **관찰 모드 (능동 개발 멈춤·GPT↔Claude 수렴·2026-06-12). 3트랙만:**
-1. **[Track A·코어] 순수 4-sleeve V7 forward 12개월** — forward_runner_v7 라이브(2026-06-11)·cron `0 6 * * 2-6`(용하 직접). QQQ·60/40 대비 누적/MDD/회복/Sharpe·위기방어. **절대 건드리지 말 것: LETF·throttle·core switching(전부 기각).**
-2. **[Track B·Alpha Lab] 무료 forward 로그만** — v1 DEAD 기록+원형 관찰·v2 event-driven 무료 forward 로그 축적(`alpha_lab_v2_scanner.py` 매일)·**튜닝 금지**·4~8주 후 후보 품질 평가.
+1. **[Track A·코어] 순수 4-sleeve V7 1.0x forward 12개월** + **V8 1.10~1.25x shadow forward(자본0·UNKNOWN 추적·코어와 분리)** — forward_runner_v7 라이브(2026-06-11)·cron `0 6 * * 2-6`. **절대 건드리지 말 것: LETF·throttle·core switching(기각)·1.35x+(폐기).**
+2. **[Track B·Alpha Lab] 무료 forward 로그 + LLM catalyst 분류 1회** — v1 DEAD 원형 관찰·v2 무료 forward 로그(`alpha_lab_v2_scanner.py`)·**LLM catalyst 분류 1회**(v2 후보 실제 뉴스로 A/B/C/D·매수권 0·또 테마베타면 저우선 강등)·**튜닝 금지**. TSFM/Chronos=나중 meta-labeler challenger.
 3. **[Track C·데이터] 유료 결제 보류** — v2가 *양의 신호* 줄 때만 1개월 파일럿(목적=병목 제거지 알파 구매 아님). Sharadar=daily backbone 유지(universe/유동성/상폐/gap후보/earnings 맥락).
 **금지(합의): universe 확장 수익성 replay(QA만·=mining surface)·v1 튜닝·V8 버전업·계좌 브레이크 등 능동 개발 신규·Production 자본·LIVE.**
 2. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지). + alpha_lab_v0 일별 적재 cron(forward 축적).
