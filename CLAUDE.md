@@ -10,6 +10,13 @@
 4. `docs/context/DECISION_LOG.md`
 (내 auto-memory도 이 상태를 갖지만, **docs/context = Claude·Codex 공유 정본**.)
 
+## 📍 NOW — 현재 상태 (매 세션·지시마다 먼저·압축·2026-06-12)
+- **최신 = V7 4-sleeve Paper Core Candidate**(Eq50/MF25/Gold15/Bond10·1.0x·forward 관찰·"코어 그만 만짐"). **V8(분산북 레버)=기각/UNKNOWN**(실 SPY/QQQ crash-pack 닷컴 −49%·2000 MF proxy 부재 caveat·1.10~1.25x는 자본0 shadow·1.35x+ 폐기).
+- **Alpha Lab**(자본0·paper): v1 단순 setup(ORB/VWAP/RVOL)=DEAD·forward 관찰 / v2 event-driven momentum forward 로그 / LLM catalyst 분류 1회 예정.
+- **v1~v3 = US 공개 일별 cross-sectional 알파 6 family 전멸(CLOSED·정직 negative)** + 재사용 검증 OS 완성. DR 통합본=`/mnt/c/Users/click/Desktop/DR`(00_README_INDEX 진입점).
+- **용하 방향(2026-06-12): 검증 인프라 충분/robust → *공격적 수익을 위한 검증된 알파 모델* 포커싱**(검증 치중 줄임). + **데이터축 전환 고민중**(KR small/mid · analyst revision · intraday 택1). 정직: 7세대 알파 0·"어디서 찾나"가 핵심·검증 줄인다고 알파 안 나옴·또 negative 위험.
+- 회피기동 = **Macro Emergency Override**(공격 파트만 차단+사람 게이트·코어 1.0x 면역·후행). 정본 = `PRAMANA_V4/PRAMANA_Lineage_Dossier.docx`(v1~V8·LOCK A~E).
+
 ## 영구 사실
 - 데이터: **Sharadar(유료)=backtest, yfinance(무료)=forward 데모/sanity만.**
 - PAPER only / NO LIVE · US only · core-satellite · next-bar · attribution 필수 · 결정적 risk veto 최종 · LLM/TSFM off-path · 사람=자본 게이트.
