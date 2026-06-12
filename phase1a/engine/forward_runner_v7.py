@@ -77,7 +77,7 @@ h2{{font-size:1.05em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:
 <div class=kpi><div class=l>Risk Monitor</div><div class="v" style="color:{modecolor}">{mode}</div></div></div>
 <div class=card><img src="data:image/png;base64,{ch}"></div>
 <h2>🚦 Risk Monitor (정보용·자본 자동전환 금지)</h2>
-<div class=card>현재 모드 <b style="color:{modecolor}">{mode}</b> (score {score}/3: SPY 200일선·20일 변동성·낙폭). <span style='color:#64748b'>이 신호는 *공격 파트*(LETF·급등주 Alpha Lab) throttle용이지 코어(4-sleeve)를 갈아타지 않는다(코어 대전환은 데이터로 휩쏘). 현재 공격 파트 없음→정보 표시만.</span></div>
+<div class=card>현재 모드 <b style="color:{modecolor}">{mode}</b> (score {score}/3: SPY 200일선·20일 변동성·낙폭). <span style='color:#64748b'>이 신호는 *공격 파트* 정보 표시용이지 코어(4-sleeve)를 갈아타지 않는다(코어 대전환=데이터로 휩쏘). <b>crash-pack 검증(2008/2000/2022/1987 proxy)서 brake-only throttle은 static 4-sleeve를 위험조정으로 못 이겨 risk-engine 승격 기각=대시보드 전용 확정</b>(Crashpack_Throttle_result.md). 코어는 순수 4-sleeve 유지.</span></div>
 <div class=warn>⚠️ paper·NO LIVE·<b>Paper Core Candidate</b>(Production 아님). V7 코어 = <b>구조적 분산</b>(알파 아님). QQQ bull엔 수익 ~절반 포기(= 크래시 생존 사는 보험료). DBMF/GLD 짧은 역사(2019~·2008 없음)·crash-pack 미실시.<br><b>🔒 Promotion Gates(실자본 전 전부):</b> crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트. <b>게이트 전 차단:</b> 실자본·1.25x·throttle risk-engine 편입.</div>
 <div style='color:#64748b;font-size:.78em;margin-top:8px'>cron: <code>0 6 * * 2-6 cd {ROOT}/phase1a && .venv/bin/python engine/forward_runner_v7.py</code> · 스펙 PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md</div>
 </div></body></html>"""

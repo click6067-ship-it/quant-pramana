@@ -3,7 +3,7 @@
 > 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
 
 ## 한 줄
-**최신 = V7 Paper Core Candidate = 4-sleeve** (GPT+Claude 수렴·Codex 검수 SHIP-as-paper/REVISE 반영·RESEARCH_ONLY/PRODUCTION_UNSAFE): Equity 50%(SPY/QQQ) + Managed-Futures 25%(DBMF) + Gold 15%(GLD) + Bonds 10%(IEF)·기본 1.0x. **회피기동 = 코어 대전환(QQQ↔4-sleeve 마켓타이밍·데이터로 짐)이 아니라 구조적 분산(4-sleeve)을 깔고 위험신호 뜨면 *공격 파트만* 끄기(throttle·NEEDS_EVIDENCE).** "Production"은 Promotion Gates(crash-pack+12mo forward+2-feed+attribution+사람 게이트) 통과 후만.
+**최신 = V7 Paper Core Candidate = 4-sleeve** (GPT+Claude 수렴·Codex 검수 SHIP-as-paper/REVISE 반영·RESEARCH_ONLY/PRODUCTION_UNSAFE): Equity 50%(SPY/QQQ) + Managed-Futures 25%(DBMF) + Gold 15%(GLD) + Bonds 10%(IEF)·기본 1.0x. **회피기동 = 코어 대전환(QQQ↔4-sleeve 마켓타이밍·데이터로 짐)이 아니라 구조적 분산(4-sleeve).** 위험신호 throttle도 **crash-pack 검증서 기각=대시보드 전용 확정**(brake-only throttle이 static 4-sleeve 못 이김). "Production"은 Promotion Gates(crash-pack+12mo forward+2-feed+attribution+사람 게이트) 통과 후만.
 계보: v4(Core Beta) → v5(레버드 베타·QQQ넘김 but 레버지 알파아님·6mo 같이 낙폭) → v6(+managed-futures 분산·낮은 레버) → **v7(4-sleeve 구조분산 코어 + throttle 공격파트만 + Alpha Lab paper + Risk Monitor)**. forward_runner_v7 가동(라이브 2026-06-11·4-sleeve 1.0x). 스펙 PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md. **부정됨(데이터): 코어 regime-switch(switch Sharpe 0.91<static 4-sleeve 1.07·2022 −24% vs −10% 휩쏘).**
 
 ## 지금까지 측정된 것 (Evidence)
@@ -44,10 +44,11 @@
 - **빌드:** `forward_runner_v7.py`(4-sleeve 1.0x·free yfinance SPY/QQQ/DBMF/GLD/IEF·fail-closed·라이브 인셉션 2026-06-11)+Risk Monitor 점수(200일선/20일vol/DD→Growth/Caution/Defense/Crash·**정보용·자본 자동전환 금지**)·`outputs/v7_forward_dashboard.html`.
 - **Codex 검수 VERDICT: SHIP-as-paper plan, REVISE label/gate**(STOP 아님). 6지적 전부 반영: ①"Production"→"Paper Core Candidate"+Promotion Gates ②4-sleeve 수치는 crash-pack 전 ③throttle=NEEDS_EVIDENCE ④paper notional 2~5% ⑤게이트 전 차단(실자본·1.25x·throttle 편입) ⑥승격 판정표 §5b.
 - **🔒 Promotion Gates(실자본 전 전부):** crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트.
+- **crash-pack throttle 실험 완료(2026-06-12·사전등록·Codex 적대검증)=throttle 기각:** 장기 proxy(VFINX·RYMFX·GC=F·VFITX)로 2008/2000/2022/1987 stress. brake-only binary throttle(위험신호→공격 LETF overlay만 cash·코어 불변)은 crash MDD/손실은 줄였으나 ① 회복 지연(200일선 아래 반등 놓침) ② thr Sharpe < static 4-sleeve 거의 전구간 → **사전등록 #2·#5 실패 → risk-engine 승격 기각=대시보드 전용 확정.** 더 큰 발견: **이 형태 LETF overlay를 코어 부착=위험조정 손해**(static 4-sleeve가 overlay 붙인 모든 북 이김; trend+LETF +0.15%/yr 노이즈와 같은 방향). Codex 교정 수용: "overlay 모든 형태 무용"은 과잉일반화→죽은 건 *brake-only binary + core-attach LETF*·static 4-sleeve 우월만 robust. 재실험(re-entry/hysteresis/재배분)=새 자유도=config-mining 금지. 리포트 `phase1a/reports/Crashpack_Throttle_result.md`·사전등록 `PRAMANA_V4/Crashpack_Throttle_Protocol_v0.1.md`·코드 `crash_pack_throttle.py`.
 
 ## 다음 행동
 1. **cron 등록 → forward_runner_v7 12개월 무인 가동.** 판정표(§5b) 통과해야 'win'(수익-only 합격 금지).
-2. **crash-pack(2000-02·2008·2020·2022·1987 gap):** ① 4-sleeve robustness ② throttle이 static을 *crash-pack서* 이기나 → 이기면 승격, 못 이기면 대시보드 전용. DBMF/GLD/IEF 짧은 역사 → 장기 proxy 필요.
+2. ~~crash-pack throttle~~ **완료=기각(대시보드 전용).** 남은 crash-pack TODO: 4-sleeve *코어 자체*의 2008/2000 robustness(throttle 아닌 순수 분산북)·실 LETF 비용 정밀화는 우선순위 낮음.
 3. **reconciliation 2nd 무료소스 wiring**(stooq 404 → 대체) — 판정표 reconcile 항목 UNKNOWN 해소.
 4. (Research·자본권한 0) Alpha Lab(급등주/VWAP/ORB·intraday infra 필요)·brake-only smoothing·event/revision 팩터. *알파는 베타를 못 넘는 패턴 재확인 위.*
 5. **behavior 규율(Codex kill): 12mo 전 목표 변경·−30%서 수동 override 금지.**
