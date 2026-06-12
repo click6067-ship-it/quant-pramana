@@ -1,4 +1,6 @@
-# Alpha Lab v1 — 단일 setup paper sim 결과 → **DEAD (폐기)**
+# Alpha Lab v1 — 단일 setup paper sim 결과 → **DEAD (backtest) · forward 관찰 보류**
+
+> **용하(2026-06-12): "실패는 기록·폐기는 마·좀 더 지켜보자."** → backtest DEAD는 기록하되 *완전폐기/종결 아님*. v1 setup을 **원형 그대로(튜닝 없이)** `alpha_lab_v2_scanner.py`가 매일 forward 로그로 관찰(진짜 죽나 더 본다). 튜닝(stop/target/RVOL/ORB)은 여전히 금지.
 
 > 사전등록: `PRAMANA_V4/AlphaLab_v1_Protocol.md` · 코드: `phase1a/engine/alpha_lab_v1_sim.py`
 > setup: Gap-up(+1%) + RVOL≥1.5(진입시점 누적) + ORB15 돌파 + VWAP 위 · 진입=next-bar 시가 · 청산 +5%target/VWAP·ORB stop/장마감 · 비용 20bp.
@@ -45,7 +47,7 @@
 **가장 먼저 볼 1개:** PIT 유니버스 replay + entry-time-only RVOL + 현실적 execution cost. 그 전엔 해석 가치 낮음.
 
 ## 결론 / 다음
-- **이 setup = DEAD.** 폐기. **튜닝 금지**(stop/target/RVOL/ORB/SPY gate 만지면 실패한 사전등록 테스트를 mined strategy로 변환).
+- **이 setup = DEAD 기록 (backtest).** 단 **완전폐기 아님 → forward 관찰 보류**(용하: 좀 더 지켜보자). `alpha_lab_v2_scanner.py`가 원형 그대로 매일 로그. **튜닝 금지**(stop/target/RVOL/ORB/SPY gate 만지면 실패한 사전등록 테스트를 mined strategy로 변환).
 - **v0 데이터 infra(setup 검출)는 유지** — 죽은 건 *이 단일 setup의 수익성*이지 인프라 아님.
 - **broader phenomenon(급등주 intraday momentum)** = `NEEDS_EVIDENCE`. 진짜 검증 = ① PIT 유니버스(그날 실제 gap-up·미래정보 없이) ② entry-time-only RVOL(고침) ③ quote-level execution(bid-ask) — **전부 1단계 유료 intraday(Polygon/Alpaca/QuantRocket) 필요.** 그 인프라 전엔 yfinance로 결론 못 냄.
 - 정직: Alpha Lab 첫 전략이 죽음 = 또 하나의 negative. 시스템이 RVOL 누수까지 잡아 가짜 알파를 안 만듦(자산).
