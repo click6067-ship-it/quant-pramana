@@ -8,6 +8,7 @@ import os, sys, json, datetime as dt, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import io, base64
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kfont import set_korean_font; set_korean_font()
+import a2_attack_ledger as AL, a2_moonshot_ledger as ML   # Phase B #4: forward sleeve 회계
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); REPO=os.path.dirname(ROOT)
 A2=os.path.join(ROOT,"outputs","a2_live"); POS=os.path.join(A2,"positions"); os.makedirs(POS,exist_ok=True)
 PRICES=os.path.join(A2,"prices.csv"); STATE=os.path.join(A2,"state.json"); LOG=os.path.join(A2,"nav_log.csv")
@@ -134,6 +135,13 @@ def main():
         json.dump(vj,open(VJ,"w"),indent=2)
     elif live_excess>vj["hwm"]: vj["hwm"]=live_excess; json.dump(vj,open(VJ,"w"),indent=2)
     hard=vj["hard"]*CAP; rel=vj["reload"]*CAP; vlt_w=vj["hard"]+vj["reload"]; state["excess_hwm"]=vj["hwm"]   # forward live Vault(백테스트 a2t_v는 OFF)
+    # ★ Phase B #4: forward NAV sleeve 회계 (QQQ35+TQQQ35+Attack10+Moonshot10+Cash10·positions 차도 정확·빈슬롯=cash)
+    def s_ret(t):
+        sl=px[t][px.index>=incep]; return float(sl.iloc[-1]/sl.iloc[0]-1) if len(sl)>1 else 0.0
+    fwd_qqq=CAP*0.35*(1+s_ret("QQQ")); fwd_tqqq=CAP*0.35*(1+s_ret("TQQQ"))
+    _cur=lambda t: (float(px[t].dropna().iloc[-1]) if (t in px.columns and len(px[t].dropna())>0) else float("nan"))
+    ae=AL.evaluate(attack,_cur,CAP*0.10); me=ML.evaluate(moon,_cur,CAP*0.10); fwd_cash=CAP*0.10
+    fwd_nav=fwd_qqq+fwd_tqqq+ae["value"]+me["value"]+fwd_cash; fwd_ret=fwd_nav/CAP-1
     cur_lead=int(lead.iloc[-1]); cur_decay=bool(decay.iloc[-1]); cur_mode=mds[-1] if dyn else "base"
     leadlbl=("RED" if cur_lead>ymax else "YELLOW" if cur_lead>gmax else "GREEN")
     qqq_above_ma20=bool(px["QQQ"].iloc[-1]>px["QQQ"].rolling(20).mean().iloc[-1])
@@ -176,7 +184,7 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 .warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:11px 14px;color:#fde68a;font-size:.8em}}</style></head><body>
 <div class=wrap><h1>🟣 PRAMANA A2 v3 — Convex Raider<span class="badge bm">HYBRID</span><span class="badge bp">PAPER</span><span class="badge bw">가상 ₩1억</span></h1>
 <p style='color:#94a3b8'>업데이트 {today}·데이터={DATASRC}·discretionary-systematic hybrid·동적 {'ON' if dyn else 'OFF'}·<b style="color:{mc}">{cur_mode}</b>·beta ≈ {beta_expo:.2f}x. 검증된 알파 아님.<br>
-<b style="color:#fbbf24">⚠️ 아래 큰 수치 = 백테스트(2016~·강세장 편향·닷컴/2008 없음·next-bar 적용).</b> 라이브 paper(인셉션 {state['inception']}~·{live_days}거래일): <b class=cyan>A2-T {live_a2t*100:+.1f}%</b> / A2-Q {live_a2q*100:+.1f}% / QQQ {live_qqq*100:+.1f}%.</p>
+<b style="color:#fbbf24">⚠️ 아래 큰 수치 = 백테스트(2016~·강세장 편향·닷컴/2008 없음·next-bar 적용).</b> 라이브 paper(인셉션 {state['inception']}~·{live_days}거래일·sleeve 회계 #4): <b class=cyan>A2-T NAV ₩{fwd_nav/1e8:.3f}억({fwd_ret*100:+.1f}%)</b> [QQQ35+TQQQ35+Attack {ae['n']}건+Moon {me['n']}건+Cash10] · QQQ {live_qqq*100:+.1f}%.</p>
 <div class=kpis>
 <div class=kpi><div class=l>A2-T (TQQQ)</div><div class="v cyan">{a2t_r*100:+.0f}%</div></div>
 <div class=kpi><div class=l>A2-Q (no TQQQ)</div><div class="v grn">{a2q_r*100:+.0f}%</div></div>
