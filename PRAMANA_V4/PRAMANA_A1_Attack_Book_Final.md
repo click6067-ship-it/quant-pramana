@@ -45,7 +45,7 @@
 ## 7. 구성요소 검증 상태 (정직)
 | 요소 | 검증 상태 |
 |---|---|
-| Base Core (V7 4-sleeve) | **검증됨**(생존코어·Sharpe 1.21·MDD −18%·단 닷컴 −39%) |
+| Base Core (V7 4-sleeve) | **backtest 생존코어 후보**(Sharpe 1.21·MDD −18%·단 닷컴 proxy −39% · paper · production-safe 아님 · promotion gate 전) |
 | Attack (ORB/VWAP/RVOL 단독) | **DEAD**(v1) → *센서로만 강등* |
 | Catalyst (POS 8-K 사기) | **OOS FAIL**(QL-1B) → 약함 |
 | Negative Filter (나쁜 공시 회피) | **일관 신호**(QL-1B·유일하게 살아남음) |

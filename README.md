@@ -1,14 +1,14 @@
 # PRAMANA — Solo + AI Systematic Equity Validation OS
 
 > A solo retail experiment: use **Claude Code + Codex** (adversarial cross-review) to hunt for tradable alpha in US equities/ETFs — and **honestly kill every strategy that doesn't survive validation.**
-> **8 generations. All of them lost to just buy-and-holding TQQQ.** This repo is the full, transparent record — including the negative results.
+> **8 generations — all beaten by buy-and-holding TQQQ on *raw return*, and none beat SPY/QQQ on *risk-adjusted alpha* either.** The full, transparent record — including the negative results. (TQQQ is a raw-return foil, not the risk-adjusted benchmark.)
 
 > ⚠️ **Disclaimer:** PAPER ONLY · NO LIVE CAPITAL · virtual ₩100M. This is **not** verified alpha, **not** investment advice, **not** a product. It's an educational/research record of *negative results* + a reusable validation framework. Backtests are regime-biased (2016–2026 bull, no dot-com/2008). Do your own research.
 
 ## TL;DR
 - **8 generations of strategies, every one honestly rejected** under next-bar · OOS · after-cost · adversarial review.
 - **The moment a signal becomes verifiable, it's beta/factor — not alpha** (information theory, in practice).
-- **Everything lost to simply DCA-ing TQQQ** in this bull regime.
+- **Lost to DCA-ing TQQQ on raw return** (bull regime) — and **no risk-adjusted alpha vs SPY/QQQ**. The two benchmarks are kept separate.
 - **Dynamic market-timing = REJECTED** — ablation showed −113%p vs static (lagging-signal wall; 4-for-4 losses across regime-switch / throttle / derisk / laddered overlay).
 - **What survived:** a survival core (4-sleeve · −18% MDD vs TQQQ −80%), a *"bad-filing avoidance"* filter (the only consistent directional signal in 8 gens), and immunity to fake alpha.
 
@@ -43,7 +43,7 @@
 - **PIT** universe (survivorship-free · self-built S&P 500, corr **0.998** vs real SPY)
 - pre-registered kill conditions · frozen-snapshot reproducibility
 
-## Live paper books (cron · daily, fail-closed)
+## Paper forward books (cron-wired · live-ready, trigger unverified · fail-closed)
 - **V7** — survival core (4-sleeve diversified · SPY/QQQ/DBMF/GLD/IEF)
 - **A1** — catalyst attack (no leverage · Core + Attack + Moonshot + Cash)
 - **A2** — Convex Raider (QQQ/TQQQ + Attack/Moonshot + Profit Vault · **dynamic OFF** after REJECT)
