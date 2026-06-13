@@ -29,7 +29,8 @@ sleeve_ranges:
   moonshot: [0.0, 0.15]
   vault: [0.05, 0.30]
 
-daily_max_shift_pp: 0.10
+daily_max_shift_pp: 0.05       # 1회·하루 최대 5%p (용하 지시)
+weekly_max_shift_pp: 0.10      # 주간 최대 10%p
 leadership: {green_max: 10, yellow_max: 20}
 tqqq_decay: {qqq_20d_range: 0.03, vol_threshold: 0.25}
 beta_governor_warn: 1.6

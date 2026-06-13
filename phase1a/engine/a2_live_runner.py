@@ -78,13 +78,25 @@ def main():
     mds=[mode_of(lead.iloc[i],bool(decay.iloc[i])) for i in range(len(px))]
     dyn=CFG.get("dynamic_mode_enabled",True); shift=CFG["daily_max_shift_pp"]; qa=qr.values; ta=tr.values
     # ── 듀얼 동적 allocator ──
-    def run_book(aw):   # ★ next-bar(Codex #1): 전일(i-1) 신호로 정한 비중을 당일(i) 수익에 적용 = look-ahead 차단(LOCK B4: 신호 t → 진입 t+1)
-        cur=np.array([aw["base"]["qqq"],aw["base"].get("tqqq",0.0)]); nav=1.0; out=[]
+    qqq_cum_s=(1+qr).cumprod()   # QQQ 벤치 누적(excess HWM 계산용)
+    def run_book(aw, vault_on=False):   # next-bar(shift1) + Vault 실제 ledger(노출 차감·Hard70/Reload30·주1회·월10%·Codex #4)
+        qw=aw["base"]["qqq"]; tw=aw["base"].get("tqqq",0.0); vlt=CFG["vault"]["base_pct"]; hard=0.0; rel=0.0
+        nav=1.0; out=[]; hwm=0.0; last_v=-99; m_moved=0.0; cur_mo=None
         for i in range(len(qa)):
-            m=(mds[i-1] if (dyn and i>0) else "base"); mw=aw.get(m,aw["base"]); tw=np.array([mw["qqq"],mw.get("tqqq",0.0)])
-            cur=cur+np.clip(tw-cur,-shift,shift); nav*=(1+cur[0]*qa[i]+cur[1]*ta[i]); out.append(nav)
-        return pd.Series(out,index=px.index), cur
-    a2t,a2t_cur=run_book(CFG["allocation_a2t"]); a2q,a2q_cur=run_book(CFG["allocation_a2q"])
+            mo=px.index[i].to_period("M")
+            if mo!=cur_mo: cur_mo=mo; m_moved=0.0   # 월 리셋(월10% 제한)
+            m=(mds[i-1] if (dyn and i>0) else "base"); mw=aw.get(m,aw["base"])   # 전일 신호(look-ahead 차단)
+            qw+=float(np.clip(mw["qqq"]-qw,-shift,shift)); tw+=float(np.clip(mw.get("tqqq",0.0)-tw,-shift,shift))
+            nav*=(1+qw*qa[i]+tw*ta[i]); out.append(nav)   # Vault·cash = 0 수익(노출 밖)
+            if vault_on:   # Vault In: A2 excess HWM 갱신 & 절대 NAV 수익 & 주1회 & 월10%
+                excess=(nav-1)-(float(qqq_cum_s.iloc[i])-1)
+                if excess>hwm and excess>=0.04 and nav>1.0 and (i-last_v>=5) and m_moved<0.10:
+                    rate=0.50 if excess>=0.12 else 0.25; mv=min((excess-hwm)*rate,0.10-m_moved)
+                    tot=qw+tw
+                    if tot>1e-9: qw-=mv*qw/tot; tw-=mv*tw/tot   # QQQ/TQQQ 노출에서 Vault로 차감(실제 ledger)
+                    vlt+=mv; hard+=mv*0.70; rel+=mv*0.30; hwm=excess; last_v=i; m_moved+=mv
+        return pd.Series(out,index=px.index),(qw,tw),{"vlt":vlt,"hard":hard,"rel":rel,"hwm":hwm}
+    a2t,a2t_cur,a2t_v=run_book(CFG["allocation_a2t"],True); a2q,a2q_cur,a2q_v=run_book(CFG["allocation_a2q"],True)
     nb=CFG["naive_benchmark"]; naive=(1+nb["qqq"]*qr+nb["tqqq"]*tr).cumprod()
     def to_won(s):   # ★ Codex #3: 첫 거래일 종가 기준(look-ahead 없음). 차트 시작=₩1억. (월평균 정규화는 미래 월중가 참조라 폐기)
         s=s.dropna(); return CAP*s/s.iloc[0]
@@ -103,11 +115,7 @@ def main():
     def live_r(s):   # ★ Codex #2: live ledger = inception 이후만(백테스트 2016~와 분리)
         sl=s[s.index>=incep]; return float(sl.iloc[-1]/sl.iloc[0]-1) if len(sl)>1 else 0.0
     live_a2t=live_r(a2t); live_a2q=live_r(a2q); live_qqq=live_r(px["QQQ"]); live_days=int((px.index>=incep).sum())
-    hwm=state.get("excess_hwm",0.0); hard=state.get("hard_vault",0.0); rel=state.get("reload_vault",0.0)
-    if excess>hwm and excess>=0.04:
-        rate=0.50 if excess>=0.12 else 0.25; mv=(excess-hwm)*CAP*rate; hard+=mv*CFG["vault"]["hard_ratio"]; rel+=mv*CFG["vault"]["reload_ratio"]
-    if excess>hwm: state["excess_hwm"]=excess
-    state["hard_vault"]=hard; state["reload_vault"]=rel
+    hard=a2t_v["hard"]*CAP; rel=a2t_v["rel"]*CAP; vlt_w=a2t_v["vlt"]; state["excess_hwm"]=a2t_v["hwm"]   # run_book ledger 결과(노출에서 실제 차감됨)
     cur_lead=int(lead.iloc[-1]); cur_decay=bool(decay.iloc[-1]); cur_mode=mds[-1] if dyn else "base"
     leadlbl=("RED" if cur_lead>ymax else "YELLOW" if cur_lead>gmax else "GREEN")
     qqq_above_ma20=bool(px["QQQ"].iloc[-1]>px["QQQ"].rolling(20).mean().iloc[-1])
@@ -165,7 +173,7 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 <h2>🚦 Risk Dashboard <span style="color:#64748b;font-size:.7em">(정보용·신규/증액 게이트·LLM Council=2단계)</span></h2>
 <div class=card><b>모드:</b> <span style="color:{mc};font-weight:700">{cur_mode}</span> (A2-T: QQQ {a2t_cur[0]*100:.0f}%/TQQQ {a2t_cur[1]*100:.0f}%)·<b>Leadership:</b> <span style="color:{rc};font-weight:700">{leadlbl}</span> ({cur_lead}/30)·<b>TQQQ Decay:</b> <span style="color:{'#f87171' if cur_decay else '#34d399'}">{'ZONE' if cur_decay else 'OK'}</span>·<b>Beta:</b> {beta_expo:.2f}x·<b>QQQ&gt;20일선:</b> {'예' if qqq_above_ma20 else '아니오'}</div>
 <h2>💰 Profit Vault <span style="color:#64748b;font-size:.7em">(alpha-timing·표시용)</span></h2>
-<div class=card><b style="color:#fbbf24">⚠️ 현재 표시용(Codex #4): NAV/노출에서 실제 차감 안 됨·주1회/월10% 제한 미구현 → "Vaulted Profit" 성공조건 아직 무의미.</b><br>excess HWM <b>{state['excess_hwm']*100:.1f}%p</b> · Hard {won(hard)} / Reload {won(rel)}<br>
+<div class=card>✅ <b style="color:#34d399">실제 ledger(Codex #4 반영)</b>: excess HWM 갱신 시 QQQ/TQQQ 노출에서 차감·Hard70/Reload30·주1회·월10%.<br>현재 Vault 비중 <b>{vlt_w*100:.1f}%</b>(노출 밖 잠김) · excess HWM <b>{a2t_v['hwm']*100:.1f}%p</b> · Hard {won(hard)} / Reload {won(rel)} · Hard 재투입 금지<br>
 <b>Vault IN 신호:</b> {' · '.join(vin) if vin else '없음(아직 안 뺌)'}<br>
 <b>Vault OUT(Reload) 가능:</b> <span style="color:{'#34d399' if vout_ok else '#94a3b8'}">{'예 (Leadership GREEN+Decay OK+QQQ&gt;20일선)' if vout_ok else '아니오 (위험 신호 잔존)'}</span> · Hard Vault는 영구 재투입 금지</div>
 <h2>⚔️ Attack / 🚀 Moonshot <span style="color:#64748b;font-size:.7em">(2단계 연료·현재 cash)</span></h2>
