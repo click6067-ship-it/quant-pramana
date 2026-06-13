@@ -64,7 +64,7 @@ th{{background:#1e293b;color:#94a3b8;text-align:left;padding:9px 11px;font-weigh
 <div class=card><h3>재사용 검증 OS</h3><p>PIT 벤치(corr 0.998) · trial registry · DSR/PBO · data gate</p></div>
 </div>
 
-<a class=live href="v7_forward_dashboard.html">▶ V7 Forward 라이브 대시보드 (매일 갱신)</a>
+<a class=live href="v7_forward_dashboard.html">▶ V7 paper forward 대시보드 (live-ready · cron 미검증 · 수동/예약 갱신)</a>
 
 <div class=foot>PRAMANA · solo+AI equity validation OS · PAPER only, no live capital · 정본: PRAMANA_Final_Report_for_Submission.docx · PRAMANA_A1_Attack_Book_Final.md</div>
 </div></body></html>"""

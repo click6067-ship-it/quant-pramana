@@ -60,6 +60,10 @@ def main():
     spy=CAP*(1+ret["SPY"].reindex(days).fillna(0)).cumprod(); qqq=CAP*(1+ret["QQQ"].reindex(days).fillna(0)).cumprod()
     def mdd(s): return (s/s.cummax()-1).min()
     tot=nav.iloc[-1]/nav.iloc[0]-1; qup=qqq.iloc[-1]/qqq.iloc[0]-1; r=nav.pct_change().dropna(); sh=r.mean()/r.std()*np.sqrt(252) if r.std()>0 else float('nan')
+    # ── 정직성(Codex REVISE): live forward(인셉션 이후)와 600d historical(백테스트 맥락) 분리 ──
+    incep=pd.Timestamp(state["inception_live"]); live_idx=[d for d in nav.index if d>=incep]
+    live_ret=(float(nav.loc[live_idx[-1]]/nav.loc[live_idx[0]])-1.0) if len(live_idx)>1 else 0.0
+    live_days=len(live_idx); hist_x=float(nav.iloc[-1]/CAP)
     plt.style.use("dark_background"); plt.rcParams.update({"axes.facecolor":"#0d1326","figure.facecolor":"#0d1326","grid.alpha":.15,"font.size":9})
     f=plt.figure(figsize=(11,3.6))
     for k,s,c in [("V7 4-sleeve",nav,"#22d3ee"),("QQQ",qqq,"#a78bfa"),("SPY",spy,"#f59e0b")]:
@@ -77,18 +81,18 @@ body{{background:#070b16;color:#e5e7eb;font-family:'Segoe UI',system-ui,sans-ser
 .card{{background:#0d1326;border:1px solid #1e293b;border-radius:14px;padding:15px;margin:10px 0}} img{{width:100%;border-radius:8px}}
 h2{{font-size:1.05em;border-left:4px solid #22d3ee;padding-left:10px;margin-top:18px}} .pos{{color:#34d399}} .neg{{color:#f87171}}
 .warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:12px 15px;color:#fde68a;font-size:.85em}}</style></head><body>
-<div class=wrap><h1>🟢 PRAMANA V7 — Paper Core Candidate: 4-sleeve<span class=badge>AUTO·일1회</span><span class="badge b2">PAPER</span></h1>
+<div class=wrap><h1>📝 PRAMANA V7 — Paper Core Candidate: 4-sleeve<span class=badge>paper forward</span><span class="badge b2">live-ready · cron 미검증</span></h1>
 <p style='color:#94a3b8'>업데이트 {today}·라이브 인셉션 {state['inception_live']}·<b>Equity 50%(SPY/QQQ)+MF 25%(DBMF)+Gold 15%(GLD)+Bonds 10%(IEF)·{LEV:.2f}x</b>. 회피기동=구조적 분산(코어 전환 없음). QQQ=benchmark.</p>
-<div class=kpis><div class=kpi><div class=l>누적</div><div class="v {'pos' if tot>=0 else 'neg'}">{tot*100:+.1f}%</div></div>
-<div class=kpi><div class=l>QQQ</div><div class="v">{qup*100:+.1f}%</div></div>
-<div class=kpi><div class=l>MDD</div><div class="v neg">{mdd(nav)*100:.0f}%</div></div>
-<div class=kpi><div class=l>Sharpe</div><div class="v">{sh:.2f}</div></div>
+<div class=kpis><div class=kpi><div class=l>Live forward (인셉션~·{live_days}거래일)</div><div class="v {'pos' if live_ret>=0 else 'neg'}">{live_ret*100:+.2f}%</div></div>
+<div class=kpi><div class=l>Historical × (600d 백테스트 맥락·실적 아님)</div><div class="v">{hist_x:.2f}×</div></div>
+<div class=kpi><div class=l>MDD (hist)</div><div class="v neg">{mdd(nav)*100:.0f}%</div></div>
+<div class=kpi><div class=l>Sharpe (hist)</div><div class="v">{sh:.2f}</div></div>
 <div class=kpi><div class=l>Risk Monitor</div><div class="v" style="color:{modecolor}">{mode}</div></div></div>
 <div class=card><img src="data:image/png;base64,{ch}"></div>
 <h2>🚦 Risk Monitor (정보용·자본 자동전환 금지)</h2>
 <div class=card>현재 모드 <b style="color:{modecolor}">{mode}</b> (score {score}/3: SPY 200일선·20일 변동성·낙폭). <span style='color:#64748b'>이 신호는 *공격 파트* 정보 표시용이지 코어(4-sleeve)를 갈아타지 않는다(코어 대전환=데이터로 휩쏘). <b>crash-pack 검증(2008/2000/2022/1987 proxy)서 brake-only throttle은 static 4-sleeve를 위험조정으로 못 이겨 risk-engine 승격 기각=대시보드 전용 확정</b>(Crashpack_Throttle_result.md). 코어는 순수 4-sleeve 유지.</span></div>
-<div class=warn>⚠️ paper·NO LIVE·<b>Paper Core Candidate</b>(Production 아님). V7 코어 = <b>구조적 분산</b>(알파 아님). QQQ bull엔 수익 ~절반 포기(= 크래시 생존 사는 보험료). DBMF/GLD 짧은 역사(2019~·2008 없음)·crash-pack 미실시.<br><b>🔒 Promotion Gates(실자본 전 전부):</b> crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트. <b>게이트 전 차단:</b> 실자본·1.25x·throttle risk-engine 편입.</div>
-<div style='color:#64748b;font-size:.78em;margin-top:8px'>cron: <code>0 6 * * 2-6 cd {ROOT}/phase1a && .venv/bin/python engine/forward_runner_v7.py</code> · 스펙 PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md</div>
+<div class=warn>⚠️ paper·NO LIVE·<b>Paper Core Candidate</b>(Production 아님). V7 코어 = <b>구조적 분산</b>(알파 아님). QQQ bull엔 수익 ~절반 포기(= 크래시 생존 사는 보험료). DBMF/GLD 짧은 역사(2019~·2008 없음)·crash-pack 미실시.<br><b>🔒 Promotion Gates(실자본 전 전부):</b> crash-pack pass + 12mo forward 판정표 + 2-feed reconciliation + attribution + 사람 자본 게이트. <b>게이트 전 차단:</b> 실자본·1.25x·throttle risk-engine 편입.<br><b>📋 상태 라벨(정직성):</b> Backtest 600d(× 곡선·실적 아님) / Forward paper {live_days}거래일(자본 0) / Live capital 0. <b>scheduled cron 트리거: 미검증</b>(cron.log 0건·지금까지 수동 실행). reconciliation: UNKNOWN(단일 무료 feed·promotion claim 아님).</div>
+<div style='color:#64748b;font-size:.78em;margin-top:8px'>cron: <code>0 6 * * 2-6 cd {ROOT} && .venv/bin/python engine/forward_runner_v7.py</code> (등록됨·실제 트리거 미검증) · 스펙 PRAMANA_V4/PRAMANA_V7_Plan_v0.2.md</div>
 </div></body></html>"""
     open(DASH,"w").write(html)
     print(f"✅ v7 forward {today}·4-sleeve 누적{tot*100:+.1f}%(QQQ{qup*100:+.1f}%)·MDD{mdd(nav)*100:.0f}%·Sharpe{sh:.2f}·Risk Monitor={mode}({score}/3)·라이브{state['inception_live']}")
