@@ -1,2 +1,0 @@
-signal,verdict,ic,icir,rec_icir,net_cw_%,net2_cw_%,rec_net_%,to_%,kills
-EVENT_composite,FAIL → US event 신호군 종료,0.005,0.069,0.219,-0.9,-1.17,0.49,265.0,net active vs CW≤0;2x cost net≤0;long-only vs CW 음수;sector중립화후 net≤0

@@ -39,3 +39,7 @@ outputs/a1_live/
 # A2 라이브 런타임(동일 · 대시보드 outputs/a2_live_dashboard.html은 직속 추적)
 outputs/a2_live/
 **/outputs/a2_live/
+
+# ── data/paper artifacts (Sharadar·Yahoo 파생 / paper NAV·ledger — license/ToS surface, 로컬에서 재생성) ──
+phase1a/outputs/**/*.csv
+phase1a/outputs/**/*.json

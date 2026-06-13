@@ -56,9 +56,10 @@ docs/context/     shared memory (Claude + Codex read the same files)
 config/           a2_convex_raider.yaml · revived-components
 ```
 
-## Data
-- **Sharadar (paid · point-in-time · survivorship-free)** = backtest primary. Raw bulk data is **gitignored / not redistributed** (license); only analysis *results* are public.
-- yfinance (free) = forward/sanity · EDGAR 8-K (free) = catalyst/filing gate
+## Data & disclosure boundary
+- **Sharadar (paid · PIT · survivorship-free)** = backtest primary · yfinance (free) = forward/sanity · EDGAR 8-K (free) = filing gate.
+- **Public (this repo):** code · validation protocols · pre-registered kill criteria · summary results (`*/reports/*.md`) · non-sensitive dashboards (`*.html`).
+- **Not redistributed (gitignored):** all data — Sharadar/Yahoo-derived prices · market caps · PIT membership · paper NAV/ledger (`phase1a/outputs/**/*.{csv,json}`). License/ToS; regenerate locally with your own subscription.
 
 ## Honest limitations
 - Backtests are **2016–2026 bull-biased** — no dot-com / 2008 (the ETFs are too young). Drawdowns are understated.
