@@ -1,0 +1,42 @@
+# PRAMANA A2 — 폐기 전략 부활 부품 판정 (Phase B·Graveyard Revival)
+# 원칙: 예전 역할 그대로 부활 ❌ / 역할 변경으로만 ⭕ (Graveyard_Revival_Board.md 기반)
+# 카테고리: REVIVE_AS_FILTER · REVIVE_AS_CONFIRMATION · REVIVE_AS_RADAR · REVIVE_AS_HARD_VETO · REVIVE_AS_DASHBOARD · PAPER_ONLY · REJECT_FOREVER
+
+revived:
+  quality_broad:
+    verdict: REVIVE_AS_FILTER
+    role: "Attack/Moonshot 종목 품질 하한선·지뢰 제거"
+    evidence: "IC-IR 0.22→0.046 decay·long-only vs CW −1.15% → standalone 알파 X·필터로만"
+  momentum_broad:
+    verdict: REVIVE_AS_CONFIRMATION
+    role: "Attack 단기 strength confirmation"
+    evidence: "net +7.6%지만 IC-IR 0.10·turnover 301% → 단독 매수 X·확인용"
+  event_positive_8k:
+    verdict: REVIVE_AS_RADAR
+    role: "Attack catalyst radar(단독 매수 금지)"
+    evidence: "POS OOS FAIL → 트리거 후보 generator로만"
+  orb_vwap_rvol:
+    verdict: REVIVE_AS_CONFIRMATION
+    role: "catalyst 확인 센서(매수 신호 ❌·방아쇠)"
+    evidence: "Alpha Lab v1 DEAD(중앙 −0.41%·false 56%) → confirmation으로 강등"
+  neg_filing:
+    verdict: REVIVE_AS_HARD_VETO
+    role: "Moonshot 매수 금지 / Attack size 0.25~0.5R·overnight 금지"
+    evidence: "8세대 유일 일관 신호(−0.75%·승률 42%) → 지뢰 제거"
+  trend_filter:
+    verdict: REVIVE_AS_DASHBOARD
+    role: "Risk Dashboard 입력(TQQQ gate·risk state)"
+    evidence: "마켓타이밍 4전4패 → 코어 전환 ❌·dashboard 입력으로만"
+  delayed_recognition:
+    verdict: PAPER_ONLY
+    role: "Attack 'B' 후보(해석 지연 게임)"
+    evidence: "미검증 → forward paper 관찰부터"
+
+reject_forever:
+  - vrp_short_vol          # worst month −62%·maxDD −92% tail-deadly
+  - v1_lookahead_contaminated  # RVOL 누수 오염 원수치
+  - pure_reversal          # net −4%·turnover 3660%
+  - raw_mvo                # DR-4 reject·1/N 못 이김
+
+rejected_this_impl:        # 영구 사망 아님·"이 구현/2016~ benign/무비용" 한정(Codex #5)
+  - dynamic_allocator_v3   # ablation 동적기여 −113%p < fixed 35/35. 고정 + Attack/Moonshot가 정답.
