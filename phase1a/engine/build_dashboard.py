@@ -43,7 +43,7 @@ th{{background:#1e293b;color:#94a3b8;text-align:left;padding:9px 11px;font-weigh
 <header><div class=wrap><h1>PRAMANA <small>Solo + AI 체계적 주식 검증 운영체계 · PAPER only / NO LIVE · 2026-06-13</small></h1>
 <div style="margin-top:10px"><span class=tag>가상자본 ₩100M</span><span class=tag>US equity/ETF</span><span class=tag>사전등록·OOS·적대검수</span><span class=tag>자본권한 0</span></div></div></header>
 <div class=wrap>
-<div class=meta>📌 <b>메타 결론</b> — 솔로가 <b>유료 PIT(Sharadar)+무료 보조(EDGAR·yfinance)</b> 데이터로 SPY/QQQ를 <b>위험조정 초과하는 '사는' 알파</b>는 8세대 검증으로 <b>이 데이터·기간(2016–2026)에서 미발견</b>(범위 조건부 robust negative · efficient market·SPIVA 79%·GKX와 정합). <b>건진 것: V7 backtest 생존코어 후보 · 나쁜-공시 회피 필터 · 가짜-알파 면역.</b></div>
+<div class=meta>📌 <b>메타 결론</b> — 솔로가 <b>유료 PIT(Sharadar)+무료 보조(EDGAR·yfinance)</b> 데이터로 SPY/QQQ를 <b>위험조정 초과하는 '사는' 알파</b>는 8세대 검증으로 <b>이 데이터·기간(2016–2026)에서 미발견</b>(범위 조건부 negative · efficient market · 최근 SPIVA scorecards · GKX와 정합). <b>건진 것: V7 backtest 생존코어 후보 · 나쁜-공시 회피 필터 · 가짜-알파 면역.</b></div>
 
 <h2>① 실험 연대기 — 8세대 (무엇이 죽었나)</h2>
 <table><tr><th>세대</th><th>접근</th><th>판정</th><th>근거</th></tr>{rows}</table>

@@ -70,7 +70,7 @@ Builds a venv, installs deps, and runs the pipeline end-to-end on **free yfinanc
 ## Honest limitations
 - Backtests are **2016–2026 bull-biased** — no dot-com / 2008 (the ETFs are too young). Drawdowns are understated.
 - Paper only · not live · in-sample salvage.
-- **"No easy alpha for a solo, across 8 registered attempts" is a scope-conditional conclusion** — consistent with SPIVA (≈79% of active pros lose to the index) and efficient markets. (2016–2026 sample; dot-com/2008 only via proxy — not a universal claim.)
+- **"No easy alpha for a solo, across 8 registered attempts" is a scope-conditional conclusion** — consistent with recent SPIVA U.S. scorecards (large-cap active funds mostly underperform; rates vary by horizon) and efficient markets. (2016–2026 sample; dot-com/2008 only via proxy — not a universal claim.)
 
 ---
 *Built with Claude Code + Codex. The point isn't that I found alpha — it's that I **honestly proved I didn't**, with a reusable, adversarially-validated framework. Roasts welcome.*
