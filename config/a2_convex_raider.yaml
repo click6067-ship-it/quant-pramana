@@ -1,0 +1,40 @@
+# PRAMANA A2 — Convex Raider v2 config (파라미터 중앙화)
+capital: 100000000
+inception: "2026-05-12"        # 라이브 paper 시작 마커(백테스트는 전체 history)
+spy_excluded: true            # A2는 SPY 퇴출 — 벤치마크로만 표시
+
+# ── 동적 모드 ON/OFF (위험(a) 안전장치: 동적 비중 = 마켓타이밍 실험이라 끄고 비교 가능) ──
+dynamic_mode_enabled: true
+
+# ── 모드별 목표비중 (QQQ/TQQQ가 핵심·나머지는 Attack/Moonshot/Vault budget = positions 없으면 cash) ──
+allocation:
+  base:           {qqq: 0.35, tqqq: 0.35, attack: 0.10, moonshot: 0.10, vault: 0.10}
+  berserker:      {qqq: 0.30, tqqq: 0.45, attack: 0.15, moonshot: 0.05, vault: 0.05}
+  red_king:       {qqq: 0.40, tqqq: 0.25, attack: 0.05, moonshot: 0.05, vault: 0.25}
+  attack_lockout: {qqq: 0.35, tqqq: 0.35, attack: 0.00, moonshot: 0.00, vault: 0.30}
+  crash_lockout:  {qqq: 0.35, tqqq: 0.10, attack: 0.00, moonshot: 0.00, vault: 0.55}
+
+daily_max_shift_pp: 0.10       # 하루 최대 비중 변화 10%p
+tqqq_hard_cap: 0.50
+
+# ── Risk Dashboard 임계 ──
+leadership: {green_max: 10, yellow_max: 20}   # 0~10 GREEN · 11~20 YELLOW · 21+ RED (메가캡 10종×3점)
+tqqq_decay: {qqq_20d_range: 0.03, vol_threshold: 0.25}   # 횡보(±3%)+고변동(>25%) = decay zone
+beta_governor_warn: 1.6
+
+# ── Profit Vault (excess high-water mark 기반) ──
+vault:
+  base_pct: 0.10
+  thresholds:                  # excess HWM(%p) 도달 → 신규 초과분 비율
+    - {excess: 0.04, rate: 0.25}
+    - {excess: 0.08, rate: 0.25}
+    - {excess: 0.12, rate: 0.50}
+  hard_ratio: 0.70             # 유입의 70% = Hard(재투입 금지)
+  reload_ratio: 0.30           # 30% = Reload(폭락 후만)
+  max_monthly_move_pct: 0.10
+
+# ── naive beta 판정선 (위험(c): A2가 이걸 못 이기면 모든 장치가 무의미) ──
+naive_benchmark: {qqq: 0.35, tqqq: 0.35}   # 나머지 cash·동적 조절 없음·고정
+
+# ── 성공 판정 (위험(c): 12개월 내 못 이기면 경고·무한루프 방지) ──
+verdict: {horizon_months: 12, must_beat: ["naive", "qqq"]}
