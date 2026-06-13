@@ -3,7 +3,7 @@ label: "discretionary-systematic hybrid paper book (검증된 알파 아님)"
 capital: 100000000
 inception: "2026-05-12"
 spy_excluded: true
-dynamic_mode_enabled: true     # 동적 비중 = position-sizing alpha 실험 (코어 전환 아님). config로 OFF 비교 가능.
+dynamic_mode_enabled: false    # ★ 2026-06-13 OFF 확정: dynamic ablation 동적기여 -113%p(REJECT·Codex #5). 고정 35/35 + Vault + Attack/Moonshot가 정답. ("동적 일반 사망" 아님·이 구현/benign 샘플 한정)
 
 # ── A2-T (TQQQ 사용·QQQ/TQQQ 동적) ──
 allocation_a2t:

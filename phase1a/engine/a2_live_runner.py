@@ -125,7 +125,15 @@ def main():
     def live_r(s):   # ★ Codex #2: live ledger = inception 이후만(백테스트 2016~와 분리)
         sl=s[s.index>=incep]; return float(sl.iloc[-1]/sl.iloc[0]-1) if len(sl)>1 else 0.0
     live_a2t=live_r(a2t); live_a2q=live_r(a2q); live_qqq=live_r(px["QQQ"]); live_days=int((px.index>=incep).sum())
-    hard=a2t_v["hard"]*CAP; rel=a2t_v["rel"]*CAP; vlt_w=a2t_v["vlt"]; state["excess_hwm"]=a2t_v["hwm"]   # run_book ledger 결과(노출에서 실제 차감됨)
+    # ★ Phase A: forward Vault ledger (live excess HWM·vault.json append-only·Codex #2#3 — 백테스트 아닌 live만)
+    VJ=os.path.join(POS,"vault.json"); vj=loadj(VJ,{"hard":0.0,"reload":0.0,"hwm":0.0,"last_date":None,"events":[]})
+    live_excess=live_a2t-live_qqq
+    if live_excess>vj["hwm"] and live_excess>=0.04 and live_a2t>0.0 and vj.get("last_date")!=today:   # HWM 갱신·절대수익(QQQ보다 덜잃은 것만으론 금지)·임계·일1회
+        rate=0.50 if live_excess>=0.12 else 0.25; mvw=(live_excess-vj["hwm"])*rate
+        vj["hard"]+=mvw*0.70; vj["reload"]+=mvw*0.30; vj["events"].append({"date":today,"live_excess":round(live_excess,4),"moved_w":round(mvw,4)}); vj["hwm"]=live_excess; vj["last_date"]=today
+        json.dump(vj,open(VJ,"w"),indent=2)
+    elif live_excess>vj["hwm"]: vj["hwm"]=live_excess; json.dump(vj,open(VJ,"w"),indent=2)
+    hard=vj["hard"]*CAP; rel=vj["reload"]*CAP; vlt_w=vj["hard"]+vj["reload"]; state["excess_hwm"]=vj["hwm"]   # forward live Vault(백테스트 a2t_v는 OFF)
     cur_lead=int(lead.iloc[-1]); cur_decay=bool(decay.iloc[-1]); cur_mode=mds[-1] if dyn else "base"
     leadlbl=("RED" if cur_lead>ymax else "YELLOW" if cur_lead>gmax else "GREEN")
     qqq_above_ma20=bool(px["QQQ"].iloc[-1]>px["QQQ"].rolling(20).mean().iloc[-1])
@@ -183,7 +191,7 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 <h2>🚦 Risk Dashboard <span style="color:#64748b;font-size:.7em">(정보용·신규/증액 게이트·LLM Council=2단계)</span></h2>
 <div class=card><b>모드:</b> <span style="color:{mc};font-weight:700">{cur_mode}</span> (A2-T: QQQ {a2t_cur[0]*100:.0f}%/TQQQ {a2t_cur[1]*100:.0f}%)·<b>Leadership:</b> <span style="color:{rc};font-weight:700">{leadlbl}</span> ({cur_lead}/30)·<b>TQQQ Decay:</b> <span style="color:{'#f87171' if cur_decay else '#34d399'}">{'ZONE' if cur_decay else 'OK'}</span>·<b>Beta:</b> {beta_expo:.2f}x·<b>QQQ&gt;20일선:</b> {'예' if qqq_above_ma20 else '아니오'}</div>
 <h2>💰 Profit Vault <span style="color:#64748b;font-size:.7em">(alpha-timing·표시용)</span></h2>
-<div class=card><b style="color:#fbbf24">⚠️ 백테스트(2016~) Vault OFF</b>: 장기 누적 excess(+244%p)를 비중 이동으로 쓰면 Vault 과다(95%)=단위 부적합. <b>Vault 실제 ledger(노출 차감·Hard70/Reload30·주1회/월10%) 로직은 run_book에 완성</b>됐고, <b>forward live(excess 작음)에만 적용</b>·Phase A 파일(a2_profit_vault.py·vault.json)로 분리 예정.<br>
+<div class=card>✅ <b style="color:#34d399">forward live Vault ledger</b>(Codex #2#3·positions/vault.json append-only): live excess(inception~) HWM·절대수익일 때만·Hard70/Reload30·Hard 재투입 금지. 백테스트(2016~)는 Vault OFF(장기 excess 단위 부적합). 노출차감/주1회/월10% run_book 로직 완성.<br>live excess HWM <b>{vj['hwm']*100:.2f}%p</b> · Hard {won(hard)} / Reload {won(rel)} · 이동 {len(vj['events'])}건 <span style="color:#64748b">(forward {live_days}거래일·excess 작아 현재 거의 0=정상)</span><br>
 <b>Vault IN 신호:</b> {' · '.join(vin) if vin else '없음(아직 안 뺌)'}<br>
 <b>Vault OUT(Reload) 가능:</b> <span style="color:{'#34d399' if vout_ok else '#94a3b8'}">{'예 (Leadership GREEN+Decay OK+QQQ&gt;20일선)' if vout_ok else '아니오 (위험 신호 잔존)'}</span> · Hard Vault는 영구 재투입 금지</div>
 <h2>⚔️ Attack / 🚀 Moonshot <span style="color:#64748b;font-size:.7em">(2단계 연료·현재 cash)</span></h2>
