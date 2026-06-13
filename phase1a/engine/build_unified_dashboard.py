@@ -99,7 +99,7 @@ for bk,(w,lev) in BOOKS.items():
     plt.plot(nav.index,nav,label=f"{bk} {dict((g['id'],g['name']) for g in GENS)[bk]}",lw=2.4 if bk=="v7" else 1.5,color=COL[bk])
 for t,c in [("QQQ","#a78bfa"),("SPY","#f59e0b")]:
     nav=(1+px[t].pct_change().fillna(0)).cumprod(); plt.plot(nav.index,nav,label=t,lw=1.3,color=c,ls="--")
-plt.legend(framealpha=.2,fontsize=8); plt.title("core-satellite 진화 v4→v7 vs 인덱스 — 누적 (×)",color="#e5e7eb"); plt.ylabel("배수(×)")
+plt.legend(framealpha=.2,fontsize=8); plt.title("core-satellite 진화 v4→v7 — IN-SAMPLE 구조 비교만 (실적/forward 아님 · ×)",color="#e5e7eb"); plt.ylabel("배수(×)")
 ch_cum=b64(f)
 # 차트2 — 12/6/3 그룹 바 (v4~v7 + QQQ)
 labels=["3M","6M","12M"]; x=np.arange(3); series=[("v4",COL["v4"]),("v5",COL["v5"]),("v6",COL["v6"]),("v7",COL["v7"]),("QQQ","#a78bfa")]
@@ -114,7 +114,7 @@ ch_anc=b64(f)
 state=json.load(open(STATE)) if os.path.exists(STATE) else {}
 nav_now=state.get("nav",1e8); tot_now=state.get("total_ret",0); incep=state.get("inception","—")
 
-nav_items=[("overview","📊","개요 · 메타결론","#94a3b8")]+[(g["id"],g["ver"],g["name"],g["vc"]) for g in GENS]+[("live","🔴","A1 Attack (LIVE)","#ef4444"),("anchor","📈","12/6/3 비교","#a78bfa")]
+nav_items=[("overview","📊","개요 · 메타결론","#94a3b8")]+[(g["id"],g["ver"],g["name"],g["vc"]) for g in GENS]+[("live","📝","A1 (paper forward·자본0)","#ef4444"),("anchor","📈","12/6/3 비교","#a78bfa")]
 nav_html="".join(f'<a href="#{i}" class=navlink><span class=dot style="background:{c}"></span><b>{v}</b> {n}</a>' for i,v,n,c in nav_items)
 def anchor_block(bk):
     a=RES[bk]
@@ -166,12 +166,12 @@ h3{{font-size:1.05em;border-left:3px solid #ef4444;padding-left:9px;margin:24px 
 <main>
 <h1>PRAMANA — 계보 v1~v7 진화 + A1 Attack <span class="badge b-paper">PAPER</span></h1>
 <section id=overview><div class=meta>📌 <b>메타 결론</b> — 솔로가 <b>유료 기관급 데이터(Sharadar · survivorship-free · PIT)</b> + 무료 보조(EDGAR 8-K · yfinance)로 검증했는데도, <b>이 데이터·비용·기간(2016–2026)에서</b> SPY/QQQ를 위험조정 초과하는 '사는' 알파는 8개 전략 family로 <b>미발견(scope-conditional negative · 보편 주장 아님)</b>. 유료 PIT로도 없다는 점이 결론을 강화한다. 건진 것: V7 <b>backtest 생존 후보</b> · 나쁜-공시 회피 필터 · 가짜-알파 면역. → 위험을 정직하게 인정한 공격형 <b>A1 Attack Book</b>(paper · 자본권한 0)으로 재정의.</div>
-<div class=meta style="border-left-color:#7c3aed;background:#160f24;font-size:.84em"><b>🧾 Evidence Ledger (정직성)</b> — look-ahead 적발·수정 <b>2건</b>(RVOL · 동적 allocator) · DSR/PBO <b>TODO(미산출)</b> · 2-feed reconciliation <b>UNKNOWN</b> · crash-pack(닷컴/2008) <b>proxy·미실시</b> · <b>Live capital = 0</b> · cron 트리거 미검증(수동 실행). 모든 수치 = backtest/paper, 실자본 아님.</div>
+<div class=meta style="border-left-color:#7c3aed;background:#160f24;font-size:.84em"><b>🧾 Evidence Ledger (정직성)</b> — look-ahead 적발·수정 <b>2건</b>(RVOL · 동적 allocator) · DSR/PBO <b>TODO(미산출)</b> · 2-feed reconciliation <b>UNKNOWN</b> · crash-pack(닷컴/2008) <b>proxy·미실시</b> · <b>Live capital = 0</b> · cron 미검증(수동). 모든 수치 = backtest/paper · 실자본 아님. <b>base-rate</b>: SPIVA 2025 액티브 대형주 ~79% 인덱스 미달(시장적으로 어려운 문제) · 전체 원장·council·health = <a href="https://github.com/click6067-ship-it/quant-pramana/tree/main/docs/context" style="color:#a78bfa">repo</a>.</div>
 <div class=card><img src="data:image/png;base64,{ch_cum}" alt="누적 진화"></div>
 <p style="color:#64748b;font-size:.76em">↑ v4~v7 = core-satellite 구조 진화(ETF EOD). v5/v6은 실제 vol-target·동적 분산의 <i>정적 근사</i> — 정확한 in-sample은 보고서 참조.</p></section>
 {gens_html}
-<h3 id=live>🔴 A1 Attack Book — 라이브 (가상 ₩1억) <span class="badge b-live">LIVE</span></h3>
-<section style="padding:10px"><p style="color:#94a3b8;font-size:.82em;margin:4px 6px 10px"><b>상태 구분</b> — Backfilled paper(인셉션 {incep}) · Forward 관찰 중 · <b>Live capital = 0</b> · NAV ₩{nav_now/1e8:.3f}억({tot_now*100:+.2f}%)은 <b>paper 시뮬</b>(실자본 아님). 아래 임베드(1h 새로고침):</p>
+<h3 id=live>📝 A1 Attack Book — paper forward (가상 ₩1억 · 실자본 0) <span class="badge b-live">NO CAPITAL</span></h3>
+<section style="padding:10px"><p style="color:#94a3b8;font-size:.82em;margin:4px 6px 10px"><b>상태 구분</b> — Backfill {incep}~2026-06-11 · <b>Live forward 2026-06-12~</b> · <b>실자본 0 (broker·order 없음)</b> · Paper NAV ₩{nav_now/1e8:.3f}억({tot_now*100:+.2f}%)=시뮬. 아래 임베드:</p>
 <iframe class=live-frame src="a1_live_dashboard.html"></iframe>
 <p style="color:#64748b;font-size:.75em;margin-top:8px">↑ 안 보이면 <a href="a1_live_dashboard.html" style="color:#60a5fa">새 탭에서 열기</a></p></section>
 <h3 id=anchor>📈 12/6/3 비교 — V7 backtest 후보 vs 인덱스 (in-sample)</h3>

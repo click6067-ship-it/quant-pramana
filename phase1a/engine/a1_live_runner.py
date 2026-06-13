@@ -120,11 +120,12 @@ h2{{font-size:1.05em;border-left:4px solid #ef4444;padding-left:10px;margin-top:
 table{{width:100%;border-collapse:collapse;font-size:.85em}} th{{background:#111a30;color:#94a3b8;text-align:left;padding:7px 9px}} td{{padding:6px 9px;border-top:1px solid #1a2540}}
 .bar{{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0}} .bar div{{display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:700}}
 .warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:12px 15px;color:#fde68a;font-size:.84em}}</style></head><body>
-<div class=wrap><h1>🔴 PRAMANA A1 — Catalyst Confirmed Attack Book<span class=badge>ATTACK</span><span class="badge b2">PAPER</span><span class="badge b3">가상 ₩1억</span></h1>
+<div class=wrap><h1>📝 PRAMANA A1 — Catalyst Attack Book<span class=badge>ATTACK</span><span class="badge b2">PAPER FORWARD</span><span class="badge b3">실자본 0</span></h1>
 <p style='color:#94a3b8'>업데이트 {today}·인셉션 {state['inception']}·배분 <b>Core 40 / Attack 30 / Moonshot 15 / Cash 15</b>·데이터={DATASRC}. 목표=레버 ETF 없이 QQQ 초과 <i>시도</i>(검증된 알파 아님).</p>
 <div class=kpis>
-<div class=kpi><div class=l>총 NAV</div><div class="v {'pos' if tot>=0 else 'neg'}">{won(nav)}</div></div>
-<div class=kpi><div class=l>총수익</div><div class="v {'pos' if tot>=0 else 'neg'}">{tot*100:+.2f}%</div></div>
+<div class=kpi><div class=l>Paper NAV (시뮬)</div><div class="v {'pos' if tot>=0 else 'neg'}">{won(nav)}</div></div>
+<div class=kpi><div class=l>Paper 수익</div><div class="v {'pos' if tot>=0 else 'neg'}">{tot*100:+.2f}%</div></div>
+<div class=kpi><div class=l>실투입 자본</div><div class="v">₩0 · NO BROKER</div></div>
 <div class=kpi><div class=l>QQQ(동기간)</div><div class="v">{qup*100:+.2f}%</div></div>
 <div class=kpi><div class=l>SPY(동기간)</div><div class="v">{sup*100:+.2f}%</div></div>
 <div class=kpi><div class=l>vs QQQ</div><div class="v {'pos' if tot-qup>=0 else 'neg'}">{(tot-qup)*100:+.2f}%p</div></div></div>
