@@ -109,7 +109,7 @@ def main():
     arows="".join(f'<tr><td>{p["ticker"]}</td><td>{p.get("catalyst","")[:40]}</td><td>{p["shares"]}</td><td>{p["entry"]}</td><td>{cur(p["ticker"]):.2f}</td><td class="{"pos" if cur(p["ticker"])>=p["entry"] else "neg"}">{(cur(p["ticker"])/p["entry"]-1)*100:+.1f}%</td></tr>' for p in attack) or '<tr><td colspan=6 style="color:#64748b;text-align:center">— 포지션 없음 (Attack 예산 ₩0.30억 현금 대기·스캐너 후보 관찰 중) —</td></tr>'
     mrows="".join(f'<tr><td>{p["ticker"]}</td><td>{p.get("thesis","")[:50]}</td><td>{p["shares"]}</td><td>{p["entry"]}</td><td>{cur(p["ticker"]):.2f}</td><td>최대손실 {won(p.get("maxloss",0))}</td></tr>' for p in moon) or '<tr><td colspan=6 style="color:#64748b;text-align:center">— thesis 없음 (Moonshot 예산 ₩0.15억 현금 대기·수동 thesis 입력 슬롯) —</td></tr>'
     html=f"""<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
-<meta http-equiv=refresh content=3600><title>PRAMANA A1 Live</title><style>
+<meta http-equiv=refresh content=3600><title>PRAMANA A1 — paper forward</title><style>
 body{{background:#070b16;color:#e5e7eb;font-family:'Segoe UI',system-ui,sans-serif;margin:0;line-height:1.5}}
 .wrap{{max-width:1000px;margin:0 auto;padding:22px 18px 60px}} h1{{font-size:1.3em}}
 .badge{{background:#7f1d1d;color:#fca5a5;border-radius:6px;padding:2px 9px;font-size:.68em;font-weight:700}} .b2{{background:#1e3a8a;color:#bfdbfe}} .b3{{background:#064e3b;color:#6ee7b7}}
@@ -121,7 +121,7 @@ table{{width:100%;border-collapse:collapse;font-size:.85em}} th{{background:#111
 .bar{{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0}} .bar div{{display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:700}}
 .warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:12px 15px;color:#fde68a;font-size:.84em}}</style></head><body>
 <div class=wrap><h1>📝 PRAMANA A1 — Catalyst Attack Book<span class=badge>ATTACK</span><span class="badge b2">PAPER FORWARD</span><span class="badge b3">실자본 0</span></h1>
-<p style='color:#94a3b8'>업데이트 {today}·인셉션 {state['inception']}·배분 <b>Core 40 / Attack 30 / Moonshot 15 / Cash 15</b>·데이터={DATASRC}. 목표=레버 ETF 없이 QQQ 초과 <i>시도</i>(검증된 알파 아님).</p>
+<p style='color:#94a3b8'>업데이트 {today}·<b>백필 인셉션 {state['inception']}부터 누적</b>(실 forward 1개월 미만·성과 판단 불가)·배분 <b>Core 40 / Attack 30 / Moonshot 15 / Cash 15</b>·데이터={DATASRC}. 목표=레버 ETF 없이 QQQ 초과 <i>시도</i>(검증된 알파 아님).</p>
 <div class=kpis>
 <div class=kpi><div class=l>Paper NAV (시뮬)</div><div class="v {'pos' if tot>=0 else 'neg'}">{won(nav)}</div></div>
 <div class=kpi><div class=l>Paper 수익</div><div class="v {'pos' if tot>=0 else 'neg'}">{tot*100:+.2f}%</div></div>
@@ -142,8 +142,8 @@ table{{width:100%;border-collapse:collapse;font-size:.85em}} th{{background:#111
 <div class=card><table><tr><th>티커</th><th>catalyst</th><th>수량</th><th>진입</th><th>현재</th><th>손익</th></tr>{arows}</table></div>
 <h2>🚀 Moonshot thesis <span style="color:#64748b;font-size:.7em">(positions/moonshot.json)</span></h2>
 <div class=card><table><tr><th>티커</th><th>thesis</th><th>수량</th><th>진입</th><th>현재</th><th>리스크</th></tr>{mrows}</table></div>
-<div class=warn>⚠️ PAPER·NO LIVE·가상 ₩1억. <b>검증된 알파가 아니라 위험을 정직하게 인정한 공격 베팅.</b> Base Core만 자동 실데이터·Attack/Moonshot은 포지션 JSON 평가(intraday 자동집행=분봉 벤더 후 승급). <b>나쁜공시(3.02/3.01/4.01/4.02 등) 회피 필수·catalyst=총알/ORB·VWAP·RVOL=방아쇠.</b> 실자본 게이트=사람.<br>cron: <code>0 6 * * 2-6 cd {ROOT}/phase1a && .venv/bin/python engine/a1_live_runner.py</code></div>
+<div class=warn>⚠️ PAPER·NO LIVE·가상 ₩1억. <b>검증된 알파가 아니라 위험을 정직하게 인정한 공격 베팅.</b> Base Core만 자동 실데이터·Attack/Moonshot은 포지션 JSON 평가(intraday 자동집행=분봉 벤더 후 승급). <b>나쁜공시(3.02/3.01/4.01/4.02 등) 회피 필수·catalyst=총알/ORB·VWAP·RVOL=방아쇠.</b> 실자본 게이트=사람.<br>cron: <code>0 6 * * 2-6 cd {ROOT} && .venv/bin/python engine/a1_live_runner.py</code> (등록됨·트리거 미검증)</div>
 </div></body></html>"""
     open(DASH,"w").write(html)
-    print(f"✅ A1 live {today}·NAV {won(nav)}({tot*100:+.2f}%)·Core {won(core_val)}({core_ret*100:+.1f}%)·Attack {won(a_val)}({len(attack)})·Moon {won(m_val)}({len(moon)})·Cash {won(cash_val)}·QQQ{qup*100:+.1f}%/SPY{sup*100:+.1f}%·인셉션{state['inception']}")
+    print(f"✅ A1 paper {today}·NAV {won(nav)}({tot*100:+.2f}%)·Core {won(core_val)}({core_ret*100:+.1f}%)·Attack {won(a_val)}({len(attack)})·Moon {won(m_val)}({len(moon)})·Cash {won(cash_val)}·QQQ{qup*100:+.1f}%/SPY{sup*100:+.1f}%·인셉션{state['inception']}")
 if __name__=="__main__": main()

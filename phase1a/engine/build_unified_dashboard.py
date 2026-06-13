@@ -162,16 +162,16 @@ h3{{font-size:1.05em;border-left:3px solid #ef4444;padding-left:9px;margin:24px 
 .badge{{font-size:.5em;font-weight:700;padding:3px 9px;border-radius:20px;vertical-align:middle}} .b-paper{{background:#1e3a8a;color:#bfdbfe}} .b-live{{background:#7f1d1d;color:#fca5a5}}
 @media(max-width:760px){{body{{display:block}} nav{{width:100%;min-width:0;height:auto;position:static;border-right:0;border-bottom:1px solid #1e293b;padding:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}} nav .brand{{width:100%}} nav .sub{{width:100%}} .navlink{{font-size:.76em;padding:6px 8px}} main{{padding:16px 14px 60px;max-width:100%}} h1{{font-size:1.3em}} .live-frame{{height:900px}}}}</style></head>
 <body>
-<nav><span class=brand>PRAMANA</span><span class=sub>solo+AI equity validation OS · v1~v7 진화 + A1 라이브</span>{nav_html}</nav>
+<nav><span class=brand>PRAMANA</span><span class=sub>solo+AI equity validation OS · v1~v7 진화 + A1 paper forward</span>{nav_html}</nav>
 <main>
 <h1>PRAMANA — 계보 v1~v7 진화 + A1 Attack <span class="badge b-paper">PAPER</span></h1>
 <section id=overview><div class=meta>📌 <b>메타 결론</b> — 솔로가 <b>유료 기관급 데이터(Sharadar · survivorship-free · PIT)</b> + 무료 보조(EDGAR 8-K · yfinance)로 검증했는데도, <b>이 데이터·비용·기간(2016–2026)에서</b> SPY/QQQ를 위험조정 초과하는 '사는' 알파는 8개 전략 family로 <b>미발견(scope-conditional negative · 보편 주장 아님)</b>. 유료 PIT로도 없다는 점이 결론을 강화한다. 건진 것: V7 <b>backtest 생존 후보</b> · 나쁜-공시 회피 필터 · 가짜-알파 면역. → 위험을 정직하게 인정한 공격형 <b>A1 Attack Book</b>(paper · 자본권한 0)으로 재정의.</div>
-<div class=meta style="border-left-color:#7c3aed;background:#160f24;font-size:.84em"><b>🧾 Evidence Ledger (정직성)</b> — look-ahead 적발·수정 <b>2건</b>(RVOL · 동적 allocator) · DSR/PBO <b>TODO(미산출)</b> · 2-feed reconciliation <b>UNKNOWN</b> · crash-pack(닷컴/2008) <b>proxy·미실시</b> · <b>Live capital = 0</b> · cron 미검증(수동). 모든 수치 = backtest/paper · 실자본 아님. <b>base-rate</b>: SPIVA 2025 액티브 대형주 ~79% 인덱스 미달(시장적으로 어려운 문제) · 전체 원장·council·health = <a href="https://github.com/click6067-ship-it/quant-pramana/tree/main/docs/context" style="color:#a78bfa">repo</a>.</div>
+<div class=meta style="border-left-color:#7c3aed;background:#160f24;font-size:.84em"><b>🧾 Evidence Ledger (정직성)</b> — look-ahead 적발·수정 <b>2건</b>(RVOL · 동적 allocator) · DSR/PBO <b>TODO(미산출)</b> · 2-feed reconciliation <b>UNKNOWN</b> · crash-pack(닷컴/2008) <b>proxy·미실시</b> · <b>Live capital = 0</b> · cron 미검증(수동). 모든 수치 = backtest/paper · 실자본 아님. <b>base-rate</b>: <a href="https://www.spglobal.com/spdji/en/spiva/" style="color:#a78bfa">SPIVA</a> 2025 액티브 대형주 ~79% 인덱스 미달(시장적으로 어려운 문제) · 전체 원장·council·health = <a href="https://github.com/click6067-ship-it/quant-pramana/tree/main/docs/context" style="color:#a78bfa">repo</a>.</div>
 <div class=card><img src="data:image/png;base64,{ch_cum}" alt="누적 진화"></div>
 <p style="color:#64748b;font-size:.76em">↑ v4~v7 = core-satellite 구조 진화(ETF EOD). v5/v6은 실제 vol-target·동적 분산의 <i>정적 근사</i> — 정확한 in-sample은 보고서 참조.</p></section>
 {gens_html}
 <h3 id=live>📝 A1 Attack Book — paper forward (가상 ₩1억 · 실자본 0) <span class="badge b-live">NO CAPITAL</span></h3>
-<section style="padding:10px"><p style="color:#94a3b8;font-size:.82em;margin:4px 6px 10px"><b>상태 구분</b> — Backfill {incep}~2026-06-11 · <b>Live forward 2026-06-12~</b> · <b>실자본 0 (broker·order 없음)</b> · Paper NAV ₩{nav_now/1e8:.3f}억({tot_now*100:+.2f}%)=시뮬. 아래 임베드:</p>
+<section style="padding:10px"><p style="color:#94a3b8;font-size:.82em;margin:4px 6px 10px"><b>상태 구분</b> — Paper NAV는 <b>{incep} 백필 인셉션부터 누적</b>(실 forward 트랙 1개월 미만 · 아직 성과 판단 불가) · <b>실자본 0 (broker·order 없음)</b> · ₩{nav_now/1e8:.3f}억({tot_now*100:+.2f}%) = paper 시뮬. 아래 임베드:</p>
 <iframe class=live-frame src="a1_live_dashboard.html"></iframe>
 <p style="color:#64748b;font-size:.75em;margin-top:8px">↑ 안 보이면 <a href="a1_live_dashboard.html" style="color:#60a5fa">새 탭에서 열기</a></p></section>
 <h3 id=anchor>📈 12/6/3 비교 — V7 backtest 후보 vs 인덱스 (in-sample)</h3>
