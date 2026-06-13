@@ -78,32 +78,42 @@ def main():
     mds=[mode_of(lead.iloc[i],bool(decay.iloc[i])) for i in range(len(px))]
     dyn=CFG.get("dynamic_mode_enabled",True); shift=CFG["daily_max_shift_pp"]; qa=qr.values; ta=tr.values
     # ── 듀얼 동적 allocator ──
-    qqq_cum_s=(1+qr).cumprod()   # QQQ 벤치 누적(excess HWM 계산용)
-    def run_book(aw, vault_on=False):   # next-bar(shift1) + Vault 실제 ledger(노출 차감·Hard70/Reload30·주1회·월10%·Codex #4)
+    qqq_cum_s=(1+qr).cumprod(); qma20=px["QQQ"].rolling(20).mean()   # excess HWM·Vault Out 조건용
+    def run_book(aw, vault_on=False, use_dyn=None):   # next-bar(shift1) + Vault ledger(In: 노출 차감 / Out: Reload 재투입) + weekly 제한 + dynamic ablation
+        udyn=(dyn if use_dyn is None else use_dyn); wcap=CFG.get("weekly_max_shift_pp",0.10)
         qw=aw["base"]["qqq"]; tw=aw["base"].get("tqqq",0.0); vlt=CFG["vault"]["base_pct"]; hard=0.0; rel=0.0
-        nav=1.0; out=[]; hwm=0.0; last_v=-99; m_moved=0.0; cur_mo=None
+        nav=1.0; out=[]; hwm=0.0; last_v=-99; m_moved=0.0; w_moved=0.0; cur_mo=None; cur_wk=None
         for i in range(len(qa)):
-            mo=px.index[i].to_period("M")
-            if mo!=cur_mo: cur_mo=mo; m_moved=0.0   # 월 리셋(월10% 제한)
-            m=(mds[i-1] if (dyn and i>0) else "base"); mw=aw.get(m,aw["base"])   # 전일 신호(look-ahead 차단)
-            qw+=float(np.clip(mw["qqq"]-qw,-shift,shift)); tw+=float(np.clip(mw.get("tqqq",0.0)-tw,-shift,shift))
+            mo=px.index[i].to_period("M"); wk=int(px.index[i].isocalendar()[1])
+            if mo!=cur_mo: cur_mo=mo; m_moved=0.0
+            if wk!=cur_wk: cur_wk=wk; w_moved=0.0
+            m=(mds[i-1] if (udyn and i>0) else "base"); mw=aw.get(m,aw["base"])   # 전일 신호(look-ahead 차단)
+            dq=float(np.clip(mw["qqq"]-qw,-shift,shift)); dt=float(np.clip(mw.get("tqqq",0.0)-tw,-shift,shift))
+            mag=abs(dq)+abs(dt); room=max(0.0,wcap-w_moved)
+            if mag>room and mag>1e-12: dq*=room/mag; dt*=room/mag   # weekly 10%p 제한
+            qw+=dq; tw+=dt; w_moved+=abs(dq)+abs(dt)
             nav*=(1+qw*qa[i]+tw*ta[i]); out.append(nav)   # Vault·cash = 0 수익(노출 밖)
-            if vault_on:   # Vault In: A2 excess HWM 갱신 & 절대 NAV 수익 & 주1회 & 월10%
+            if vault_on:
                 excess=(nav-1)-(float(qqq_cum_s.iloc[i])-1)
-                if excess>hwm and excess>=0.04 and nav>1.0 and (i-last_v>=5) and m_moved<0.10:
+                if excess>hwm and excess>=0.04 and nav>1.0 and (i-last_v>=5) and m_moved<0.10:   # Vault In
                     rate=0.50 if excess>=0.12 else 0.25; mv=min((excess-hwm)*rate,0.10-m_moved)
                     tot=qw+tw
-                    if tot>1e-9: qw-=mv*qw/tot; tw-=mv*tw/tot   # QQQ/TQQQ 노출에서 Vault로 차감(실제 ledger)
+                    if tot>1e-9: qw-=mv*qw/tot; tw-=mv*tw/tot   # 노출에서 Vault로 차감
                     vlt+=mv; hard+=mv*0.70; rel+=mv*0.30; hwm=excess; last_v=i; m_moved+=mv
+                elif rel>1e-9 and i>0 and lead.iloc[i-1]<=CFG["leadership"]["green_max"] and (not bool(decay.iloc[i-1])) and px["QQQ"].iloc[i-1]>qma20.iloc[i-1]:   # Vault Out: Reload 25%씩 재투입(위험↓+기회)
+                    ow=rel*0.25; tq=mw["qqq"]; tt=mw.get("tqqq",0.0); s2=tq+tt
+                    if s2>0: qw+=ow*tq/s2; tw+=ow*tt/s2
+                    rel-=ow; vlt-=ow   # Reload만 재투입·Hard는 영구 잠금
         return pd.Series(out,index=px.index),(qw,tw),{"vlt":vlt,"hard":hard,"rel":rel,"hwm":hwm}
-    a2t,a2t_cur,a2t_v=run_book(CFG["allocation_a2t"],True); a2q,a2q_cur,a2q_v=run_book(CFG["allocation_a2q"],True)
+    a2t,a2t_cur,a2t_v=run_book(CFG["allocation_a2t"],False); a2q,a2q_cur,a2q_v=run_book(CFG["allocation_a2q"],False)   # 백테스트 Vault OFF(장기 누적 excess→비중 과다=단위 부적합·Vault는 forward live ledger=Phase A로 분리)
+    a2t_off,_,_=run_book(CFG["allocation_a2t"],False,use_dyn=False)   # ablation: dynamic OFF
     nb=CFG["naive_benchmark"]; naive=(1+nb["qqq"]*qr+nb["tqqq"]*tr).cumprod()
     def to_won(s):   # ★ Codex #3: 첫 거래일 종가 기준(look-ahead 없음). 차트 시작=₩1억. (월평균 정규화는 미래 월중가 참조라 폐기)
         s=s.dropna(); return CAP*s/s.iloc[0]
     S={"A2-T":to_won(a2t),"A2-Q":to_won(a2q),"QQQ":to_won(px["QQQ"]),"SPY":to_won(px["SPY"]),"TQQQ":to_won(px["TQQQ"])}; naive_won=to_won(naive)
     def fullret(s): return float(s.iloc[-1]/CAP-1)
     a2t_r=fullret(S["A2-T"]); a2q_r=fullret(S["A2-Q"]); qqq_r=fullret(S["QQQ"]); naive_r=fullret(naive_won)
-    excess=a2t_r-qqq_r; decay_drag=a2t_r-a2q_r   # TQQQ 순기여(+면 TQQQ 값함·−면 decay가 잡아먹음)
+    excess=a2t_r-qqq_r; decay_drag=a2t_r-a2q_r; a2t_off_r=fullret(to_won(a2t_off)); dyn_contrib=a2t_r-a2t_off_r   # 동적 allocator 순수 기여(ON−OFF)   # TQQQ 순기여(+면 TQQQ 값함·−면 decay가 잡아먹음)
     # ── 멀티앵커 ──
     def cum(s,n): s=s.dropna(); seg=s.iloc[-min(n,len(s)):]; return (seg.iloc[-1]/seg.iloc[0]-1)*100
     ANCH=[("3년",756),("12개월",252),("6개월",126),("3개월",63)]
@@ -173,7 +183,7 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 <h2>🚦 Risk Dashboard <span style="color:#64748b;font-size:.7em">(정보용·신규/증액 게이트·LLM Council=2단계)</span></h2>
 <div class=card><b>모드:</b> <span style="color:{mc};font-weight:700">{cur_mode}</span> (A2-T: QQQ {a2t_cur[0]*100:.0f}%/TQQQ {a2t_cur[1]*100:.0f}%)·<b>Leadership:</b> <span style="color:{rc};font-weight:700">{leadlbl}</span> ({cur_lead}/30)·<b>TQQQ Decay:</b> <span style="color:{'#f87171' if cur_decay else '#34d399'}">{'ZONE' if cur_decay else 'OK'}</span>·<b>Beta:</b> {beta_expo:.2f}x·<b>QQQ&gt;20일선:</b> {'예' if qqq_above_ma20 else '아니오'}</div>
 <h2>💰 Profit Vault <span style="color:#64748b;font-size:.7em">(alpha-timing·표시용)</span></h2>
-<div class=card>✅ <b style="color:#34d399">실제 ledger(Codex #4 반영)</b>: excess HWM 갱신 시 QQQ/TQQQ 노출에서 차감·Hard70/Reload30·주1회·월10%.<br>현재 Vault 비중 <b>{vlt_w*100:.1f}%</b>(노출 밖 잠김) · excess HWM <b>{a2t_v['hwm']*100:.1f}%p</b> · Hard {won(hard)} / Reload {won(rel)} · Hard 재투입 금지<br>
+<div class=card><b style="color:#fbbf24">⚠️ 백테스트(2016~) Vault OFF</b>: 장기 누적 excess(+244%p)를 비중 이동으로 쓰면 Vault 과다(95%)=단위 부적합. <b>Vault 실제 ledger(노출 차감·Hard70/Reload30·주1회/월10%) 로직은 run_book에 완성</b>됐고, <b>forward live(excess 작음)에만 적용</b>·Phase A 파일(a2_profit_vault.py·vault.json)로 분리 예정.<br>
 <b>Vault IN 신호:</b> {' · '.join(vin) if vin else '없음(아직 안 뺌)'}<br>
 <b>Vault OUT(Reload) 가능:</b> <span style="color:{'#34d399' if vout_ok else '#94a3b8'}">{'예 (Leadership GREEN+Decay OK+QQQ&gt;20일선)' if vout_ok else '아니오 (위험 신호 잔존)'}</span> · Hard Vault는 영구 재투입 금지</div>
 <h2>⚔️ Attack / 🚀 Moonshot <span style="color:#64748b;font-size:.7em">(2단계 연료·현재 cash)</span></h2>
@@ -181,5 +191,5 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 <div class=warn>⚠️ PAPER·NO LIVE·₩1억. 검증 알파 아님·고위험 hybrid. TQQQ=Booster. 동적=position-sizing 실험(config ON/OFF). 폭락 시 기존 TQQQ 자동매도 안 함(사람 게이트). 물타기 금지. V7/A1 독립.<br>설계=PRAMANA_A2_Convex_Raider_Book_FINAL_v2.md · cron <code>10 6 * * 2-6 a2_live_runner.py</code></div>
 </div></body></html>"""
     open(DASH,"w").write(html)
-    print(f"✅ A2 v3 {today}·A2-T {a2t_r*100:+.0f}%·A2-Q {a2q_r*100:+.0f}%·QQQ {qqq_r*100:+.0f}%·TQQQ순기여 {decay_drag*100:+.0f}%p·mode {cur_mode}·Lead {leadlbl}({cur_lead}/30)·beat QQQ:{beat_qqq}/naive:{beat_naive}/A2-Q:{beat_a2q}·{DATASRC}")
+    print(f"✅ A2 v3 {today}·A2-T {a2t_r*100:+.0f}%(동적기여 {dyn_contrib*100:+.0f}%p)·A2-Q {a2q_r*100:+.0f}%·QQQ {qqq_r*100:+.0f}%·Vault잠김 {vlt_w*100:.1f}%·beat QQQ:{beat_qqq}/naive:{beat_naive}/A2-Q:{beat_a2q}·{DATASRC}")
 if __name__=="__main__": main()
