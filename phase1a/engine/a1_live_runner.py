@@ -133,7 +133,7 @@ table{{width:100%;border-collapse:collapse;font-size:.85em}} th{{background:#111
 <div class=card><img src="data:image/png;base64,{ch}"></div>
 <h2>📊 Sleeve 현황</h2>
 <div class=card><table><tr><th>Sleeve</th><th>배분</th><th>평가액</th><th>손익</th><th>포지션</th><th>비고</th></tr>
-<tr><td style="color:#2563eb;font-weight:700">Base Core</td><td>40%</td><td>{won(core_val)}</td><td class="{'pos' if core_ret>=0 else 'neg'}">{core_ret*100:+.2f}%</td><td>4-sleeve</td><td style="color:#94a3b8;font-size:.85em">V7 자동(SPY/QQQ/DBMF/GLD/IEF)·검증된 생존코어</td></tr>
+<tr><td style="color:#2563eb;font-weight:700">Base Core</td><td>40%</td><td>{won(core_val)}</td><td class="{'pos' if core_ret>=0 else 'neg'}">{core_ret*100:+.2f}%</td><td>4-sleeve</td><td style="color:#94a3b8;font-size:.85em">V7 자동(SPY/QQQ/DBMF/GLD/IEF)·backtest 생존 후보·prod-unsafe</td></tr>
 <tr><td style="color:#dc2626;font-weight:700">Attack</td><td>30%</td><td>{won(a_val)}</td><td class="{'pos' if a_pnl>=0 else 'neg'}">{('+'+won(a_pnl)) if a_pnl>=0 else won(a_pnl)}</td><td>{len(attack)}</td><td style="color:#94a3b8;font-size:.85em">catalyst+수급(일봉 v0·intraday는 분봉 후)</td></tr>
 <tr><td style="color:#d97706;font-weight:700">Moonshot</td><td>15%</td><td>{won(m_val)}</td><td class="{'pos' if m_pnl>=0 else 'neg'}">{('+'+won(m_pnl)) if m_pnl>=0 else won(m_pnl)}</td><td>{len(moon)}</td><td style="color:#94a3b8;font-size:.85em">수동 thesis·−100% 인정/upside 3~10x</td></tr>
 <tr><td style="color:#64748b;font-weight:700">Cash</td><td>15%</td><td>{won(cash_val)}</td><td>—</td><td>—</td><td style="color:#94a3b8;font-size:.85em">버퍼</td></tr></table></div>
