@@ -114,5 +114,11 @@ TQQQ를 알파/Core라 부르기 · 손실 후 물타기 · NEG filing 무시 ·
 - **C. 영구 격리:** VRP short-vol · v1 look-ahead 오염 결과 · pure reversal(turnover 폭발).
 > **다음 작업:** 폐기 전략 전체를 "수치상 아쉽게 죽은 것부터" 표(전략·죽은 이유·수치·부활 가능 역할)로 정리 → 용하가 부활/격리 직접 판정.
 
+## 12. 실행·데이터 인프라 규칙 (Codex 적대검토 2026-06-13 · STOP→반영)
+- **Alpaca/IEX paper 결과 = 알파 증거 불인정.** IEX는 단일 거래소(SIP 거래량의 ~2% · 예: AAPL SIP 51.86M vs IEX 0.92M)라 VWAP/RVOL의 volume denominator가 오염 → **QA(smoke test) only.**
+- **paper 성과 판정 = full-market SIP급 minute/quote + conservative fill model만.** Alpaca paper 체결가는 성과 입력 금지(queue/latency/market-impact 제외 → 급등주 immediacy cost를 숨겨 가짜 안정감).
+- **내부 ledger 시뮬 = 연구 PnL·규율 기록엔 충분** (단 주문 reject·partial fill·websocket 끊김·corporate-action 등 broker integration risk는 못 잡음 → 그건 *실계좌 직전* execution harness로 분리).
+- **Alpaca/유료 분봉 도입 트리거 (그 전엔 금지):** v2 catalyst forward(4~8주)에서 ①후보 남발 없음 ②catalyst A/B 실제 뉴스 확인 ③QQQ/SPY beta 설명 후에도 net expectancy 잔존 ④bid-ask가 성과 판단의 실제 blocker로 확인 → 그때 1개월 파일럿(SIP/Polygon/Databento 또는 Alpaca Algo Trader Plus).
+
 ---
 > **한 줄:** A2는 검증된 알파가 아니라 — QQQ/TQQQ 성장 베타를 의식적으로 증폭하고, Attack/Moonshot으로 비대칭을 붙이고, Profit Vault로 수익을 잠그며, Risk Dashboard·NEG Gate로 자멸을 줄이는 **고위험 convex book**이다. *이겼을 때만 더 세게, 졌을 때 절대 물타지 않고, 수익은 Vault로 빼고, TQQQ를 알파로 착각하지 않는다.*
