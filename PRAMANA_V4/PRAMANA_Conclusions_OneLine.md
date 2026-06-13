@@ -47,4 +47,9 @@
 ## 메타 결론 (한 줄)
 **솔로가 공개 데이터로 SPY/QQQ를 *위험조정 초과*하는 "사는" 알파 = 8세대+QL-1로 거의 없음(robust negative). 건진 것: V7 생존코어 · 나쁜-공시 회피 필터 · 가짜-알파 면역.**
 
+## 프로젝트 마무리 (2026-06-13 · 용하 확정)
+- **PRAMANA Core = 졸업.** 안정적 SPY/QQQ 초과 알파 탐색 종료(미발견 robust). 8세대 원장은 Research Archive로 보관(재오픈 금지·무한루프 차단).
+- **재정의 → PRAMANA A1 Catalyst Confirmed Attack Book**(`PRAMANA_A1_Attack_Book_Final.md`): 레버 ETF 없이 이벤트·정성 catalyst·비대칭 베팅으로 QQQ 초과 *시도*. 자본배분 Core 40 / Attack 30 / Moonshot 15 / Cash 15. **검증된 알파 ❌ / 위험 정직 인정한 공격 베팅 ⭕** · PAPER · 자본권한 0 · 나쁜공시 회피 필수.
+- **교수 제출본** = `PRAMANA_Final_Report_for_Submission.docx`(8세대 학술 포장·negative result + 엄격 방법론 = 기여).
+
 <!-- 새 실험 1줄 추가 지점 (날짜·실험명 → 결론) -->

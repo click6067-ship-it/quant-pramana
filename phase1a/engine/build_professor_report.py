@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""PRAMANA 교수 제출용 최종 보고서 (DOCX) — 8세대 연대기 학술 포장.
+negative result + 엄격한 방법론 = 정당한 연구 기여. python engine/build_professor_report.py"""
+import os
+from docx import Document; from docx.shared import Pt,RGBColor; from docx.enum.text import WD_ALIGN_PARAGRAPH
+HERE=os.path.dirname(os.path.abspath(__file__)); REPO=os.path.dirname(os.path.dirname(HERE))
+OUT=os.path.join(REPO,"PRAMANA_V4","PRAMANA_Final_Report_for_Submission.docx")
+d=Document()
+def H(t,l=1,c="1F3864"):
+    h=d.add_heading(t,level=l)
+    for r in h.runs: r.font.color.rgb=RGBColor.from_string(c)
+def P(t,b=False,sz=10.5,it=False,c=None):
+    p=d.add_paragraph(); r=p.add_run(t); r.bold=b; r.italic=it; r.font.size=Pt(sz)
+    if c: r.font.color.rgb=RGBColor.from_string(c)
+    return p
+def bullet(t,sz=10):
+    p=d.add_paragraph(style="List Bullet"); p.add_run(t).font.size=Pt(sz)
+def table(hdr,rows,style="Light Grid Accent 1"):
+    t=d.add_table(rows=1,cols=len(hdr)); t.style=style
+    for i,h in enumerate(hdr): t.rows[0].cells[i].paragraphs[0].add_run(h).bold=True
+    for row in rows:
+        c=t.add_row().cells
+        for i,v in enumerate(row):
+            c[i].text=str(v)
+            for pp in c[i].paragraphs:
+                for rr in pp.runs: rr.font.size=Pt(9)
+    return t
+
+d.add_heading("PRAMANA",0)
+P("솔로 + AI 체계적 주식 검증 운영체계(Systematic Equity Validation OS)와",True,13)
+P("사전등록 가설 8세대의 정직한 Negative Results에 관한 연구",True,13)
+P("— 레버리지·예측 모델 없이 SPY/QQQ 위험조정 초과 알파의 부재를 실증하고, 재사용 가능한 검증 프레임워크와 생존형 코어를 도출하다 —",False,10,it=True,c="808080")
+P("PAPER only · NO LIVE · 가상자본 ₩100M · 2026-06-13",False,9,c="808080")
+
+H("초록 (Abstract)",1)
+P("본 연구는 개인(solo) 연구자가 AI(LLM)를 보조 엔진으로 활용하여, 미국 주식·ETF를 대상으로 *검증 가능한* 체계적 알파를 탐색·검증하는 운영체계 PRAMANA를 구축한 기록이다. 핵심 방법론은 '데이터 정직성 → 비용 정직성 → 검증 통과 → 그 다음에야 모델 비교'라는 순서 잠금과, 모든 가설에 대한 **사전등록(pre-registration)·OOS·비용후·look-ahead 차단·적대적 AI 검수(adversarial council)·사전 kill 조건**의 일관 적용이다. 단순/선형 횡단면 팩터, 결합·트리·ML, 레버리지 베타, 4종의 마켓타이밍, intraday 급등주 setup, 그리고 정성(8-K 공시) 텍스트에 이르기까지 **8세대의 가설을 검증한 결과, 공개·저가 데이터 환경에서 개인이 SPY/QQQ를 위험조정 기준 반복적으로 초과하는 '매수형 알파'는 발견되지 않았다.** 이는 efficient market 가설, SPIVA(액티브 펀드 79%가 인덱스 미달), Gu-Kelly-Xiu(2020, ML 월 OOS R² 0.33–0.40%)와 정합하는 robust negative이다. 그러나 본 연구는 (1) 재사용 가능한 검증 OS, (2) 자체구축 PIT 벤치마크(실제 SPY와 corr 0.998), (3) 위험조정상 우월한 생존형 분산 코어(V7 4-sleeve), (4) 일관된 '악재 공시 회피' 필터, (5) 가짜 알파를 자본 투입 전에 제거하는 규율을 산출하였다.",False,10.5)
+
+H("1. 연구 배경 및 목적",1)
+P("'좋은 종목을 찍는 AI'가 아니라, **개인/소규모 팀이 AI와 함께 운영 가능한 체계적 주식 연구·검증·페이퍼 트레이딩 OS**를 구축하는 것이 목적이다. 통상의 퀀트 연구가 '모델을 먼저 고르고 백테스트가 좋게 나오는' 순서로 인해 비용 과소추정·미래정보 누수·생존편향에 취약하다는 문제의식에서 출발하여, 검증을 *모델보다 앞에* 두는 역순 설계를 채택했다.",False,10.5)
+
+H("2. 방법론 (Methodology) — 본 연구의 핵심 기여",1)
+P("알파의 *발견*이 아니라 알파 주장의 *반증 가능성(falsifiability)*을 방법론의 중심에 두었다.",False,10.5,it=True)
+for t in ["순서 잠금: data honesty → cost honesty → validation → then models (모델은 마지막).",
+          "사전등록(pre-registration): 모든 실험은 결과를 보기 *전에* 가설·비교군·kill 조건을 문서로 고정(goalpost 이동 = config-mining 금지).",
+          "Look-ahead 차단: next-bar 체결, PIT(point-in-time) 멤버십, acceptance-timestamp 기준 진입.",
+          "OOS·비용후: walk-forward + 최종 untouched holdout, 거래비용·턴오버·세금 반영.",
+          "적대적 AI 검수(Adversarial Council): Claude(설계) ↔ Codex(반증) 2모델이 look-ahead·survivorship·overfit·hidden-coupling을 상호 공격(no-echo).",
+          "다중검정 통제: trial registry·deflated Sharpe·DSR/PBO 개념 적용.",
+          "판정 라벨 분리: capital-veto(자본권한)와 research-veto(연구개방)를 분리 — 연구는 자본권한 0으로 개방."]:
+    bullet(t)
+
+H("3. 실험 연대기 (8세대) — 무엇을 검증했고 무엇이 죽었나",1)
+table(["세대","가설/접근","판정","핵심 근거"],[
+ ["v1","단순 횡단면 팩터(value/momentum/quality/lowvol)","FAIL","Rank IC ≈ 0 · quality decay(0.22→0.046)"],
+ ["v1","결합·ridge·GBM·tree","FAIL","OOS net vs cap-weight 음수 (GKX와 정합)"],
+ ["v1","event/earnings drift(숫자 surprise)","FAIL","net vs cap-weight −0.90%"],
+ ["v3","trend+LETF 위성·VRP·mean-reversion","REJECT/노이즈","+0.15%/yr 노이즈 · tail −92% · turnover 3660%"],
+ ["V4–V6","Core Beta · 레버드 베타 · 분산","알파 아님","V5 Sharpe≈QQQ(레버지 알파 아님)"],
+ ["V7","4-sleeve 분산 코어","생존코어(채택)","Sharpe 1.21·MDD −18% / 단 누적 절반"],
+ ["V8","Levered 4-sleeve","REJECT","닷컴 proxy −49%(레버 꼬리)"],
+ ["—","마켓타이밍 4종(regime/throttle/derisk/MT-1)","4전 4패","모두 static 4-sleeve 미달(후행신호 벽)"],
+ ["Alpha","intraday 급등주 setup(ORB/VWAP/RVOL)","DEAD","RVOL look-ahead 누수·강세장 베타"],
+ ["Alpha","8-K 정성 catalyst(POS) / (NEG)","POS FAIL / NEG 일관","사는 알파 없음 / 악재 회피는 일관 신호"],
+])
+
+H("4. 핵심 결과 (Results)",1)
+P("4.1 멀티앵커 성과 (비용후·in-sample) — 분산 코어 V7 vs 인덱스",True,10.5)
+table(["진입 시점","V7 4-sleeve","QQQ","SPY"],[
+ ["3개월","+4.6% / −5% / Sh 1.41","+20.2% / −7% / 3.42","+11.1% / −6% / 2.84"],
+ ["6개월","+8.4% / −7% / 1.29","+14.9% / −12% / 1.54","+7.7% / −9% / 1.17"],
+ ["12개월","+26.5% / −7% / 2.13","+35.3% / −12% / 1.85","+24.1% / −9% / 1.82"],
+ ["풀(2019~)","+174.9% / −18% / 1.21","+305% / −35% / 0.94","+186% / −34% / 0.86"],
+])
+P("→ V7은 모든 구간에서 누적수익을 인덱스에 양보하는 대신 MDD를 절반으로 줄이고 위험조정(Sharpe)을 개선한다. 즉 '초과수익(알파)'이 아니라 '위험효율(분산 프리미엄)'이며, 최대복리 목적함수에서는 인덱스가 우월하다.",False,10,it=True)
+P("4.2 메타 패턴 (가장 중요한 발견)",True,10.5)
+P("모든 횡단면 신호군이 1/N(동일가중)은 이기지만 cap-weight(시가총액 가중) 인덱스는 이기지 못했다. 일관된 원인은 2016–2026년의 '메가캡 지배 레짐'이다. 횡단면 틸트는 *신호의 우열과 무관하게* 이미 지배적인 소수 초대형주를 덜 담게 되므로 cap-weight 인덱스에 구조적으로 진다. 즉 패배는 '신호 부재'가 아니라 '벤치마크 구조'에서 기인한다.",False,10.5)
+P("4.3 정성(8-K) 결과 — 비대칭",True,10.5)
+P("좋은 공시(계약·실적) 매수는 OOS에서 실패(이미 가격 반영)한 반면, 나쁜 공시(희석·회계 문제·상폐위험)는 후폭풍이 수일간 지속되어 −0.75%의 일관된 음(−)의 drift를 보였다. → '사는 신호'는 없고 '피하는 필터'는 존재한다.",False,10.5)
+
+H("5. 논의 (Discussion) — 왜 개인이 어려운가",1)
+for t in ["정보이론적 한계: 모델은 정보를 *추출*할 뿐 *창조*하지 않는다. 공개·정형 데이터에 잔존 알파가 작으면 어떤 ML도 한계를 넘지 못한다(GKX 월 OOS R² ≈ 0.4%).",
+          "벤치마크의 강도: SPY/QQQ는 '평균 개인'이 아니라 시장 집단지성·초저비용·세금효율·승자 비중확대를 내장. 프로 79%(SPIVA)도 미달.",
+          "산업 vs 개인: XTX·Jane Street 등은 단일 모델이 아니라 미세구조·유동성공급·초저지연 체결·독점데이터·자본·조직의 *시스템*으로 수익을 낸다. 개인이 공개데이터로 복제 불가능한 게임이다.",
+          "개인의 잔존 우위: (1) 행동 우위(폭락에서 매도하지 않는 규율), (2) 제약 우위(기관이 못 드는 극소형), (3) 정성 해석(LLM 보조), (4) 리스크 구조(생존형 분산). — 단 (1)·(4)가 실현수익에 가장 크게 기여."]:
+    bullet(t)
+
+H("6. 결론 (Conclusion)",1)
+P("공개·저가 데이터 환경에서 개인이 SPY/QQQ를 위험조정 기준 반복적으로 초과하는 매수형 알파는 발견되지 않았다(8세대 robust negative). 그러나 본 연구는 실패가 아니라 *증명 완료*이며, 다음을 산출하였다: ① 재사용 검증 OS, ② PIT 벤치마크(corr 0.998), ③ 위험효율 우월한 생존형 코어 V7, ④ 악재 공시 회피 필터, ⑤ 가짜 알파를 자본 투입 전에 제거하는 규율. 최종적으로 프로젝트는 위험을 정직하게 인정한 공격형 페이퍼 구조 **PRAMANA A1 — Catalyst Confirmed Attack Book**(레버 ETF 없이 이벤트·정성 catalyst·비대칭 베팅으로 QQQ 초과를 *시도*; 검증된 알파가 아닌 위험예산 기반 베팅)으로 재정의된다.",False,10.5)
+
+H("7. 한계 및 향후 과제 (Limitations)",1)
+for t in ["표본 기간(2016–2026)은 메가캡·저변동성 레짐에 편향 — 닷컴/2008은 proxy로만, forward MDD 과소추정 가능.",
+          "in-sample/benign sample 위의 결론 — 모든 채택은 paper·자본권한 0·12개월 forward·2-feed reconciliation·사람 게이트 전 자본 금지.",
+          "정성(LLM) 축은 baseline까지만 검증 — delayed recognition·LLM catalyst grade는 forward 관찰 대상.",
+          "공매도·옵션·극소형은 솔로 실행 제약으로 미검증."]:
+    bullet(t)
+
+H("8. 학술적 기여 (Contribution)",1)
+P("본 연구의 기여는 '알파를 찾았다'가 아니라 '솔로+공개데이터 환경에서 알파의 부재를 *엄격한 사전등록·OOS·비용후·적대적 검수로 robust하게 실증*하고, 재사용 가능한 검증 프레임워크를 구축했다'는 데 있다. Negative result이되 방법론적 엄밀성과 재현성(clone 후 2-command 재현·데이터 해시 동결)을 갖춘 정직한 연구이며, AI(LLM)를 *예측 엔진이 아니라 적대적 검수·정성 구조화 보조*로 위치시킨 운영 모델을 제시한다.",False,10.5)
+
+P("",False,6)
+P("부속 자료: PRAMANA_Lineage_Dossier.docx(v1~V8 계보·LOCK) · PRAMANA_All_Experiments_Ledger.md · PRAMANA_Conclusions_OneLine.md · PRAMANA_A1_Attack_Book_Final.md · 라이브 대시보드(outputs/*.html) · 코드/데이터 repo(PAPER, no live).",False,8.5,it=True,c="808080")
+d.save(OUT)
+print("✅ 교수 제출용 보고서:",OUT)
+if __name__=="__main__": pass

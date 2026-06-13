@@ -1,6 +1,12 @@
 # PROJECT_STATE — PRAMANA V4
-> 현재 상태 스냅샷. **갱신일: 2026-06-12.** 상태가 바뀌면 이 파일부터 갱신. *Codex: 이 날짜가 오늘과 많이 떨어졌으면 먼저 "stale 가능" 경고하고 시작.*
+> 현재 상태 스냅샷. **갱신일: 2026-06-13.** 상태가 바뀌면 이 파일부터 갱신. *Codex: 이 날짜가 오늘과 많이 떨어졌으면 먼저 "stale 가능" 경고하고 시작.*
 > 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
+
+## ⛳ 프로젝트 마무리 (2026-06-13 · 용하 확정 — 최상위 상태)
+- **PRAMANA Core = 졸업.** 솔로가 공개 데이터로 SPY/QQQ를 위험조정 초과하는 '사는' 알파 = 미발견(8세대 robust negative). 알파 사냥 종료 · 8세대 원장 = Research Archive(재오픈 금지·무한루프 차단).
+- **최종 형태 = PRAMANA A1 Catalyst Confirmed Attack Book** (`PRAMANA_V4/PRAMANA_A1_Attack_Book_Final.md`): 레버 ETF 없이 이벤트·정성 catalyst·비대칭 베팅으로 QQQ 초과 *시도*. 배분 **Core 40 / Attack 30 / Moonshot 15 / Cash 15.** ★ **검증된 알파 ❌ / 위험을 정직하게 인정한 공격 베팅 ⭕** · PAPER · 자본권한 0 · 나쁜공시 회피 필수 · catalyst=총알 / ORB·VWAP·RVOL=방아쇠.
+- **교수 제출본** = `PRAMANA_V4/PRAMANA_Final_Report_for_Submission.docx`(8세대 학술 포장) · **종합 라이브 대시보드** = `phase1a/outputs/pramana_dashboard.html`(+ v7_forward_dashboard.html 매일 갱신).
+- 아래 V7/V8/Alpha Lab/마켓타이밍 상태는 모두 A1의 구성요소(Base Core / Attack / Moonshot / Negative Filter)로 흡수됨 — 사실관계로 유지.
 
 ## 한 줄
 **최신 = V7 Paper Core Candidate = 4-sleeve** (GPT+Claude 수렴·Codex 검수 SHIP-as-paper/REVISE 반영·RESEARCH_ONLY/PRODUCTION_UNSAFE): Equity 50%(SPY/QQQ) + Managed-Futures 25%(DBMF) + Gold 15%(GLD) + Bonds 10%(IEF)·기본 1.0x. **회피기동 = 코어 대전환(QQQ↔4-sleeve 마켓타이밍·데이터로 짐)이 아니라 구조적 분산(4-sleeve).** 위험신호 throttle도 **crash-pack 검증서 기각=대시보드 전용 확정**(brake-only throttle이 static 4-sleeve 못 이김). "Production"은 Promotion Gates(crash-pack+12mo forward+2-feed+attribution+사람 게이트) 통과 후만.
