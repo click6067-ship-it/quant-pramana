@@ -14,7 +14,16 @@ DASH=os.path.join(ROOT,"outputs","v7_forward_dashboard.html"); CAP=100_000_000; 
 TICK=["SPY","QQQ","DBMF","GLD","IEF"]
 W={"SPY":0.25,"QQQ":0.25,"DBMF":0.25,"GLD":0.15,"IEF":0.10}   # 4-sleeve(Equity50=SPY/QQQ·MF25·Gold15·Bond10)
 def pull():
-    import yfinance as yf
+    KEY=os.path.join(ROOT,".ndl_key")  # Sharadar(유료·PIT) 우선 — ETF=SFP closeadj
+    try:
+        import nasdaqdatalink as ndl
+        ndl.ApiConfig.api_key=open(KEY).read().strip()
+        d=ndl.get_table("SHARADAR/SFP",ticker=TICK,paginate=True)
+        if len(d):
+            px=d.pivot(index="date",columns="ticker",values="closeadj").sort_index(); px.index=pd.to_datetime(px.index)
+            if all(t in px.columns for t in TICK): return px.dropna(how="all")
+    except Exception: pass
+    import yfinance as yf  # fallback
     df=yf.download(TICK,period="600d",interval="1d",auto_adjust=True,progress=False)
     return (df["Close"] if isinstance(df.columns,pd.MultiIndex) else df).dropna(how="all")
 def risk_mode(spy,sma,vol,dd):  # Market Risk Score (정보용)

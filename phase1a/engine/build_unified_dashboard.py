@@ -14,8 +14,16 @@ OUT=os.path.join(ROOT,"outputs","pramana_unified.html")
 
 # ── 데이터 (ETF EOD·구조 비교 시각화용) ──
 def get_px():
+    try:  # Sharadar(유료·PIT) 우선 — ETF=SFP closeadj
+        import nasdaqdatalink as ndl
+        ndl.ApiConfig.api_key=open(os.path.join(ROOT,".ndl_key")).read().strip()
+        d=ndl.get_table("SHARADAR/SFP",ticker=["SPY","QQQ","DBMF","GLD","IEF"],paginate=True)
+        if len(d):
+            px=d.pivot(index="date",columns="ticker",values="closeadj").sort_index(); px.index=pd.to_datetime(px.index)
+            if px.shape[1]>=4: return px.dropna()
+    except Exception: pass
     try:
-        import yfinance as yf
+        import yfinance as yf  # fallback
         df=yf.download(["SPY","QQQ","DBMF","GLD","IEF"],period="2500d",auto_adjust=True,progress=False)
         c=df["Close"] if isinstance(df.columns,pd.MultiIndex) else df
         c=c.dropna()

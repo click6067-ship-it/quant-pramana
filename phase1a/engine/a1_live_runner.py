@@ -22,12 +22,29 @@ def loadj(p,d):
         except: return d
     json.dump(d,open(p,"w"),indent=2); return d
 def pull(tickers):
+    """Sharadar(유료·PIT) 우선 — ETF=SFP·개별주=SEP·closeadj / 실패 시 yfinance fallback. (출처, df) 반환."""
+    KEY=os.path.join(ROOT,".ndl_key")
+    try:
+        import nasdaqdatalink as ndl
+        ndl.ApiConfig.api_key=open(KEY).read().strip()
+        frames=[]; etfs=[t for t in tickers if t in CORE_TICK]; stocks=[t for t in tickers if t not in CORE_TICK]
+        if etfs:
+            d=ndl.get_table("SHARADAR/SFP",ticker=etfs,paginate=True)
+            if len(d): frames.append(d.pivot(index="date",columns="ticker",values="closeadj"))
+        if stocks:
+            d=ndl.get_table("SHARADAR/SEP",ticker=stocks,paginate=True)
+            if len(d): frames.append(d.pivot(index="date",columns="ticker",values="closeadj"))
+        if frames:
+            px=pd.concat(frames,axis=1).sort_index(); px.index=pd.to_datetime(px.index)
+            if all(t in px.columns for t in CORE_TICK): return px.dropna(how="all"),"Sharadar(유료·PIT)"
+    except Exception: pass
     import yfinance as yf
     df=yf.download(tickers,period="600d",interval="1d",auto_adjust=True,progress=False)
-    c=df["Close"] if isinstance(df.columns,pd.MultiIndex) else df.rename(columns={df.columns[0] if not isinstance(df.columns,pd.MultiIndex) else None:tickers[0]})
-    return c.dropna(how="all") if hasattr(c,"dropna") else c
+    c=df["Close"] if isinstance(df.columns,pd.MultiIndex) else df
+    if isinstance(c,pd.Series): c=c.to_frame(tickers[0])
+    return c.dropna(how="all"),"yfinance(fallback)"
 def main():
-    dry="--dry" in sys.argv
+    dry="--dry" in sys.argv; DATASRC="cache/dry"
     attack=loadj(ATTACK_F,[]); moon=loadj(MOON_F,[])
     pos_tk=sorted({p["ticker"] for p in attack+moon if p.get("ticker")})
     alltk=CORE_TICK+[t for t in pos_tk if t not in CORE_TICK]
@@ -35,7 +52,7 @@ def main():
     if dry and hist is not None: px=hist
     elif dry: print("no cache — run live once first"); return
     else:
-        new=pull(alltk)
+        new,DATASRC=pull(alltk)
         if isinstance(new,pd.Series): new=new.to_frame(alltk[0])
         px=new if hist is None else pd.concat([hist,new[~new.index.isin(hist.index)]]).sort_index()
         px=px[~px.index.duplicated(keep="last")]; px.to_csv(PRICES)
@@ -74,7 +91,7 @@ def main():
     qup=qqq.iloc[-1]/CAP-1; sup=spy.iloc[-1]/CAP-1
     # ── state·log (append-only) ──
     state.update({"last_run":today,"nav":nav,"total_ret":tot,"core_val":core_val,"attack_val":a_val,"moonshot_val":m_val,"cash_val":cash_val,
-                  "n_attack":len(attack),"n_moonshot":len(moon)}); json.dump(state,open(STATE,"w"),indent=2)
+                  "n_attack":len(attack),"n_moonshot":len(moon),"data_source":DATASRC}); json.dump(state,open(STATE,"w"),indent=2)
     row=pd.DataFrame([{"date":today,"nav":nav,"core":core_val,"attack":a_val,"moonshot":m_val,"cash":cash_val,"qqq":float(qqq.iloc[-1]),"spy":float(spy.iloc[-1])}])
     if os.path.exists(LOG):
         old=pd.read_csv(LOG); old=old[old["date"]!=today]; pd.concat([old,row]).to_csv(LOG,index=False)
@@ -104,7 +121,7 @@ table{{width:100%;border-collapse:collapse;font-size:.85em}} th{{background:#111
 .bar{{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0}} .bar div{{display:flex;align-items:center;justify-content:center;font-size:.7em;font-weight:700}}
 .warn{{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:12px 15px;color:#fde68a;font-size:.84em}}</style></head><body>
 <div class=wrap><h1>🔴 PRAMANA A1 — Catalyst Confirmed Attack Book<span class=badge>ATTACK</span><span class="badge b2">PAPER</span><span class="badge b3">가상 ₩1억</span></h1>
-<p style='color:#94a3b8'>업데이트 {today}·인셉션 {state['inception']}·배분 <b>Core 40 / Attack 30 / Moonshot 15 / Cash 15</b>·forward 가격=yfinance EOD. 목표=레버 ETF 없이 QQQ 초과 <i>시도</i>(검증된 알파 아님).</p>
+<p style='color:#94a3b8'>업데이트 {today}·인셉션 {state['inception']}·배분 <b>Core 40 / Attack 30 / Moonshot 15 / Cash 15</b>·데이터={DATASRC}. 목표=레버 ETF 없이 QQQ 초과 <i>시도</i>(검증된 알파 아님).</p>
 <div class=kpis>
 <div class=kpi><div class=l>총 NAV</div><div class="v {'pos' if tot>=0 else 'neg'}">{won(nav)}</div></div>
 <div class=kpi><div class=l>총수익</div><div class="v {'pos' if tot>=0 else 'neg'}">{tot*100:+.2f}%</div></div>
