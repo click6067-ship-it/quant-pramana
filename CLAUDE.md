@@ -18,7 +18,7 @@
 - 회피기동 = **Macro Emergency Override**(공격 파트만 차단+사람 게이트·코어 1.0x 면역·후행). 정본 = `PRAMANA_V4/PRAMANA_Lineage_Dossier.docx`(v1~V8·LOCK A~E).
 
 ## 영구 사실
-- 데이터: **Sharadar(유료)=backtest, yfinance(무료)=forward 데모/sanity만.**
+- 데이터: **Sharadar(유료·PIT)=backtest + forward/라이브 primary**(구독중·SFP=ETF·SEP=주식 closeadj·최신 2026-06-12 확인)·**yfinance=fallback/sanity.** (2026-06-13 용하: 결제 데이터 항상 사용 — 구독 만료 시 yfinance fallback·라이브 러너 자동 전환.)
 - PAPER only / NO LIVE · US only · core-satellite · next-bar · attribution 필수 · 결정적 risk veto 최종 · LLM/TSFM off-path · 사람=자본 게이트.
 
 ## 상태 갱신 규율 (staleness 방지 — 유일한 실패점)

@@ -25,7 +25,7 @@ refuse cosmetic fixes when architecture is flawed · separate **production-safe*
 - 정본 계보+LOCK = `PRAMANA_V4/PRAMANA_Lineage_Dossier.docx`(v1~V8·불변 LOCK A~E).
 
 ## ⚠️ Permanent facts — 절대 틀리지 말 것 (과거에 헷갈린 것)
-- **데이터: Sharadar(유료)=backtest primary. yfinance(무료)=forward-paper 데모/sanity 전용.** 실자본 전=2 독립피드+브로커 대조. → *"무료 데이터 쓴다"고 단정 금지.*
+- **데이터: Sharadar(유료·PIT)=backtest + forward/라이브 primary**(구독중·SFP=ETF·SEP=주식 closeadj·최신 2026-06-12 확인)·**yfinance=fallback/sanity.** 실자본 전=2 독립피드+브로커 대조. → *"무료 데이터만 쓴다"고 단정 금지(유료 Sharadar 라이브 사용중·2026-06-13 용하 지시).*
 - signal≠order · alpha≠position · **결정적 risk engine=최종 veto** · **LLM/TSFM 직접 트레이딩 금지**(off-path 보조만) · 사람=자본 게이트 · next-bar 실행 · attribution 필수 · baseline 우선.
 
 ## Response Mode (default = adversarial counsel)
