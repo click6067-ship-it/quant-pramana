@@ -9,7 +9,7 @@ GEN=[("v1","단순 횡단면 팩터 (value/mom/quality/lowvol)","FAIL","Rank IC 
 ("v1","결합·ridge·GBM·tree","FAIL","OOS net vs cap-weight 음수"),
 ("v3","trend+LETF·VRP·reversal","REJECT","노이즈·tail −92%·turnover 3660%"),
 ("V4–V6","Core Beta·레버드·분산","알파 아님","V5 Sharpe≈QQQ (레버지 알파 아님)"),
-("V7","4-sleeve 분산 코어","생존코어 ✓","Sharpe 1.21·MDD −18%"),
+("V7","4-sleeve 분산 코어","backtest 생존 후보","Sharpe 1.21·MDD −18%·닷컴 proxy −39%·prod-unsafe"),
 ("V8","Levered 4-sleeve","REJECT","닷컴 proxy −49%"),
 ("MT","마켓타이밍 4종","4전 4패","후행신호 벽"),
 ("Alpha","intraday ORB/VWAP/RVOL","DEAD","look-ahead·강세장 베타"),
@@ -48,7 +48,7 @@ th{{background:#1e293b;color:#94a3b8;text-align:left;padding:9px 11px;font-weigh
 <h2>① 실험 연대기 — 8세대 (무엇이 죽었나)</h2>
 <table><tr><th>세대</th><th>접근</th><th>판정</th><th>근거</th></tr>{rows}</table>
 
-<h2>② 멀티앵커 성과 — V7 생존코어 vs 인덱스 (비용후)</h2>
+<h2>② 멀티앵커 성과 — V7 backtest 생존 후보 vs 인덱스 (비용후·in-sample)</h2>
 <table><tr><th>진입</th><th>V7 수익</th><th>V7 MDD</th><th>V7 Sharpe</th><th>QQQ</th><th>SPY</th></tr>{arows}</table>
 <p style="font-size:12px;color:#94a3b8;margin-top:8px">→ V7은 누적을 양보하는 대신 MDD 절반·Sharpe 개선. <b>알파(초과수익)가 아니라 위험효율(분산 프리미엄)</b> — 최대복리 목적이면 인덱스 우월.</p>
 
@@ -58,7 +58,7 @@ th{{background:#1e293b;color:#94a3b8;text-align:left;padding:9px 11px;font-weigh
 
 <h2>④ 건진 자산 (8세대의 산출물)</h2>
 <div class=cards>
-<div class=card><h3>V7 생존 코어</h3><p>4-sleeve 분산 · Sharpe 1.21 · MDD −18% · 완전 파산 방지</p></div>
+<div class=card><h3>V7 backtest 생존 후보</h3><p>4-sleeve 분산 · Sharpe 1.21 · MDD −18% · 닷컴 proxy −39% · production-safe 아님</p></div>
 <div class=card><h3>나쁜-공시 회피 필터</h3><p>8세대 중 유일한 일관 신호(−0.75%) · 사는 알파 아닌 지뢰 제거</p></div>
 <div class=card><h3>가짜-알파 면역</h3><p>가짜 알파를 자본 투입 전 paper로 제거 · 무한루프 차단</p></div>
 <div class=card><h3>재사용 검증 OS</h3><p>PIT 벤치(corr 0.998) · trial registry · DSR/PBO · data gate</p></div>
