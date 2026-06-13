@@ -2,7 +2,7 @@
 """PRAMANA A2 v3 — Convex Raider (discretionary-systematic hybrid·가상 ₩1억).
 듀얼 추적: A2-T(QQQ/TQQQ 동적) vs A2-Q(TQQQ 없음·QQQ 중심) → TQQQ가 횡보 decay 넘는 값을 하나 데이터 판정.
 동적 allocator(Leadership/Decay→모드→비중 천이 10%p/일·position-sizing alpha) + Profit Vault(alpha-timing·In/Out) + naive 판정선.
-Attack/Moonshot = positions ledger(2단계 연료·현재 cash). 대시보드: y=계좌금액(₩1억·시작월 평균 정규화)·비교 A2-T/A2-Q/QQQ/SPY/TQQQ.
+Attack/Moonshot = positions ledger(2단계 연료·현재 cash). 대시보드: y=계좌금액(₩1억·첫 거래일 종가 기준·Codex #6)·비교 A2-T/A2-Q/QQQ/SPY/TQQQ.
 PAPER·자본0·V7/A1 독립. 사용: python engine/a2_live_runner.py [--dry]"""
 import os, sys, json, datetime as dt, numpy as np, pandas as pd
 import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import io, base64
@@ -87,7 +87,7 @@ def main():
             mo=px.index[i].to_period("M"); wk=int(px.index[i].isocalendar()[1])
             if mo!=cur_mo: cur_mo=mo; m_moved=0.0
             if wk!=cur_wk: cur_wk=wk; w_moved=0.0
-            m=(mds[i-1] if (udyn and i>0) else "base"); mw=aw.get(m,aw["base"])   # 전일 신호(look-ahead 차단)
+            m=(mds[i-2] if (udyn and i>1) else "base"); mw=aw.get(m,aw["base"])   # close-only 보수적 next-bar(Codex #1): 신호 close_{t-2} → close_{t-1}→close_t 적용 = same-close 제거
             dq=float(np.clip(mw["qqq"]-qw,-shift,shift)); dt=float(np.clip(mw.get("tqqq",0.0)-tw,-shift,shift))
             mag=abs(dq)+abs(dt); room=max(0.0,wcap-w_moved)
             if mag>room and mag>1e-12: dq*=room/mag; dt*=room/mag   # weekly 10%p 제한
@@ -147,7 +147,7 @@ def main():
         plt.plot(S[k].index,S[k]/1e8,label=k,lw=2.6 if k=="A2-T" else (2.0 if k=="A2-Q" else 1.2),color=COL[k],ls="-" if k.startswith("A2") else "--")
     try: plt.axvline(pd.Timestamp(state["inception"]),color="#475569",ls=":",lw=1)
     except: pass
-    plt.legend(framealpha=.2,ncol=5,fontsize=8); plt.title("PRAMANA A2 — A2-T(TQQQ) vs A2-Q(no TQQQ) vs QQQ·SPY·TQQQ · 계좌금액(₩1억·시작월평균)",color="#e5e7eb"); plt.ylabel("계좌금액(억원)")
+    plt.legend(framealpha=.2,ncol=5,fontsize=8); plt.title("PRAMANA A2 — A2-T(TQQQ) vs A2-Q(no TQQQ) vs QQQ·SPY·TQQQ · 계좌금액(₩1억·첫거래일 기준)",color="#e5e7eb"); plt.ylabel("계좌금액(억원)")
     b=io.BytesIO(); f.savefig(b,format="png",dpi=95,bbox_inches="tight",facecolor="#0d1326"); plt.close(f); ch=base64.b64encode(b.getvalue()).decode()
     def won(x): return f"₩{x/1e8:.3f}억"
     rc={"GREEN":"#34d399","YELLOW":"#fbbf24","RED":"#f87171"}[leadlbl]; mc={"base":"#34d399","red_king":"#fbbf24","attack_lockout":"#fb923c","crash_lockout":"#f87171","berserker":"#22d3ee"}.get(cur_mode,"#94a3b8")
@@ -177,7 +177,7 @@ table{{width:100%;border-collapse:collapse;font-size:.82em}} th{{background:#111
 <div class=kpi><div class=l>regime</div><div class="v" style="color:{mc};font-size:.95em">{cur_mode}</div></div></div>
 <div class=card><img src="data:image/png;base64,{ch}"></div>
 <div class="verdict" style="background:{'#0a1f17' if (beat_qqq and beat_naive and beat_a2q) else '#1a0e0e'};border:1px solid {'#16a34a' if (beat_qqq and beat_naive and beat_a2q) else '#7f1d1d'}">
-{'✅' if beat_qqq else '❌'} vs QQQ · {'✅' if beat_naive else '❌'} vs naive · {'✅' if beat_a2q else '❌'} vs A2-Q(no TQQQ) — <b>셋 다 이겨야 TQQQ+동적이 값을 함. TQQQ 순기여 {decay_drag*100:+.0f}%p {'(TQQQ 값함)' if decay_drag>0 else '(decay가 잡아먹음 → A2-Q가 나음)'}</b></div>
+{'✅' if beat_qqq else '❌'} vs QQQ · {'✅' if beat_naive else '❌'} vs naive · {'✅' if beat_a2q else '❌'} vs A2-Q(no TQQQ) — <b style="color:#f87171">동적 allocator v3 = REJECT</b> (2016~ benign·무비용서도 fixed 대비 {dyn_contrib*100:+.0f}%p) · TQQQ 순기여 {decay_drag*100:+.0f}%p · <span style="color:#94a3b8">"동적 마켓타이밍 일반 사망"까지 확장 금지(Codex #5)</span></div>
 <h2>📈 진입 시점별 (3년/12/6/3개월·계좌금액 기준)</h2>
 <div class=card><table><tr><th>진입</th><th class=cyan>A2-T</th><th class=grn>A2-Q</th><th class=viol>QQQ</th><th class=amber>SPY</th><th class=pink>TQQQ</th><th>naive</th></tr>{arows}</table></div>
 <h2>🚦 Risk Dashboard <span style="color:#64748b;font-size:.7em">(정보용·신규/증액 게이트·LLM Council=2단계)</span></h2>
