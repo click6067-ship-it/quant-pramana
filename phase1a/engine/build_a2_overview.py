@@ -4,6 +4,7 @@
 import os, json, pandas as pd
 sys=__import__("sys"); sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kfont import set_korean_font; set_korean_font()
+import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import io, base64, numpy as np
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE); OUT=os.path.join(ROOT,"outputs","a2_overview.html")
 def lj(p):
     try: return json.load(open(p))
@@ -14,6 +15,25 @@ war=lj(os.path.join(A2,"war_plan.json")); vault=lj(os.path.join(A2,"positions","
 try: cands=pd.read_csv(os.path.join(A2,"attack_candidates.csv"))
 except: cands=pd.DataFrame()
 def pct(x): return f"{x*100:+.1f}%" if isinstance(x,(int,float)) else "—"
+def chart():
+    p=os.path.join(A2,"prices.csv")
+    if not os.path.exists(p): return ""
+    px=pd.read_csv(p,index_col=0,parse_dates=True).dropna()
+    if not all(c in px.columns for c in ["QQQ","TQQQ","SPY"]): return ""
+    qr=px["QQQ"].pct_change().fillna(0); tr=px["TQQQ"].pct_change().fillna(0); CAP=1e8
+    w=lambda s: CAP*s/s.iloc[0]
+    S={"A2-T(고정35/35)":w((1+0.35*qr+0.35*tr).cumprod()),"A2-Q(QQQ55)":w((1+0.55*qr).cumprod()),
+       "QQQ":w((1+qr).cumprod()),"SPY":w((1+px["SPY"].pct_change().fillna(0)).cumprod()),"TQQQ":w((1+tr).cumprod())}
+    plt.style.use("dark_background"); plt.rcParams.update({"axes.facecolor":"#0d1326","figure.facecolor":"#0d1326","grid.alpha":.15,"font.size":9})
+    f=plt.figure(figsize=(10.5,3.9)); C={"A2-T(고정35/35)":"#22d3ee","A2-Q(QQQ55)":"#34d399","QQQ":"#a78bfa","SPY":"#f59e0b","TQQQ":"#ec4899"}
+    for k in ["TQQQ","QQQ","SPY","A2-Q(QQQ55)","A2-T(고정35/35)"]:
+        plt.plot(S[k].index,S[k]/1e8,label=k,lw=2.5 if "A2-T" in k else 1.3,color=C[k],ls="-" if "A2" in k else "--")
+    inc=lj(os.path.join(A2,"state.json")).get("inception")
+    if inc:
+        try: plt.axvline(pd.Timestamp(inc),color="#64748b",ls=":",lw=1); plt.text(pd.Timestamp(inc),plt.ylim()[1]*0.9,"라이브 시작",color="#94a3b8",fontsize=7)
+        except: pass
+    plt.legend(framealpha=.2,fontsize=8); plt.title("A2(동적OFF 고정) vs QQQ·SPY·TQQQ — 계좌금액(₩1억·첫거래일 기준·백테스트 2016~·강세장 편향)",color="#e5e7eb"); plt.ylabel("계좌금액(억원)")
+    b=io.BytesIO(); f.savefig(b,format="png",dpi=95,bbox_inches="tight",facecolor="#0d1326"); plt.close(f); return base64.b64encode(b.getvalue()).decode()
 
 phases=[("0 무결성","next-bar·live/backtest·to_won·capital accounting","✅"),
         ("A Vault ledger","forward vault.json·노출차감·Hard70/Reload30·주1회/월10%","✅"),
@@ -39,6 +59,7 @@ if len(cands):
         crows+=f'<tr><td>{r["ticker"]}</td><td>{r.get("grade","?")}</td><td>{r.get("rvol","?")}</td><td>{"위" if r.get("vwap_above") else "아래"}</td><td>{"O" if r.get("orb_break") else "X"}</td><td>{r.get("blocked","")[:30]}</td></tr>'
 else: crows='<tr><td colspan=6 style="text-align:center;color:#64748b">후보 없음(Leadership RED→Attack LOCKED·정상)</td></tr>'
 
+ch=chart()
 html=f"""<!doctype html><html lang=ko><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>PRAMANA A2 종합</title><style>
 *{{box-sizing:border-box;margin:0;padding:0}} body{{background:#070b16;color:#e5e7eb;font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;line-height:1.55}}
@@ -79,7 +100,7 @@ iframe{{width:100%;height:1450px;border:0;border-radius:12px;background:#070b16}
 <table><tr><th>검수</th><th>지적</th><th>처리</th></tr>{crow}</table>
 
 <h2>📈 A2 라이브 차트 (백테스트 vs 라이브·sleeve)</h2>
-<iframe src="a2_live_dashboard.html"></iframe>
+<img src="data:image/png;base64,{ch}" style="width:100%;border-radius:12px">
 <p style="color:#64748b;font-size:.8em;margin-top:8px">↑ 안 보이면 <a href="a2_live_dashboard.html">새 탭</a> · 다른 북: <a href="pramana_unified.html">통합(v1~v7+A1)</a> · <a href="v7_forward_dashboard.html">V7</a> · <a href="a1_live_dashboard.html">A1</a></p>
 <p style="color:#475569;font-size:.72em;margin-top:14px;text-align:center">PRAMANA A2 · PAPER only·자본권한 0 · 동적 OFF·고정 35/35 + Attack/Moonshot + forward Vault · 미니PC 배포(deploy_minipc.sh)가 마지막</p>
 </div></body></html>"""
