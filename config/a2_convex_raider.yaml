@@ -1,40 +1,59 @@
-# PRAMANA A2 — Convex Raider v2 config (파라미터 중앙화)
+# PRAMANA A2 v3 — Convex Raider (discretionary-systematic hybrid: 규칙 + LLM 판단 + 사용자 승인 + paper ledger)
+label: "discretionary-systematic hybrid paper book (검증된 알파 아님)"
 capital: 100000000
-inception: "2026-05-12"        # 라이브 paper 시작 마커(백테스트는 전체 history)
-spy_excluded: true            # A2는 SPY 퇴출 — 벤치마크로만 표시
+inception: "2026-05-12"
+spy_excluded: true
+dynamic_mode_enabled: true     # 동적 비중 = position-sizing alpha 실험 (코어 전환 아님). config로 OFF 비교 가능.
 
-# ── 동적 모드 ON/OFF (위험(a) 안전장치: 동적 비중 = 마켓타이밍 실험이라 끄고 비교 가능) ──
-dynamic_mode_enabled: true
+# ── A2-T (TQQQ 사용·QQQ/TQQQ 동적) ──
+allocation_a2t:
+  base:           {qqq: 0.35, tqqq: 0.35}
+  berserker:      {qqq: 0.30, tqqq: 0.45}
+  red_king:       {qqq: 0.40, tqqq: 0.25}
+  attack_lockout: {qqq: 0.35, tqqq: 0.35}
+  crash_lockout:  {qqq: 0.35, tqqq: 0.10}
 
-# ── 모드별 목표비중 (QQQ/TQQQ가 핵심·나머지는 Attack/Moonshot/Vault budget = positions 없으면 cash) ──
-allocation:
-  base:           {qqq: 0.35, tqqq: 0.35, attack: 0.10, moonshot: 0.10, vault: 0.10}
-  berserker:      {qqq: 0.30, tqqq: 0.45, attack: 0.15, moonshot: 0.05, vault: 0.05}
-  red_king:       {qqq: 0.40, tqqq: 0.25, attack: 0.05, moonshot: 0.05, vault: 0.25}
-  attack_lockout: {qqq: 0.35, tqqq: 0.35, attack: 0.00, moonshot: 0.00, vault: 0.30}
-  crash_lockout:  {qqq: 0.35, tqqq: 0.10, attack: 0.00, moonshot: 0.00, vault: 0.55}
+# ── A2-Q (TQQQ 없음·QQQ 중심 공격형·shadow 비교) ──
+allocation_a2q:
+  base:           {qqq: 0.55, tqqq: 0.0}
+  berserker:      {qqq: 0.60, tqqq: 0.0}
+  red_king:       {qqq: 0.40, tqqq: 0.0}
+  attack_lockout: {qqq: 0.55, tqqq: 0.0}
+  crash_lockout:  {qqq: 0.30, tqqq: 0.0}
 
-daily_max_shift_pp: 0.10       # 하루 최대 비중 변화 10%p
-tqqq_hard_cap: 0.50
+# ── sleeve 허용범위 (rule engine clamp·LLM은 신호만·숫자는 룰) ──
+sleeve_ranges:
+  qqq: [0.25, 0.45]
+  tqqq: [0.15, 0.45]
+  attack: [0.0, 0.20]
+  moonshot: [0.0, 0.15]
+  vault: [0.05, 0.30]
 
-# ── Risk Dashboard 임계 ──
-leadership: {green_max: 10, yellow_max: 20}   # 0~10 GREEN · 11~20 YELLOW · 21+ RED (메가캡 10종×3점)
-tqqq_decay: {qqq_20d_range: 0.03, vol_threshold: 0.25}   # 횡보(±3%)+고변동(>25%) = decay zone
+daily_max_shift_pp: 0.10
+leadership: {green_max: 10, yellow_max: 20}
+tqqq_decay: {qqq_20d_range: 0.03, vol_threshold: 0.25}
 beta_governor_warn: 1.6
 
-# ── Profit Vault (excess high-water mark 기반) ──
+# ── Profit Vault = alpha-timing engine (고정 기계 아님) ──
 vault:
   base_pct: 0.10
-  thresholds:                  # excess HWM(%p) 도달 → 신규 초과분 비율
+  vault_in:                    # 이겼고 + 위험 커지면 뺀다
+    excess_pp: 0.04
+    tqqq_profit_pct: 0.20
+    attack_R: 2
+    moonshot_x: 2
+    risk_yellow_red: true      # Leadership/Decay/Narrative YELLOW·RED도 트리거
+  thresholds:
     - {excess: 0.04, rate: 0.25}
     - {excess: 0.08, rate: 0.25}
     - {excess: 0.12, rate: 0.50}
-  hard_ratio: 0.70             # 유입의 70% = Hard(재투입 금지)
-  reload_ratio: 0.30           # 30% = Reload(폭락 후만)
+  hard_ratio: 0.70             # Hard = 절대 재투입 금지
+  reload_ratio: 0.30           # Reload만 재장전
+  vault_out:                   # 위험 줄고 + 새 기회면 Reload만
+    leadership_green: true
+    decay_green: true
+    qqq_above_ma20: true
   max_monthly_move_pct: 0.10
 
-# ── naive beta 판정선 (위험(c): A2가 이걸 못 이기면 모든 장치가 무의미) ──
-naive_benchmark: {qqq: 0.35, tqqq: 0.35}   # 나머지 cash·동적 조절 없음·고정
-
-# ── 성공 판정 (위험(c): 12개월 내 못 이기면 경고·무한루프 방지) ──
-verdict: {horizon_months: 12, must_beat: ["naive", "qqq"]}
+naive_benchmark: {qqq: 0.35, tqqq: 0.35}
+verdict: {horizon_months: 12, must_beat: ["naive", "qqq", "a2q"]}   # A2-T는 QQQ·naive·A2-Q 다 이겨야 TQQQ+동적이 값을 함
