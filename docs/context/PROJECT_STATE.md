@@ -6,6 +6,7 @@
 - **PRAMANA Core = 졸업.** 솔로가 공개 데이터로 SPY/QQQ를 위험조정 초과하는 '사는' 알파 = 미발견(8세대 robust negative). 알파 사냥 종료 · 8세대 원장 = Research Archive(재오픈 금지·무한루프 차단).
 - **최종 형태 = PRAMANA A1 Catalyst Confirmed Attack Book** (`PRAMANA_V4/PRAMANA_A1_Attack_Book_Final.md`): 레버 ETF 없이 이벤트·정성 catalyst·비대칭 베팅으로 QQQ 초과 *시도*. 배분 **Core 40 / Attack 30 / Moonshot 15 / Cash 15.** ★ **검증된 알파 ❌ / 위험을 정직하게 인정한 공격 베팅 ⭕** · PAPER · 자본권한 0 · 나쁜공시 회피 필수 · catalyst=총알 / ORB·VWAP·RVOL=방아쇠.
 - **교수 제출본** = `PRAMANA_V4/PRAMANA_Final_Report_for_Submission.docx`(8세대 학술 포장) · **종합 라이브 대시보드** = `phase1a/outputs/pramana_dashboard.html`(+ v7_forward_dashboard.html 매일 갱신).
+- **라이브 가동 (2026-06-13)**: `engine/a1_live_runner.py` = A1 paper ledger(가상 ₩1억·Core 40 자동 일봉 / Attack 30·Moonshot 15 = positions JSON 슬롯·비면 현금 / Cash 15·yfinance EOD·inception 이후 누적·fail-closed·append-only). 현재 NAV ₩1.001억(인셉션 2026-06-12). **통합 대시보드** `outputs/pramana_unified.html`(좌측 네비바 v1~v7 카드 + A1 라이브 iframe + 12/6/3 앵커·**kfont.py로 matplotlib 한글 깨짐 해결**). **cron 4 jobs**(화~토 06:00): a1_live_runner·forward_runner_v7·alpha_lab_v2_scanner·build_unified. **정직 제약**: intraday(ORB/VWAP/RVOL) 자동집행=분봉 벤더(Polygon/Alpaca) 후 / WSL cron=PC 켜질 때만(진짜 24/7=클라우드) / Attack·Moonshot 실베팅=positions JSON 채워야 진입.
 - 아래 V7/V8/Alpha Lab/마켓타이밍 상태는 모두 A1의 구성요소(Base Core / Attack / Moonshot / Negative Filter)로 흡수됨 — 사실관계로 유지.
 
 ## 한 줄
