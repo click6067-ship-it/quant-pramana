@@ -1,0 +1,63 @@
+# PRAMANA — Solo + AI Systematic Equity Validation OS
+
+> A solo retail experiment: use **Claude Code + Codex** (adversarial cross-review) to hunt for tradable alpha in US equities/ETFs — and **honestly kill every strategy that doesn't survive validation.**
+> **8 generations. All of them lost to just buy-and-holding TQQQ.** This repo is the full, transparent record — including the negative results.
+
+> ⚠️ **Disclaimer:** PAPER ONLY · NO LIVE CAPITAL · virtual ₩100M. This is **not** verified alpha, **not** investment advice, **not** a product. It's an educational/research record of *negative results* + a reusable validation framework. Backtests are regime-biased (2016–2026 bull, no dot-com/2008). Do your own research.
+
+## TL;DR
+- **8 generations of strategies, every one honestly rejected** under next-bar · OOS · after-cost · adversarial review.
+- **The moment a signal becomes verifiable, it's beta/factor — not alpha** (information theory, in practice).
+- **Everything lost to simply DCA-ing TQQQ** in this bull regime.
+- **Dynamic market-timing = REJECTED** — ablation showed −113%p vs static (lagging-signal wall; 4-for-4 losses across regime-switch / throttle / derisk / laddered overlay).
+- **What survived:** a survival core (4-sleeve · −18% MDD vs TQQQ −80%), a *"bad-filing avoidance"* filter (the only consistent directional signal in 8 gens), and immunity to fake alpha.
+
+## Charts
+![A2 vs TQQQ](docs/images/a2_vs_tqqq.png)
+*A2 (fixed 35/35 QQQ/TQQQ + Attack/Moonshot) vs QQQ·SPY·TQQQ — account value, ₩1억 start, backtest 2016~. TQQQ wins on return, but with −80%+ drawdowns the chart's bull window can't show.*
+
+![V7 multi-anchor](docs/images/v7_multi_anchor.png)
+*V7 survival core vs QQQ/SPY across entry points — wins risk-adjusted (Sharpe 1.21), loses cumulative. Diversification premium, not alpha.*
+
+## The Journey (8 generations)
+| Gen | Approach | Verdict |
+|---|---|---|
+| v1 | cross-sectional factors (value/mom/quality/lowvol) + ML | **FAIL** — Rank IC ≈ 0 · ML ≈ GKX 0.4% OOS R² |
+| v3 | full book · trend · leverage · VRP · reversal | **REJECT** — noise · −92% tail · turnover 3660% |
+| v4–v7 | core-satellite · leverage · diversification | **beta, not alpha** |
+| MT × 4 | regime-switch / throttle / derisk / laddered overlay | **4 losses** — lagging-signal wall |
+| Alpha Lab | intraday ORB / VWAP / RVOL | **DEAD** — look-ahead leak once fixed |
+| QL | 8-K event drift | "buy" fails OOS / **"avoid bad filings" survives** |
+| A1 / A2 | catalyst attack (no lev) / convex raider (QQQ+TQQQ) | paper · honestly labeled |
+
+## Validation OS (the actual contribution)
+- **next-bar** execution (signal t → fill t+1 · no same-close leak)
+- **OOS** + final holdout · **after-cost** · turnover accounting
+- **Adversarial Codex review** — one AI builds, the other tries to `STOP` it (it caught my own look-ahead bugs **twice**)
+- **PIT** universe (survivorship-free · self-built S&P 500, corr **0.998** vs real SPY)
+- pre-registered kill conditions · frozen-snapshot reproducibility
+
+## Live paper books (cron · daily, fail-closed)
+- **V7** — survival core (4-sleeve diversified · SPY/QQQ/DBMF/GLD/IEF)
+- **A1** — catalyst attack (no leverage · Core + Attack + Moonshot + Cash)
+- **A2** — Convex Raider (QQQ/TQQQ + Attack/Moonshot + Profit Vault · **dynamic OFF** after REJECT)
+
+## Repo structure
+```
+phase1a/engine/   runners · ledgers (Attack/Moonshot/Vault) · validators · scanners
+PRAMANA_V4/       design docs · lineage · one-line conclusions · lock sheet · A1/A2 books
+docs/context/     shared memory (Claude + Codex read the same files)
+config/           a2_convex_raider.yaml · revived-components
+```
+
+## Data
+- **Sharadar (paid · point-in-time · survivorship-free)** = backtest primary. Raw bulk data is **gitignored / not redistributed** (license); only analysis *results* are public.
+- yfinance (free) = forward/sanity · EDGAR 8-K (free) = catalyst/filing gate
+
+## Honest limitations
+- Backtests are **2016–2026 bull-biased** — no dot-com / 2008 (the ETFs are too young). Drawdowns are understated.
+- Paper only · not live · in-sample salvage.
+- **"No easy alpha for a solo with public/paid data" is the robust conclusion** — consistent with SPIVA (≈79% of active pros lose to the index) and efficient markets.
+
+---
+*Built with Claude Code + Codex. The point isn't that I found alpha — it's that I **honestly proved I didn't**, with a reusable, adversarially-validated framework. Roasts welcome.*
