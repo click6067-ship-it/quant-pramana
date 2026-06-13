@@ -31,3 +31,7 @@ __pycache__/
 # Alpha Lab intraday 적재(매일 커짐·yfinance 재생성 가능·코드만 추적)
 outputs/alpha_lab/
 **/outputs/alpha_lab/
+
+# A1 라이브 런타임(prices·state·nav_log·positions·cron.log — 매일 갱신·재생성 가능. 대시보드 outputs/a1_live_dashboard.html은 직속이라 추적됨)
+outputs/a1_live/
+**/outputs/a1_live/
