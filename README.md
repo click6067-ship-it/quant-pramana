@@ -19,6 +19,12 @@
 ![V7 multi-anchor](docs/images/v7_multi_anchor.png)
 *V7 survival core vs QQQ/SPY across entry points — wins risk-adjusted (Sharpe 1.21), loses cumulative. Diversification premium, not alpha.*
 
+![Lineage v4 to v7](docs/images/lineage_cumulative.png)
+*core-satellite evolution v4→v7 vs QQQ/SPY (cumulative ×, 2019~). v5 leverage hit +513% but Sharpe stayed ≈ QQQ (0.91) — leverage, not skill. Every generation is beta.*
+
+![Multi-anchor bars](docs/images/multi_anchor_bars.png)
+*Returns by entry point (3/6/12mo) — V7 trades cumulative return away for roughly half the drawdown. Risk efficiency, not alpha.*
+
 ## The Journey (8 generations)
 | Gen | Approach | Verdict |
 |---|---|---|
