@@ -43,3 +43,6 @@ outputs/a2_live/
 # ── data/paper artifacts (Sharadar·Yahoo 파생 / paper NAV·ledger — license/ToS surface, 로컬에서 재생성) ──
 phase1a/outputs/**/*.csv
 phase1a/outputs/**/*.json
+
+# auto-generated B0 run log (reproduce.sh appends per run)
+phase1a/registry/b0_runs.csv
