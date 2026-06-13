@@ -61,7 +61,7 @@ th{{background:#1e293b;color:#94a3b8;text-align:left;padding:9px 11px;font-weigh
 <div class=card><h3>V7 backtest 생존 후보</h3><p>4-sleeve 분산 · Sharpe 1.21 · MDD −18% · 닷컴 proxy −39% · production-safe 아님</p></div>
 <div class=card><h3>나쁜-공시 회피 필터</h3><p>8세대 중 유일한 일관 신호(−0.75%) · 사는 알파 아닌 지뢰 제거</p></div>
 <div class=card><h3>가짜-알파 면역</h3><p>가짜 알파를 자본 투입 전 paper로 제거 · 무한루프 차단</p></div>
-<div class=card><h3>재사용 검증 OS</h3><p>PIT 벤치(corr 0.998) · trial registry · DSR/PBO · data gate</p></div>
+<div class=card><h3>재사용 검증 OS</h3><p>PIT 벤치(corr 0.998) · trial registry · 사전 kill gate · DSR/PBO(TODO·미산출)</p></div>
 </div>
 
 <a class=live href="v7_forward_dashboard.html">▶ V7 paper forward 대시보드 (live-ready · cron 미검증 · 수동/예약 갱신)</a>

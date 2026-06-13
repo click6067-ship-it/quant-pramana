@@ -33,7 +33,7 @@ P("— 레버리지·예측 모델 없이 SPY/QQQ 위험조정 초과 알파의 
 P("PAPER only · NO LIVE · 가상자본 ₩100M · 2026-06-13",False,9,c="808080")
 
 H("초록 (Abstract)",1)
-P("본 연구는 개인(solo) 연구자가 AI(LLM)를 보조 엔진으로 활용하여, 미국 주식·ETF를 대상으로 *검증 가능한* 체계적 알파를 탐색·검증하는 운영체계 PRAMANA를 구축한 기록이다. 핵심 방법론은 '데이터 정직성 → 비용 정직성 → 검증 통과 → 그 다음에야 모델 비교'라는 순서 잠금과, 모든 가설에 대한 **사전등록(pre-registration)·OOS·비용후·look-ahead 차단·적대적 AI 검수(adversarial council)·사전 kill 조건**의 일관 적용이다. 단순/선형 횡단면 팩터, 결합·트리·ML, 레버리지 베타, 4종의 마켓타이밍, intraday 급등주 setup, 그리고 정성(8-K 공시) 텍스트에 이르기까지 **8세대의 가설을 유료 기관급 PIT 데이터(Sharadar Core US Equities·survivorship-free)와 무료 보조(EDGAR 8-K·yfinance forward)로 검증한 결과, **이 데이터·비용·제약·기간(2016–2026)에서 개인이 SPY/QQQ를 위험조정 기준 반복적으로 초과하는 '매수형 알파'는 발견되지 않았다(범위 조건부 negative — 보편적 부재 주장이 아님).** (저품질 데이터 탓이 아니라 — 유료 기관급 데이터로도 부재한다는 점이 negative를 더 강하게 만든다.) 이는 efficient market 가설, SPIVA(액티브 펀드 79%가 인덱스 미달), Gu-Kelly-Xiu(2020, ML 월 OOS R² 0.33–0.40%)와 정합하는 *scope-conditional negative*(8개 사전등록 시도 범위 — 보편적 부재 주장이 아님)이다. 그러나 본 연구는 (1) 재사용 가능한 검증 OS, (2) 자체구축 PIT 벤치마크(실제 SPY와 corr 0.998), (3) 위험조정상 우월한 생존형 분산 코어(V7 4-sleeve), (4) 일관된 '악재 공시 회피' 필터, (5) 가짜 알파를 자본 투입 전에 제거하는 규율을 산출하였다.",False,10.5)
+P("본 연구는 개인(solo) 연구자가 AI(LLM)를 보조 엔진으로 활용하여, 미국 주식·ETF를 대상으로 *검증 가능한* 체계적 알파를 탐색·검증하는 운영체계 PRAMANA를 구축한 기록이다. 핵심 방법론은 '데이터 정직성 → 비용 정직성 → 검증 통과 → 그 다음에야 모델 비교'라는 순서 잠금과, 모든 가설에 대한 **사전등록(pre-registration)·OOS·비용후·look-ahead 차단·적대적 AI 검수(adversarial council)·사전 kill 조건**의 일관 적용이다. 단순/선형 횡단면 팩터, 결합·트리·ML, 레버리지 베타, 4종의 마켓타이밍, intraday 급등주 setup, 그리고 정성(8-K 공시) 텍스트에 이르기까지 **8세대의 가설을 유료 기관급 PIT 데이터(Sharadar Core US Equities·survivorship-free)와 무료 보조(EDGAR 8-K·yfinance forward)로 검증한 결과, **이 데이터·비용·제약·기간(2016–2026)에서 개인이 SPY/QQQ를 위험조정 기준 반복적으로 초과하는 '매수형 알파'는 발견되지 않았다(범위 조건부 negative — 보편적 부재 주장이 아님).** (저품질 데이터 탓이 아니라 — 유료 기관급 데이터로도 부재한다는 점이 negative를 더 강하게 만든다.) 이는 efficient market 가설, 최근 SPIVA U.S. scorecards(대형주 액티브 펀드 다수가 인덱스 미달), Gu-Kelly-Xiu(2020 — 전문 대규모 ML에도 월 OOS R²가 ≈0.33–0.40%로 작고 구현 장벽이 큼)와 정합하는 *scope-conditional negative*(8개 사전등록 시도 범위 — 보편적 부재 주장이 아님)이다. 그러나 본 연구는 (1) 재사용 가능한 검증 OS, (2) 자체구축 PIT 벤치마크(실제 SPY와 corr 0.998), (3) 위험조정상 우월한 생존형 분산 코어(V7 4-sleeve), (4) 일관된 '악재 공시 회피' 필터, (5) 가짜 알파를 자본 투입 전에 제거하는 규율을 산출하였다.",False,10.5)
 
 H("1. 연구 배경 및 목적",1)
 P("'좋은 종목을 찍는 AI'가 아니라, **개인/소규모 팀이 AI와 함께 운영 가능한 체계적 주식 연구·검증·페이퍼 트레이딩 OS**를 구축하는 것이 목적이다. 통상의 퀀트 연구가 '모델을 먼저 고르고 백테스트가 좋게 나오는' 순서로 인해 비용 과소추정·미래정보 누수·생존편향에 취약하다는 문제의식에서 출발하여, 검증을 *모델보다 앞에* 두는 역순 설계를 채택했다.",False,10.5)
@@ -140,6 +140,20 @@ table(["통제 항목","적용","비고"],[
 
 P("",False,6)
 P("부속 자료: PRAMANA_Lineage_Dossier.docx(v1~V8 계보·LOCK) · PRAMANA_All_Experiments_Ledger.md · PRAMANA_Conclusions_OneLine.md · PRAMANA_A1_Attack_Book_Final.md · 라이브 대시보드(outputs/*.html) · 코드/데이터 repo(PAPER, no live).",False,8.5,it=True,c="808080")
+H("부록 B. Evidence Ledger — 사전등록 8세대 trial 추적",1)
+P("각 시도의 사전등록 문서·데이터(PIT)·IS/OOS·비용·벤치·판정·kill·산출물 경로. negative result의 재현·감사를 위한 단일 인덱스(이 한 장이 '주장'을 '기록'으로 만든다).",False,9.5,it=True,c="808080")
+table(["Trial","사전등록·데이터(PIT)","IS/OOS·비용","벤치","판정 / kill","산출물 경로"],[
+ ["v1 팩터","B2~B5 protocol · Sharadar PIT","walk-fwd · 비용후","cap-weight","FAIL (Rank IC≈0)","reports/B2B5_broad_result.md"],
+ ["v1 ML","결합·ridge·GBM·tree","OOS holdout · 비용후","cap-weight","FAIL (OOS net<0)","reports/Phase1B_lowdof_result.md"],
+ ["v1 event","8-K surprise · EDGAR","next-bar","cap-weight","FAIL (−0.90%)","reports/US_event_drift_result.md"],
+ ["v3 풀북","trend/LETF/VRP/MR","비용후 · turnover","SPY","REJECT (노이즈·tail)","reports/V3_*_result.md"],
+ ["v4~v6","Core/레버/분산 · yfinance","멀티앵커 · 비용후","SPY/QQQ","알파 아님 (Sharpe≈QQQ)","PRAMANA_V5_Problem_Frame_v0.2.md"],
+ ["v7 4-sleeve","test_4sleeve · 2019~","비용후","QQQ","backtest 생존 후보 (paper)","reports/MT1_result.md · v7 dashboard"],
+ ["v8 레버","crash-pack proxy","2000/2008 stress","A1 MDD cap","REJECT (닷컴 −49%)","reports/V8_Candidate_crashpack_result.md"],
+ ["Alpha Lab","AlphaLab v1/v2 protocol","entry-time · forward","SPY","DEAD / forward 관찰","reports/AlphaLab_v1_result.md"],
+])
+P("→ 모든 trial은 결과 보기 전 사전등록(kill 조건 잠금)됐고, 판정·산출물 경로가 repo에 보존된다. 이것이 'goalpost 이동(config-mining)'을 막은 핵심 장치다.",False,9.5,it=True,c="808080")
+
 H("References",1)
 for t in ["SPIVA U.S. Scorecard — S&P Dow Jones Indices (액티브 펀드 다수가 인덱스 미달, ~79%).",
           "Gu, Kelly & Xiu (2020), Empirical Asset Pricing via Machine Learning, Review of Financial Studies (ML 월 OOS R² ≈ 0.33–0.40%).",
