@@ -35,3 +35,7 @@ outputs/alpha_lab/
 # A1 라이브 런타임(prices·state·nav_log·positions·cron.log — 매일 갱신·재생성 가능. 대시보드 outputs/a1_live_dashboard.html은 직속이라 추적됨)
 outputs/a1_live/
 **/outputs/a1_live/
+
+# A2 라이브 런타임(동일 · 대시보드 outputs/a2_live_dashboard.html은 직속 추적)
+outputs/a2_live/
+**/outputs/a2_live/

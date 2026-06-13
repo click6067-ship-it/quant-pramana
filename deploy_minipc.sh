@@ -33,8 +33,9 @@ else echo "⚠️ runner 실패 — /tmp/a1_test.log 확인"; exit 1; fi
 
 # 5. cron 등록 (기존 PRAMANA 줄 정리 후 재등록 = 중복 방지)
 P="$REPO/phase1a"
-(crontab -l 2>/dev/null | grep -v "engine/a1_live_runner\|engine/forward_runner_v7\|engine/alpha_lab_v2_scanner\|engine/build_unified_dashboard" || true; \
+(crontab -l 2>/dev/null | grep -v "engine/a1_live_runner\|engine/a2_live_runner\|engine/forward_runner_v7\|engine/alpha_lab_v2_scanner\|engine/build_unified_dashboard" || true; \
  echo "0 6 * * 2-6 cd $P && .venv/bin/python engine/a1_live_runner.py >> outputs/a1_live/cron.log 2>&1"; \
+ echo "10 6 * * 2-6 cd $P && .venv/bin/python engine/a2_live_runner.py >> outputs/a2_live/cron.log 2>&1"; \
  echo "0 6 * * 2-6 cd $P && .venv/bin/python engine/forward_runner_v7.py >> outputs/forward_v7/cron.log 2>&1"; \
  echo "30 6 * * 2-6 cd $P && .venv/bin/python engine/alpha_lab_v2_scanner.py >> outputs/alpha_lab/cron.log 2>&1"; \
  echo "40 6 * * 2-6 cd $P && .venv/bin/python engine/build_unified_dashboard.py >> outputs/unified.log 2>&1") | crontab -
