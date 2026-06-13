@@ -50,14 +50,15 @@ for t in ["순서 잠금: data honesty → cost honesty → validation → then 
     bullet(t)
 
 H("3. 실험 연대기 (8세대) — 무엇을 검증했고 무엇이 죽었나",1)
-table(["세대","가설/접근","판정","핵심 근거"],[
+P("[네이밍 안내] 'PRAMANA'는 프로젝트명이고, v1~v8은 *전략 북(book)의 진화 세대*이다(프로젝트 버전이 아님). v1~v3은 횡단면·풀북 단계, v4~v8은 core-satellite 재설계 이후의 북 이터레이션(v4 Core Beta → v7 4-sleeve), A1은 최종 공격형 북이다. 저장소 폴더명 'PRAMANA_V4'는 core-satellite 재설계 시점의 *작업공간 라벨*일 뿐, 최신 북 버전(v7)이나 프로젝트 버전과 무관하다.",False,9.5,it=True,c="808080")
+table(["북 세대","가설/접근","판정","핵심 근거"],[
  ["v1","단순 횡단면 팩터(value/momentum/quality/lowvol)","FAIL","Rank IC ≈ 0 · quality decay(0.22→0.046)"],
  ["v1","결합·ridge·GBM·tree","FAIL","OOS net vs cap-weight 음수 (GKX와 정합)"],
  ["v1","event/earnings drift(숫자 surprise)","FAIL","net vs cap-weight −0.90%"],
  ["v3","trend+LETF 위성·VRP·mean-reversion","REJECT/노이즈","+0.15%/yr 노이즈 · tail −92% · turnover 3660%"],
- ["V4–V6","Core Beta · 레버드 베타 · 분산","알파 아님","V5 Sharpe≈QQQ(레버지 알파 아님)"],
- ["V7","4-sleeve 분산 코어","생존코어(채택)","Sharpe 1.21·MDD −18% / 단 누적 절반"],
- ["V8","Levered 4-sleeve","REJECT","닷컴 proxy −49%(레버 꼬리)"],
+ ["v4–v6","Core Beta · 레버드 베타 · 분산","알파 아님","v5 Sharpe≈QQQ(레버지 알파 아님)"],
+ ["v7","4-sleeve 분산 코어","생존코어(채택)","Sharpe 1.21·MDD −18% / 단 누적 절반"],
+ ["v8","Levered 4-sleeve","REJECT","닷컴 proxy −49%(레버 꼬리)"],
  ["—","마켓타이밍 4종(regime/throttle/derisk/MT-1)","4전 4패","모두 static 4-sleeve 미달(후행신호 벽)"],
  ["Alpha","intraday 급등주 setup(ORB/VWAP/RVOL)","DEAD","RVOL look-ahead 누수·강세장 베타"],
  ["Alpha","8-K 정성 catalyst(POS) / (NEG)","POS FAIL / NEG 일관","사는 알파 없음 / 악재 회피는 일관 신호"],
