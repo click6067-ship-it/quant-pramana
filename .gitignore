@@ -46,3 +46,7 @@ phase1a/outputs/**/*.json
 
 # auto-generated B0 run log (reproduce.sh appends per run)
 phase1a/registry/b0_runs.csv
+
+# dashboard build artifacts (submission copy lives in docs/ for Pages)
+phase1a/outputs/**/*.html
+phase1a/outputs/**/*.png

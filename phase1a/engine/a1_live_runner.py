@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRAMANA A1 — Catalyst Confirmed Attack Book · 라이브 paper ledger 러너 (가상 ₩100M·24/7).
+"""PRAMANA A1 — Catalyst Attack Book · paper ledger 러너 (가상 ₩100M · 호스트 켜질 때 scheduled · 실자본 0).
 4 sleeve: Base Core 40%(V7 4-sleeve 자동·일봉) + Attack 30% + Moonshot 15% + Cash 15%.
 정직 v0: Base Core=자동 실데이터 / Attack·Moonshot=포지션 JSON 평가(비면 현금 대기·스캐너/사람이 채움).
   intraday(ORB/VWAP/RVOL) 자동집행은 분봉 벤더(Polygon/Alpaca) 연동 후 승급 — v0은 일봉 EOD 평가.
