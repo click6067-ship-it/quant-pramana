@@ -56,6 +56,12 @@ docs/context/     shared memory (Claude + Codex read the same files)
 config/           a2_convex_raider.yaml · revived-components
 ```
 
+## Reproduce (one command · free data · no API key)
+```bash
+bash reproduce.sh
+```
+Builds a venv, installs deps, and runs the pipeline end-to-end on **free yfinance data** — a self-built cap-weight benchmark + 6 integrity gates (weights · survivorship · no-future · total-return · reproducibility · SPY-drift), then the V7 paper runner (yfinance fallback). This proves the *machinery* runs without the paid subscription. The paid, PIT, survivorship-free numbers in `*/reports/*.md` require your own Sharadar key (`NASDAQ_DATA_LINK_API_KEY`); free mode is a survivorship-biased smoke test — trust the gate PASS/FAIL, not the returns.
+
 ## Data & disclosure boundary
 - **Sharadar (paid · PIT · survivorship-free)** = backtest primary · yfinance (free) = forward/sanity · EDGAR 8-K (free) = filing gate.
 - **Public (this repo):** code · validation protocols · pre-registered kill criteria · summary results (`*/reports/*.md`) · non-sensitive dashboards (`*.html`).
