@@ -27,8 +27,9 @@ DASH = os.path.join(ROOT, "outputs", "a2_book_dashboard.html"); REPORT = os.path
 STATE = os.path.join(A2, "book_state.json")
 CAP = 100_000_000     # 가상 ₩1억
 INCEPTION = "2026-05-12"
-# A2-Beta = QQQ/TQQQ/Vault (Attack/Moon 20% → 검증 엔진으로·QQQ45/TQQQ45/Vault10·가정·configurable)
-W_BETA = {"qqq": 0.45, "tqqq": 0.45, "vault": 0.10}
+# A2-Beta = QQQ/TQQQ/Vault·빈 Attack/Moon = **cash**(SSOT §13·Codex fix) = QQQ35/TQQQ35/Vault10/Cash20.
+# (naive = QQQ35/TQQQ35/Cash30 → A2-Beta vs naive 차이 = Vault10 실제차감 규칙의 부가가치만 격리)
+W_BETA = {"qqq": 0.35, "tqqq": 0.35, "vault": 0.10}   # 나머지 0.20 = cash(빈 Attack/Moon)
 W_FULL = {"qqq": 0.35, "tqqq": 0.35, "attack": 0.10, "moon": 0.10, "vault": 0.10}
 W_NAIVE = {"qqq": 0.35, "tqqq": 0.35}      # 나머지 cash (naive beta book = 판단 기준선)
 VAULT_RULES = V.load_rules()
@@ -48,23 +49,24 @@ def run_beta(px, w, vault_on, risk_series=None):
     qqq = CAP * w["qqq"]; tqqq = CAP * w["tqqq"]
     vault = {"hard": 0.0, "reload": CAP * w.get("vault", 0.0), "hwm": 0.0}   # base vault = Reload 초기 reserve
     cash = CAP - qqq - tqqq - vault["reload"]
-    navs = []; vlocked = []; cur_mo = None; m_moved = 0.0
+    navs = []; vlocked = []; cur_mo = None; m_moved = 0.0; last_vin_week = None   # ★ Vault In 주1회 gate(Codex fix)
     for i in range(len(idx)):
-        mo = idx[i].to_period("M")
+        mo = idx[i].to_period("M"); wk = idx[i].isocalendar()[:2]
         if mo != cur_mo: cur_mo = mo; m_moved = 0.0
         # 1) 노출 마크(다음 bar 수익 = next-bar; i=0은 진입일 0수익)
         if i > 0: qqq *= (1 + qr[i]); tqqq *= (1 + tr[i])
         nav = qqq + tqqq + vault["hard"] + vault["reload"] + cash
-        # 2) Vault In (실제 차감·이긴 돈일 때만·live_excess HWM)
+        # 2) Vault In (실제 차감·이긴 돈일 때만·live_excess HWM·주1회·월10% cap·SSOT §09)
         if vault_on:
             excess = nav / CAP - qqq_bh[i]              # vs QQQ buy-hold (fraction)
             abs_profit = nav > CAP
             risk = (risk_series[i] if risk_series is not None else "GREEN")
-            if excess > vault["hwm"] + 1e-9 and abs_profit:
+            if excess > vault["hwm"] + 1e-9 and abs_profit and wk != last_vin_week:   # 주1회 gate
                 rate = V.classify_vault_in(excess, True, risk, VAULT_RULES)
                 cap_m = (VAULT_RULES.get("vault_in_gate", {}) or {}).get("max_monthly_move_pct", 0.10)
                 m = max(0.0, min((excess - vault["hwm"]) * rate, cap_m - m_moved))
                 if m > 1e-9:
+                    last_vin_week = wk
                     move = m * nav; exp = qqq + tqqq
                     if exp > 1e-6:
                         qqq -= move * qqq / exp; tqqq -= move * tqqq / exp     # ★ 실제 exposure 차감
@@ -140,12 +142,12 @@ def main():
     incep = pd.Timestamp(INCEPTION)
     def live(s): sl = s[s.index >= incep]; return float(sl.iloc[-1]/sl.iloc[0]-1) if len(sl) > 1 else 0.0
     live_days = int((px.index >= incep).sum())
-    cur_dd = float(beta_nav.iloc[-1] / beta_nav.cummax().iloc[-1] - 1)            # 현재(peak-to-now) drawdown — backtest max(A2Beta_mdd)와 구분(crash lockout은 이걸 봐야)
+    bt_cur_dd = float(beta_nav.iloc[-1] / beta_nav.cummax().iloc[-1] - 1)         # full-history peak-to-now (BACKTEST·crash lockout에 쓰면 안 됨·Codex fix)
     live_slice = beta_nav[beta_nav.index >= incep]
-    live_cur_dd = float(live_slice.iloc[-1] / live_slice.cummax().iloc[-1] - 1) if len(live_slice) > 1 else 0.0
+    live_cur_dd = float(live_slice.iloc[-1] / live_slice.cummax().iloc[-1] - 1) if len(live_slice) > 1 else 0.0  # ★ LIVE peak-to-now (crash lockout은 이걸 봐야)
     state = {"as_of": str(px.index[-1].date()), "inception": INCEPTION, "live_days": live_days,
              "A2Beta_ret": mB["ret"], "A2Beta_cagr": mB["cagr"], "A2Beta_mdd": mB["mdd"],
-             "A2Beta_current_dd": round(cur_dd, 4), "A2Beta_live_current_dd": round(live_cur_dd, 4),
+             "A2Beta_backtest_current_dd": round(bt_cur_dd, 4), "A2Beta_live_current_dd": round(live_cur_dd, 4),
              "naive_ret": mN["ret"], "qqq_ret": mQ["ret"], "tqqq_ret": mT["ret"],
              "vault_hard": beta_v["hard"]/CAP, "vault_reload": beta_v["reload"]/CAP, "vaulted_profit_real": vaulted/CAP,
              "beat_qqq": beat_qqq, "beat_naive": beat_naive, "verdict": verdict, "acct_ok": bool(beta_v["acct_ok"]),

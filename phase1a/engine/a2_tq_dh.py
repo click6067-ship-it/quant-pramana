@@ -37,9 +37,11 @@ except Exception:
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); REPO = os.path.dirname(ROOT)
 CFG_PATH    = os.path.join(REPO, "config", "a2_tq_dh.yaml")
 A2_LIVE     = os.path.join(ROOT, "outputs", "a2_live")
-OUT_CSV     = os.path.join(A2_LIVE, "tq_dh_signals.csv")          # spec §10 rename
-REPORT      = os.path.join(REPO, "reports", "A2_tq_dh_report.md")  # spec §10 rename
-CHART       = os.path.join(A2_LIVE, "tq_dh_backtest.png")
+A2_BT       = os.path.join(ROOT, "outputs", "a2_backtest"); os.makedirs(A2_BT, exist_ok=True)
+FWD_CSV     = os.path.join(A2_LIVE, "tq_dh_signals.csv")          # ★ LIVE forward 신호(대시보드가 읽음·Codex fix)
+OUT_CSV     = os.path.join(A2_BT, "tq_dh_backtest_signals.csv")   # ★ BACKTEST(non-live namespace·live 경로 오염 금지)
+REPORT      = os.path.join(REPO, "reports", "A2_tq_dh_report.md")  # spec §10
+CHART       = os.path.join(A2_BT, "tq_dh_backtest.png")
 VAULT_PATH  = os.path.join(A2_LIVE, "positions", "vault.json")     # REAL Reload Vault ledger (spec §09)
 LEADERS = ["NVDA", "MSFT", "AAPL", "AMZN", "GOOGL", "META", "AVGO", "TSLA", "AMD", "NFLX"]
 
@@ -339,10 +341,16 @@ def forward_signal(cfg):
            "hard_vault_bal_pct": round(ledger["hard"] * 100, 3),
            "reload_gate": gate, "reload_route": route.get("to"),
            "decision": "RELOAD-ALLOWED(human gate)" if can else f"NO-RELOAD ({'TypeC 금지' if dtype=='C' else 'dip 없음/게이트 미통과/Reload Vault 0'})"}
-    print("── TQ-DH forward signal (REAL Reload Vault·자본권한 0·human gate) ──")
+    # ★ LIVE 신호 1줄을 대시보드용 파일로 기록(backtest 경로와 분리·Codex fix)
+    try:
+        import pandas as _pd
+        _pd.DataFrame([{**sig, "mode": "forward_live"}]).to_csv(FWD_CSV, index=False)
+    except Exception:
+        pass
+    print("── TQ-DH forward signal (REAL Reload Vault·자본권한 0·human gate·LIVE) ──")
     for k, v in sig.items():
         print(f"  {k:22}: {v}")
-    print("  ⚠ Hard Vault 절대 미사용 (apply_reload만 호출, Hard assert 불변)")
+    print(f"  ⚠ Hard Vault 절대 미사용 (apply_reload만·Hard assert 불변) · LIVE 신호 → {FWD_CSV}")
     return sig
 
 

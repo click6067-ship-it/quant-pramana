@@ -10,6 +10,28 @@ a2_live_runner.py 와 동일 의미: live_excess HWM·절대수익 게이트·Ha
 import os, json, datetime as dt
 
 HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); REPO = os.path.dirname(ROOT)
+
+
+def _isoweek(d):
+    try: y, w, _ = pd_ts(d).isocalendar(); return (y, w)
+    except Exception: return None
+def _month(d):
+    try: t = pd_ts(d); return (t.year, t.month)
+    except Exception: return None
+def pd_ts(d):
+    import datetime as _dt
+    if isinstance(d, (_dt.date, _dt.datetime)): return _dt.date(d.year, d.month, d.day)
+    s = str(d)[:10]; y, m, dd = s.split("-"); return _dt.date(int(y), int(m), int(dd))
+def _last_event_date(ledger, event_type):
+    for e in reversed(ledger.get("events", [])):
+        if e.get("event") == event_type: return e.get("date")
+    return None
+def _gate_ok(ledger, event_type, today, period):
+    """SSOT §09: Vault In 주1회·Reload 월1회. 같은 기간에 이미 이벤트 있으면 False(차단)."""
+    last = _last_event_date(ledger, event_type)
+    if not last: return True
+    if period == "week": return _isoweek(last) != _isoweek(today)
+    return _month(last) != _month(today)
 RULES_PATH = os.path.join(REPO, "config", "a2_vault_rules.yaml")
 DEFAULT_LEDGER = {"hard": 0.0, "reload": 0.0, "hwm": 0.0, "last_date": None, "events": []}
 HARD_RATIO, RELOAD_RATIO = 0.70, 0.30   # spec §4 (rules yaml override 가능)
@@ -80,9 +102,10 @@ def apply_vault_in(ledger, new_excess, risk_state, today, abs_profit_bool=None,
     split = rules.get("split", {}); hr = split.get("hard_ratio", HARD_RATIO); rr = split.get("reload_ratio", RELOAD_RATIO)
     gate = rules.get("vault_in_gate", {}); cap_m = gate.get("max_monthly_move_pct", 0.10)
     if abs_profit_bool is None: abs_profit_bool = new_excess > 0.0
+    week_ok = _gate_ok(ledger, "vault_in", today, "week")   # ★ SSOT §09 §3: Vault In 주1회(Codex fix·ledger 기준 중앙 enforce)
     moved = 0.0
     if new_excess > ledger["hwm"] + 1e-12:
-        rate = classify_vault_in(new_excess, abs_profit_bool, risk_state, rules)
+        rate = classify_vault_in(new_excess, abs_profit_bool, risk_state, rules) if week_ok else 0.0
         raw = (new_excess - ledger["hwm"]) * rate
         moved = max(0.0, min(raw, cap_m - month_moved))     # 월 10% cap enforcement
         if moved > 1e-12:
@@ -130,6 +153,8 @@ def apply_reload(ledger, pct=0.25, today=None, dip_type=None, reason="", rules=N
     returns 빼낸 양(fraction). append event."""
     rules = rules if rules is not None else load_rules()
     pct = float(pct)
+    if not _gate_ok(ledger, "reload", today or dt.date.today(), "month"):   # ★ SSOT §09 §6: Reload 월1회(Codex fix)
+        return 0.0
     out = ledger["reload"] * pct
     hard_before = ledger["hard"]
     if out > 1e-12:

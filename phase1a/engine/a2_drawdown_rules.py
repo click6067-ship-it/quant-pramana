@@ -52,8 +52,8 @@ def _book_mdd():
     if os.path.exists(BOOK_JSON):
         try:
             b = json.load(open(BOOK_JSON))
-            v = b.get("A2Beta_current_dd")
-            if v is None: v = b.get("A2Beta_live_current_dd", 0.0)
+            v = b.get("A2Beta_live_current_dd")          # ★ LIVE only(Codex fix)·backtest peak 사용 금지
+            if v is None: v = b.get("A2Beta_current_dd", 0.0)   # legacy 호환
             return float(v or 0.0)
         except Exception:
             return 0.0
