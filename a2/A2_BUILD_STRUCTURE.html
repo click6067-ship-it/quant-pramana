@@ -1,0 +1,58 @@
+<!doctype html><html lang=ko><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>PRAMANA A2 — 전체 빌드 구조</title><style>
+:root{--bg:#070b16;--card:#0d1326;--bd:#1e293b;--mut:#94a3b8;--cy:#22d3ee;--gr:#34d399;--vi:#a78bfa;--am:#f59e0b;--pk:#ec4899;--rd:#f87171}
+*{box-sizing:border-box}
+body{background:var(--bg);color:#e5e7eb;font-family:'Segoe UI','Malgun Gothic',system-ui,sans-serif;margin:0;line-height:1.55}
+.wrap{max-width:1100px;margin:0 auto;padding:26px 18px 80px}
+h1{font-size:1.5em;margin:0 0 4px}
+h2{font-size:1.08em;border-left:4px solid var(--cy);padding-left:11px;margin:30px 0 12px}
+.sub{color:var(--mut);font-size:.9em;margin:0 0 16px}
+.badge{display:inline-block;border-radius:6px;padding:2px 9px;font-size:.62em;font-weight:700;vertical-align:middle;margin-left:5px}
+.bm{background:#5b21b6;color:#ddd6fe}.bp{background:#1e3a8a;color:#bfdbfe}.bw{background:#064e3b;color:#6ee7b7}.br{background:#7f1d1d;color:#fecaca}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 18px;margin:10px 0}
+.grid{display:grid;gap:12px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g5{grid-template-columns:repeat(5,1fr)}
+@media(max-width:760px){.g2,.g3,.g5{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:.84em;margin-top:6px}
+th{background:#111a30;color:var(--mut);text-align:left;padding:7px 9px;font-weight:600}
+td{padding:6px 9px;border-top:1px solid #1a2540;vertical-align:top}
+.tag{font-size:.74em;font-weight:700;border-radius:5px;padding:1px 7px;white-space:nowrap}
+.ok{background:#064e3b;color:#6ee7b7}.wip{background:#422006;color:#fcd34d}.todo{background:#3f1d1d;color:#fca5a5}
+.eng{border-top:3px solid var(--cy)}
+.cy{color:var(--cy)}.gr{color:var(--gr)}.vi{color:var(--vi)}.am{color:var(--am)}.pk{color:var(--pk)}.rd{color:var(--rd)}.mut{color:var(--mut)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:.82em}
+.node{background:#111a30;border:1px solid var(--bd);border-radius:9px;padding:8px 11px}
+.arw{color:var(--cy);font-weight:700}
+.warn{background:#1c1408;border:1px solid #92400e;border-radius:10px;padding:12px 15px;color:#fde68a;font-size:.85em;margin:10px 0}
+.lock{background:#160d1f;border:1px solid #6b21a8;border-radius:10px;padding:12px 15px;color:#e9d5ff;font-size:.85em}
+code{background:#111a30;padding:1px 5px;border-radius:4px;font-size:.85em;color:#a5b4fc}
+ul{margin:6px 0;padding-left:20px}li{margin:3px 0}
+.pill{display:inline-block;font-size:.7em;font-weight:700;border-radius:20px;padding:2px 10px;background:#111a30;border:1px solid var(--bd);color:var(--mut)}
+</style></head><body><div class=wrap>
+<h1>🟣 PRAMANA A2 — Convex Raider<span class="badge bm">HYBRID</span><span class="badge bp">PAPER</span><span class="badge bw">가상 ₩1억</span><span class="badge br">NO LIVE</span></h1>
+<p class=sub>전체 빌드 구조도 (사용자 이해용) · 2026-06-14 · <b>검증된 알파 아님 — QQQ를 "크게 이길 확률"을 사는 고위험 convex book.</b><br>
+설계 정본 <code>PRAMANA_V4/PRAMANA_A2_Convex_Raider_Book.md</code> · 빌드 <code>phase1a/engine/a2_*.py</code> · 자본권한 0 · V7/A1과 완전 분리.</p>
+
+<h2>① 왜 A2인가 — v1~v7이 남긴 결론에서 출발</h2>
+<div class="card">
+<ul>
+<li><b>8세대 엄격 검증 → 알파 시그널 대부분 사망</b>, SPY조차 못 이김. <b class=cy>이미 알려지고 수치로 검증된 순간, 그건 알파가 아니라 베타·팩터·상품이 된다.</b></li>
+<li>v1→v7 진화 = "QQQ 수익 따라가되 낙폭만 줄이자" → 결국 <b>잘 만든 분산 안전장치일 뿐, 초과수익을 죽임.</b> 분산은 안전하지만 초과수익의 무덤.</li>
+<li><b>버려야 할 두 착각:</b> ① 검증·증명된 전략을 찾을 수 있다 ② 검증이 강할수록 좋다(검증엔진만 만들다 전부 폐기).</li>
+<li><b class=pk>그래서 뒤집는다:</b> 알파 찾기 포기 → QQQ/TQQQ 베타를 <b>의식적으로 증폭</b> + Attack/Moonshot <b>비대칭</b> + Profit Vault로 <b>수익 회수</b> + Risk Dashboard·NEG Gate로 <b>자멸 방지</b>.</li>
+</ul></div>
+
+<h2>② 정직한 정체성 (라벨)</h2>
+<div class="grid g2">
+<div class="card"><b class=gr>✅ A2가 하는 것</b>
+<ul><li>강세장 + 리더십 유지 + 문샷 1~2개 적중 → QQQ <b>크게</b> 초과 <i>가능</i></li>
+<li>"이길 확률"을 사는 convex 베팅 — 비대칭 payoff</li>
+<li>이겼을 때만 더 세게 · 수익은 Vault로 잠금</li></ul></div>
+<div class="card"><b class=rd>❌ A2가 아닌 것</b>
+<ul><li>QQQ를 <b>안정적으로</b> 이기는 검증된 알파 시스템 (아님)</li>
+<li>횡보·급락·리더십 붕괴 → QQQ보다 <b>훨씬</b> 나쁨 (정직 인정)</li>
+<li><b>TQQQ = Core 아님 = Booster.</b> 일일 3배·매일 reset·장기엔 목표배수와 크게 달라짐(ProShares/SEC 경고). "코어니까 버티자" 금지</li></ul></div>
+</div>
+<div class=warn>⚠️ A1의 "레버 ETF 금지"를 <b>의식적으로 뒤집은</b> 버전. A1=레버 없이 catalyst / A2=레버 적극 convex. 둘은 별개 트랙·독립 평가.</div>
+<!--BODY-->
+</div></body></html>

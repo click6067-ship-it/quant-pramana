@@ -7,6 +7,8 @@ provider(C4) 사용·watchlist 스캔·등급 A/B/C/D·NEG gate(a2_attack_ledger
 import os, sys, json, datetime as dt, numpy as np, pandas as pd, warnings; warnings.filterwarnings("ignore")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import a2_intraday_provider as ip, a2_attack_ledger as al
+try: import a2_event_store as es   # NEG gate (EDGAR PIT)·실패해도 스캔은 계속
+except Exception: es = None
 HERE=os.path.dirname(os.path.abspath(__file__)); ROOT=os.path.dirname(HERE)
 A2=os.path.join(ROOT,"outputs","a2_live"); os.makedirs(A2,exist_ok=True)
 OUT=os.path.join(A2,"attack_candidates.csv"); STATE=os.path.join(A2,"state.json"); WAR=os.path.join(A2,"war_plan.json")
@@ -48,7 +50,15 @@ def main():
     st=json.load(open(STATE)) if os.path.exists(STATE) else {}
     lead=st.get("lead","GREEN"); decay=bool(st.get("decay",False))
     market="RED" if lead=="RED" else ("YELLOW" if (lead=="YELLOW" or decay) else "GREEN")
-    neg_tickers=[]   # EDGAR NEG gate 연결 예정(현재 빈)·catalyst도 외부 연결 예정
+    # NEG gate = EDGAR event_store(PIT·직전 90일 NEG 공시) — 연결 완료(Attack은 size축소·overnight 금지·Moon은 절대금지)
+    neg_tickers=[]
+    EVT=os.path.join(A2.replace("a2_live","a2_events"),"event_store.csv") if False else os.path.join(ROOT,"outputs","a2_events","event_store.csv")
+    if es is not None and os.path.exists(EVT):
+        try:
+            import pandas as _pd
+            _ev=_pd.read_csv(EVT,usecols=["ticker","label","available_at"])
+            neg_tickers=sorted(es.neg_tickers_asof(_ev, dt.date.today(), 90))
+        except Exception: neg_tickers=[]
     prov=ip.get_provider("yfinance")
     rows=[]
     for t in WATCHLIST:
@@ -65,8 +75,10 @@ def main():
     df=pd.DataFrame(rows).sort_values("grade") if rows else pd.DataFrame()
     df.to_csv(OUT,index=False)
     top=[r["ticker"] for _,r in df.iterrows() if r["grade"] in ("A","B")][:5] if len(df) else []
+    neg_hit=[t for t in WATCHLIST if t in neg_tickers]
     if os.path.exists(WAR):
-        w=json.load(open(WAR)); w["top_attack_candidates"]=top; w["attack_data_quality"]=prov.quality; json.dump(w,open(WAR,"w"),indent=2,ensure_ascii=False)
+        w=json.load(open(WAR)); w["top_attack_candidates"]=top; w["attack_data_quality"]=prov.quality
+        w["neg_filing_warnings"]=neg_hit; json.dump(w,open(WAR,"w"),indent=2,ensure_ascii=False)
     ga=sum(df["grade"]=="A") if len(df) else 0; gb=sum(df["grade"]=="B") if len(df) else 0; gc=sum(df["grade"]=="C") if len(df) else 0
-    print(f"✅ Attack scan {dt.date.today()}·{len(df)}종목·A {ga}/B {gb}/C {gc}·quality {prov.quality}·top {top}·(catalyst/NEG 외부연결 예정·매수 X)")
+    print(f"✅ Attack scan {dt.date.today()}·{len(df)}종목·A {ga}/B {gb}/C {gc}·quality {prov.quality}·top {top}·NEG경고 {neg_hit}·(NEG=EDGAR 연결완료·catalyst=가격/거래량 proxy·매수 X)")
 if __name__=="__main__": main()
