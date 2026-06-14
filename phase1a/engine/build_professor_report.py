@@ -36,7 +36,9 @@ d.add_heading("PRAMANA",0)
 P("솔로 + AI 체계적 주식 검증 운영체계(Systematic Equity Validation OS)와",True,13)
 P("사전등록 가설 8세대의 정직한 Negative Results에 관한 연구",True,13)
 P("— 레버리지·예측 모델 없이 SPY/QQQ 위험조정 초과 알파의 부재를 실증하고, 재사용 가능한 검증 프레임워크와 생존형 코어를 도출하다 —",False,10,it=True,c="808080")
-P("PAPER only · NO LIVE · 가상자본 ₩100M · 2026-06-13",False,9,c="808080")
+P("PAPER only · NO LIVE · 가상자본 ₩100M · 2026-06-14",False,9,c="808080")
+P("🌐 Live 대시보드:  https://click6067-ship-it.github.io/quant-pramana/",False,9.5,b=True,c="2563EB")
+P("📦 코드·데이터 repo:  https://github.com/click6067-ship-it/quant-pramana",False,9.5,b=True,c="2563EB")
 
 H("초록 (Abstract)",1)
 P("본 연구는 개인(solo) 연구자가 AI(LLM)를 보조 엔진으로 활용하여, 미국 주식·ETF를 대상으로 *검증 가능한* 체계적 알파를 탐색·검증하는 운영체계 PRAMANA를 구축한 기록이다. 핵심 방법론은 '데이터 정직성 → 비용 정직성 → 검증 통과 → 그 다음에야 모델 비교'라는 순서 잠금과, 핵심 kill-test의 **사전등록(pre-registration)**과, 전 실험에 걸친 **OOS·비용후·look-ahead 차단·적대적 AI 검수(adversarial council)·trial ledger·사후 변경금지**의 일관 적용이다. 단순/선형 횡단면 팩터, 결합·트리·ML, 레버리지 베타, 4종의 마켓타이밍, intraday 급등주 setup, 그리고 정성(8-K 공시) 텍스트에 이르기까지 **8세대의 가설을 유료 기관급 PIT 데이터(Sharadar Core US Equities·survivorship-free)와 무료 보조(EDGAR 8-K·yfinance forward)로 검증한 결과, **이 데이터·비용·제약·기간(2016–2026)에서 개인이 SPY/QQQ를 위험조정 기준 반복적으로 초과하는 '매수형 알파'는 발견되지 않았다(범위 조건부 negative — 보편적 부재 주장이 아님).** (저품질 데이터 탓이 아니라 — 유료 기관급 데이터로도 부재한다는 점이 negative를 더 강하게 만든다.) 이는 efficient market 가설, 최근 SPIVA U.S. scorecards(대형주 액티브 펀드 다수가 인덱스 미달), Gu-Kelly-Xiu(2020 — 전문 대규모 ML에도 월 OOS R²가 ≈0.33–0.40%로 작고 구현 장벽이 큼)와 정합하는 *scope-conditional negative*(8개 사전등록 시도 범위 — 보편적 부재 주장이 아님)이다. 그러나 본 연구는 (1) 재사용 가능한 검증 OS, (2) 자체구축 PIT 벤치마크(실제 SPY와 corr 0.998), (3) 위험조정상 우월한 생존형 분산 코어(V7 4-sleeve), (4) 일관된 '악재 공시 회피' 필터, (5) 가짜 알파를 자본 투입 전에 제거하는 규율을 산출하였다.",False,10.5)
@@ -145,7 +147,7 @@ table(["통제 항목","적용","비고"],[
 ])
 
 P("",False,6)
-P("부속 자료: PRAMANA_Lineage_Dossier.docx(v1~V8 계보·LOCK) · PRAMANA_All_Experiments_Ledger.md · PRAMANA_Conclusions_OneLine.md · PRAMANA_A1_Attack_Book_Final.md · 라이브 대시보드(outputs/*.html) · 코드/데이터 repo(PAPER, no live).",False,8.5,it=True,c="808080")
+P("부속 자료: PRAMANA_Lineage_Dossier.docx(v1~V8 계보·LOCK) · PRAMANA_All_Experiments_Ledger.md · PRAMANA_Conclusions_OneLine.md · PRAMANA_A1_Attack_Book_Final.md · Live 대시보드 https://click6067-ship-it.github.io/quant-pramana/ · 코드·데이터 repo https://github.com/click6067-ship-it/quant-pramana (PAPER · no live capital).",False,8.5,it=True,c="808080")
 H("부록 B. Evidence Ledger — 8세대 trial 추적 (핵심 kill-test 사전등록 · 전체 trial ledger)",1)
 P("각 시도의 사전등록 문서·데이터(PIT)·IS/OOS·비용·벤치·판정·kill·산출물 경로. negative result의 재현·감사를 위한 단일 인덱스(이 한 장이 '주장'을 '기록'으로 만든다).",False,9.5,it=True,c="808080")
 table(["Trial","사전등록·데이터(PIT)","IS/OOS·비용","벤치","판정 / kill","산출물 경로"],[
