@@ -140,8 +140,12 @@ def main():
     incep = pd.Timestamp(INCEPTION)
     def live(s): sl = s[s.index >= incep]; return float(sl.iloc[-1]/sl.iloc[0]-1) if len(sl) > 1 else 0.0
     live_days = int((px.index >= incep).sum())
+    cur_dd = float(beta_nav.iloc[-1] / beta_nav.cummax().iloc[-1] - 1)            # 현재(peak-to-now) drawdown — backtest max(A2Beta_mdd)와 구분(crash lockout은 이걸 봐야)
+    live_slice = beta_nav[beta_nav.index >= incep]
+    live_cur_dd = float(live_slice.iloc[-1] / live_slice.cummax().iloc[-1] - 1) if len(live_slice) > 1 else 0.0
     state = {"as_of": str(px.index[-1].date()), "inception": INCEPTION, "live_days": live_days,
              "A2Beta_ret": mB["ret"], "A2Beta_cagr": mB["cagr"], "A2Beta_mdd": mB["mdd"],
+             "A2Beta_current_dd": round(cur_dd, 4), "A2Beta_live_current_dd": round(live_cur_dd, 4),
              "naive_ret": mN["ret"], "qqq_ret": mQ["ret"], "tqqq_ret": mT["ret"],
              "vault_hard": beta_v["hard"]/CAP, "vault_reload": beta_v["reload"]/CAP, "vaulted_profit_real": vaulted/CAP,
              "beat_qqq": beat_qqq, "beat_naive": beat_naive, "verdict": verdict, "acct_ok": bool(beta_v["acct_ok"]),
