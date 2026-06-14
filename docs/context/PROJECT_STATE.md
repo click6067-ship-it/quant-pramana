@@ -3,6 +3,7 @@
 > 정본 locks+근거 = `PRAMANA_V4/PRAMANA_V4_LOCK_SHEET_v0.4.md` · 전체 히스토리 = `PRAMANA_ARCHIVE/PRAMANA_MASTER_DOSSIER.docx`
 
 ## ⛳ 프로젝트 마무리 (2026-06-13 · 용하 확정 — 최상위 상태)
+> **▶ 다음 세션 작업 (2026-06-14 예약): A2 빌드 재개.** 교수 제출(보고서·대시보드 91/91·SHIP·산출물 3종 docx+repo+live Pages·External_Review)은 **완료**. 다음 = **A2 Convex Raider 남은 빌드** — C3(Attack scanner 분봉·Bollinger/ORB/VWAP/RVOL) · C2(state mapping·동적 OFF라 게이트만) · D(dashboard 통합·미니PC 배포 deploy_minipc.sh에 a2_war_plan·리포트). 동적 allocator OFF 확정·고정35/35·forward Vault·Attack/Moonshot 모듈은 완료. 상세 = 아래 'A2 v3 2차' 줄. 규율: PAPER·자본0·사전등록 kill·next-bar·Codex 적대검수 유지.
 - **PRAMANA Core = 졸업.** 솔로가 공개 데이터로 SPY/QQQ를 위험조정 초과하는 '사는' 알파 = 미발견(8세대 robust negative). 알파 사냥 종료 · 8세대 원장 = Research Archive(재오픈 금지·무한루프 차단).
 - **최종 형태 = PRAMANA A1 Catalyst Confirmed Attack Book** (`PRAMANA_V4/PRAMANA_A1_Attack_Book_Final.md`): 레버 ETF 없이 이벤트·정성 catalyst·비대칭 베팅으로 QQQ 초과 *시도*. 배분 **Core 40 / Attack 30 / Moonshot 15 / Cash 15.** ★ **검증된 알파 ❌ / 위험을 정직하게 인정한 공격 베팅 ⭕** · PAPER · 자본권한 0 · 나쁜공시 회피 필수 · catalyst=총알 / ORB·VWAP·RVOL=방아쇠.
 - **교수 제출본** = `PRAMANA_V4/PRAMANA_Final_Report_for_Submission.docx`(8세대 학술 포장) · **종합 라이브 대시보드** = `phase1a/outputs/pramana_dashboard.html`(+ v7_forward_dashboard.html 매일 갱신).
