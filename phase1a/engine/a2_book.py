@@ -49,7 +49,9 @@ def run_beta(px, w, vault_on, risk_series=None):
     qqq = CAP * w["qqq"]; tqqq = CAP * w["tqqq"]
     vault = {"hard": 0.0, "reload": CAP * w.get("vault", 0.0), "hwm": 0.0}   # base vault = Reload 초기 reserve
     cash = CAP - qqq - tqqq - vault["reload"]
-    navs = []; vlocked = []; cur_mo = None; m_moved = 0.0; last_vin_week = None   # ★ Vault In 주1회 gate(Codex fix)
+    # ★ Vault In 주1회 gate(Codex fix) — a2_profit_vault._gate_ok(week)와 동일 SSOT §09 규칙을 backtest 달러회계 루프에 인라인 적용
+    #   (이 루프는 NAV-fraction ledger가 아니라 달러 exposure를 직접 차감하므로 apply_vault_in 대신 동일 cadence를 직접 enforce).
+    navs = []; vlocked = []; cur_mo = None; m_moved = 0.0; last_vin_week = None
     for i in range(len(idx)):
         mo = idx[i].to_period("M"); wk = idx[i].isocalendar()[:2]
         if mo != cur_mo: cur_mo = mo; m_moved = 0.0

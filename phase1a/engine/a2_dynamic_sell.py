@@ -131,12 +131,15 @@ def eval_vault(state, ledger, rules, today):
     # state.excess_hwm = live forward (runner Codex #2). abs_profit = A2 NAV 수익 상태.
     risk = _risk_label(state)
     rate = V.classify_vault_in(live_excess, True if abs_profit is None else abs_profit, risk, rules)
-    if live_excess > ledger["hwm"] + 1e-12 and rate > 0:
+    # ★ Codex fix: cadence gate(SSOT §09)도 적용 — 이미 이번 주 vault_in / 이번 달 reload면 SUGGESTION 억제(반복 제안 방지).
+    week_ok = V._gate_ok(ledger, "vault_in", today, "week")
+    month_ok = V._gate_ok(ledger, "reload", today, "month")
+    if live_excess > ledger["hwm"] + 1e-12 and rate > 0 and week_ok:
         new = (live_excess - ledger["hwm"]) * rate
-        msgs.append(("vault_in", new, f"excess {live_excess*100:.2f}%p>HWM·risk {risk}·rate {rate}"))
-    out_ok = bool(state.get("vault_out_ok", False)) and ledger["reload"] > 1e-9
+        msgs.append(("vault_in", new, f"excess {live_excess*100:.2f}%p>HWM·risk {risk}·rate {rate}·주1회 gate OK"))
+    out_ok = bool(state.get("vault_out_ok", False)) and ledger["reload"] > 1e-9 and month_ok
     if out_ok:
-        msgs.append(("reload", ledger["reload"] * 0.25, "Vault Out gate OK · Reload 25%"))
+        msgs.append(("reload", ledger["reload"] * 0.25, "Vault Out gate OK · Reload 25% · 월1회 gate OK"))
     return msgs
 
 

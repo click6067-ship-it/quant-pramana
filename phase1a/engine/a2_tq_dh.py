@@ -469,7 +469,7 @@ def write_report(cfg, tbl, series, n_reloads, n_type_c, asset_counts, vaulted_pr
               f"최소 간격 {cfg['reload']['min_interval_days']}거래일, TQQQ sleeve MDD {cfg['reload']['sleeve_mdd_block']*100:.0f}% 초과 시 추가 금지, "
               "Type C=Reload 금지, Hard Vault 절대 미사용.\n")
 
-    md.append("\n## 2. 백테스트 비교 (₩1억 기준·log 차트 = `outputs/a2_live/tq_dh_backtest.png`)\n\n")
+    md.append("\n## 2. 백테스트 비교 (₩1억 기준·log 차트 = `outputs/a2_backtest/tq_dh_backtest.png`·BACKTEST·live 아님)\n\n")
     md.append("| 전략 | 최종 NAV(배) | 최종 평가액 | MDD | 회복(거래일) |\n|---|---:|---:|---:|---:|\n")
     for _, r in tbl.iterrows():
         finw = won(cap * r["final_nav_x"]); rec = "미회복" if r["recovery_tradedays"] == -1 else f"{r['recovery_tradedays']}"
@@ -488,8 +488,10 @@ def write_report(cfg, tbl, series, n_reloads, n_type_c, asset_counts, vaulted_pr
     md.append(f"- dip type 분류 일수: {dip_counts}\n")
     if len(pr5):
         md.append(f"- reload 후 평균 수익: 5일 {pr5.mean()*100:+.2f}% (n={len(pr5)}) · 20일 {pr20.mean()*100:+.2f}% (n={len(pr20)})\n")
-    md.append("- 신호 로그: `outputs/a2_live/tq_dh_signals.csv` "
-              "(date·qqq_drawdown·vix_vxn_state·leadership_state·narrative_state·dip_type·action·reload_amount·asset_used·post_reload_return_5d/20d·reload_vault_bal·hard_vault_bal)\n")
+    md.append("- BACKTEST 신호 로그: `outputs/a2_backtest/tq_dh_backtest_signals.csv` "
+              "(backtest 컬럼: date·dip_type·action·reload_amount·asset_used·post_reload_return_5d/20d·vault balances).\n")
+    md.append("- LIVE forward 신호(대시보드가 읽음·1행): `outputs/a2_live/tq_dh_signals.csv` "
+              "(forward 컬럼: as_of·qqq_drawdown·dip_type·leadership·market_stress·reload_gate·decision·mode=forward_live) — `--forward` 모드·human gate.\n")
 
     md.append("\n## 4. 판정 (Verdict) — 사전등록 조건 대조\n")
     md.append("**성공조건 (vs A2 without TQ-DH):**\n\n| 조건 | A2 base | A2 with TQ-DH | 통과 |\n|---|---:|---:|:--:|\n")

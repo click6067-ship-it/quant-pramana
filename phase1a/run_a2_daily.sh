@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # PRAMANA A2 v2 — daily chain (SSOT v2 §13 phase order). PAPER·자본권한 0.
-# 순서 중요: risk_dashboard(state factory) → sleeve/lockout/allocator → war_plan → scanner/executor → tq_dh → book(NAV·Vault) → dashboard.
+# 순서 중요(Codex fix): risk_dashboard → book(NAV·Vault·live current dd) → sleeve → drawdown(book의 live dd 읽음) → allocator → war_plan → scanner → executor → tq_dh(--forward) → dashboard.
 # cron: 화~토 06:00 한 줄로 호출. 로그 = outputs/a2_live/cron.log
 set -uo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"

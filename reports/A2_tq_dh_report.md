@@ -25,7 +25,7 @@
 - **NO LOOK-AHEAD**: close_t 분류 → close_{t+1} 체결·수익. 회복확인(10일 고점·follow-through)도 과거 데이터만.
 - **Reload 규칙(spec §8)**: 1 reload = Reload Vault 25%, 최소 간격 3거래일, TQQQ sleeve MDD -15% 초과 시 추가 금지, Type C=Reload 금지, Hard Vault 절대 미사용.
 
-## 2. 백테스트 비교 (₩1억 기준·log 차트 = `outputs/a2_live/tq_dh_backtest.png`)
+## 2. 백테스트 비교 (₩1억 기준·log 차트 = `outputs/a2_backtest/tq_dh_backtest.png`·BACKTEST·live 아님)
 
 | 전략 | 최종 NAV(배) | 최종 평가액 | MDD | 회복(거래일) |
 |---|---:|---:|---:|---:|
@@ -34,27 +34,28 @@
 | TQQQ_DCA_drawdown | 6.765 | ₩6.765억 | -65.4% | 268 |
 | QQQ_BH | 6.830 | ₩6.830억 | -35.1% | 278 |
 | A2_base | 9.821 | ₩9.821억 | -48.4% | 278 |
-| A2_with_TQ-DH | 10.502 | ₩10.502억 | -57.0% | 280 |
+| A2_with_TQ-DH | 9.997 | ₩9.997억 | -51.6% | 271 |
 
 ## 3. TQ-DH 동작 통계 (REAL Reload Vault)
-- 총 reload 횟수: **134** · Type C에서 발생: **0** (0% — spec §5상 0이어야 함)
-- reload 자산 분포: {'TQQQ': 106, 'QQQ': 28}
-- **REAL Vault 잔액(기말)**: Hard ₩0.907억 · Reload ₩0.092억 · ledger events 347건
+- 총 reload 횟수: **48** · Type C에서 발생: **0** (0% — spec §5상 0이어야 함)
+- reload 자산 분포: {'TQQQ': 39, 'QQQ': 9}
+- **REAL Vault 잔액(기말)**: Hard ₩0.485억 · Reload ₩0.088억 · ledger events 158건
 - **Hard Vault 단조 비감소(절대 미사용) 증명**: **True** (reload는 apply_reload만 호출 → Hard 불변 assert; Vault In만 Hard 적립)
-- **Vaulted Profit** (reload 자산의 체결→최종 누적 이득): **₩0.655억** (+65.45% of 자본)
+- **Vaulted Profit** (reload 자산의 체결→최종 누적 이득): **₩0.312억** (+31.20% of 자본)
 - dip type 분류 일수: {'NONE': 1687, 'D': 360, 'B': 320, 'A': 137, 'C': 120}
-- reload 후 평균 수익: 5일 +0.89% (n=134) · 20일 +4.90% (n=134)
-- 신호 로그: `outputs/a2_live/tq_dh_signals.csv` (date·qqq_drawdown·vix_vxn_state·leadership_state·narrative_state·dip_type·action·reload_amount·asset_used·post_reload_return_5d/20d·reload_vault_bal·hard_vault_bal)
+- reload 후 평균 수익: 5일 +0.48% (n=48) · 20일 +5.34% (n=48)
+- BACKTEST 신호 로그: `outputs/a2_backtest/tq_dh_backtest_signals.csv` (backtest 컬럼: date·dip_type·action·reload_amount·asset_used·post_reload_return_5d/20d·vault balances).
+- LIVE forward 신호(대시보드가 읽음·1행): `outputs/a2_live/tq_dh_signals.csv` (forward 컬럼: as_of·qqq_drawdown·dip_type·leadership·market_stress·reload_gate·decision·mode=forward_live) — `--forward` 모드·human gate.
 
 ## 4. 판정 (Verdict) — 사전등록 조건 대조
 **성공조건 (vs A2 without TQ-DH):**
 
 | 조건 | A2 base | A2 with TQ-DH | 통과 |
 |---|---:|---:|:--:|
-| 최종 NAV(배) | 9.821 | 10.502 | ✅ |
-| MDD | -48.4% | -57.0% | ❌ |
-| 회복기간(거래일) | 278 | 280 | ❌ |
-| Vaulted Profit > 0 | — | ₩0.655억 | ✅ |
+| 최종 NAV(배) | 9.821 | 9.997 | ✅ |
+| MDD | -48.4% | -51.6% | ❌ |
+| 회복기간(거래일) | 278 | 271 | ✅ |
+| Vaulted Profit > 0 | — | ₩0.312억 | ✅ |
 
 **성공조건 종합: ❌ NOT MET (일부 미충족)**
 
@@ -66,9 +67,9 @@
 **실패조건 종합: ✅ 실패조건 없음**
 
 ## 5. 정직한 결론 (Honest Verdict)
-**NOT MET (성공조건 일부 미충족, 명시적 FAIL 트리거 없음).** A2 with TQ-DH NAV=10.50배 vs A2 base 9.82배. spec §2가 예고했듯 최종 NAV에서 TQQQ buy-and-hold(32.6배)를 못 이기는 것은 정상 — 평가는 MDD/회복/Vaulted Profit으로 한다.
+**NOT MET (성공조건 일부 미충족, 명시적 FAIL 트리거 없음).** A2 with TQ-DH NAV=10.00배 vs A2 base 9.82배. spec §2가 예고했듯 최종 NAV에서 TQQQ buy-and-hold(32.6배)를 못 이기는 것은 정상 — 평가는 MDD/회복/Vaulted Profit으로 한다.
 
-핵심 정직 메모: (a) **REAL Reload Vault**만 쓰므로(이긴 돈의 30% 중 25%씩) TQ-DH의 NAV 기여 *상한*이 작다 — 구조적으로 TQQQ buy-and-hold를 NAV로 이길 수 없게 설계됨(의도된 보수성). (b) 강세장 편향 표본에선 'dip을 가려 사는' 절제가 '아무 dip이나 사는' 단순 DCA보다 NAV를 깎을 수 있다. TQ-DH의 진짜 효용은 *긴 하락장 자본 보존*인데 이 표본엔 그 구간이 없어 측정 불가. (c) **Hard Vault 잔액 ₩90.7M은 전 기간 한 번도 빠지지 않았다(단조 비감소)** — 이 결과는 '기계가 약속대로 작동하고 look-ahead 없이 dip을 분류·절제하며 **Reload Vault만** 쓴다'는 **machinery 검증**이지 '수익 알파 입증'이 아니다.
+핵심 정직 메모: (a) **REAL Reload Vault**만 쓰므로(이긴 돈의 30% 중 25%씩) TQ-DH의 NAV 기여 *상한*이 작다 — 구조적으로 TQQQ buy-and-hold를 NAV로 이길 수 없게 설계됨(의도된 보수성). (b) 강세장 편향 표본에선 'dip을 가려 사는' 절제가 '아무 dip이나 사는' 단순 DCA보다 NAV를 깎을 수 있다. TQ-DH의 진짜 효용은 *긴 하락장 자본 보존*인데 이 표본엔 그 구간이 없어 측정 불가. (c) **Hard Vault 잔액 ₩48.5M은 전 기간 한 번도 빠지지 않았다(단조 비감소)** — 이 결과는 '기계가 약속대로 작동하고 look-ahead 없이 dip을 분류·절제하며 **Reload Vault만** 쓴다'는 **machinery 검증**이지 '수익 알파 입증'이 아니다.
 
 ## 6. Caveats (한계 — 결과 해석 시 필수)
 - **VIX-proxy 치환**: 실 VIX/VXN 아닌 QQQ 20일 realized vol. spike-then-ease·term-structure 신호 손실.
