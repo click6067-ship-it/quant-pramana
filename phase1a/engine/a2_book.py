@@ -123,17 +123,41 @@ def live_attack_moon():
     return {"attack_n": ae.get("n", 0), "moon_n": me.get("n", 0), "attack_val": ae.get("value", CAP*0.10), "moon_val": me.get("value", CAP*0.10)}
 
 
+W_AQ = {"qqq": 0.70, "tqqq": 0.0, "vault": 0.10}   # A2-Q = TQQQ 없는 QQQ 중심(SSOT §6)·cash 0.20
+
+def anchored_chart(series, anchors=((63, "3개월"), (126, "6개월"), (252, "12개월"))):
+    """3/6/12개월 진입시점 차트 — 그 시점 ₩1억 진입 시 현재가치. A2-T/A2-Q/SPY/QQQ/TQQQ (용하 요청)."""
+    COL = {"A2-T": "#22d3ee", "A2-Q": "#34d399", "SPY": "#f59e0b", "QQQ": "#a78bfa", "TQQQ": "#ec4899"}
+    f, axes = plt.subplots(1, 3, figsize=(13, 3.6))
+    for ax, (n, lbl) in zip(axes, anchors):
+        for k, s in series.items():
+            seg = s.dropna().iloc[-n:]
+            if len(seg) < 2: continue
+            ax.plot(seg.index, CAP * seg / seg.iloc[0] / 1e8, label=k, lw=2.4 if k == "A2-T" else 1.3,
+                    color=COL.get(k, "#888"), ls="-" if k.startswith("A2") else "--")
+        ax.set_title(f"{lbl} 전 진입 (₩1억)", color="#e5e7eb", fontsize=10); ax.set_ylabel("억원", fontsize=8)
+        ax.axhline(1.0, color="#475569", ls=":", lw=0.8); ax.tick_params(labelsize=7)
+    axes[0].legend(framealpha=.2, fontsize=7, ncol=2)
+    f.suptitle("PRAMANA A2 — 진입시점별 ₩1억 (A2-T vs A2-Q vs SPY·QQQ·TQQQ·백테스트)", color="#e5e7eb", fontsize=11)
+    f.savefig(os.path.join(ROOT, "outputs", "a2_anchored_3_6_12mo.png"), dpi=110, bbox_inches="tight", facecolor="#0d1326")  # 파일로도 저장(보여주기용)
+    b = io.BytesIO(); f.savefig(b, format="png", dpi=95, bbox_inches="tight", facecolor="#0d1326"); plt.close(f)
+    return base64.b64encode(b.getvalue()).decode()
+
 def main():
     px = pull_prices()
     rs = risk_state_series(px)
     beta_nav, beta_vlock, beta_v = run_beta(px, W_BETA, vault_on=True, risk_series=rs)
+    a2q_nav = run_beta(px, W_AQ, vault_on=True, risk_series=rs)[0]   # A2-Q (no TQQQ·SSOT §6·check 6)
     naive_nav = naive_book(px, W_NAIVE)
     qqq_nav = CAP * px["QQQ"] / px["QQQ"].iloc[0]; tqqq_nav = CAP * px["TQQQ"] / px["TQQQ"].iloc[0]
+    spy_nav = CAP * px["SPY"] / px["SPY"].iloc[0]
+    anchored_b64 = anchored_chart({"A2-T": beta_nav, "A2-Q": a2q_nav, "SPY": spy_nav, "QQQ": qqq_nav, "TQQQ": tqqq_nav})
     # A2-Full = A2-Beta core + Attack/Moonshot live(과거엔 빈슬롯=cash → backtest상 A2-Full≈Beta with 20% cash·라벨)
     full_nav_bt = run_beta(px, {"qqq": 0.35, "tqqq": 0.35, "vault": 0.10}, vault_on=True, risk_series=rs)[0]  # Attack/Moon=cash(20%)
     am = live_attack_moon()
     # 지표
     mB, mN, mQ, mT = metrics(beta_nav), metrics(naive_nav), metrics(qqq_nav), metrics(tqqq_nav)
+    mAQ, mS = metrics(a2q_nav), metrics(spy_nav)
     vaulted = beta_v["hard"] + beta_v["reload"] - CAP * W_BETA["vault"]   # base reserve 제외 = 실제 잠근 수익
     beat_qqq = bool(mB["ret"] > mQ["ret"]); beat_naive = bool(mB["ret"] > mN["ret"])
     # ── 판단 ──
@@ -150,23 +174,25 @@ def main():
     state = {"as_of": str(px.index[-1].date()), "inception": INCEPTION, "live_days": live_days,
              "A2Beta_ret": mB["ret"], "A2Beta_cagr": mB["cagr"], "A2Beta_mdd": mB["mdd"],
              "A2Beta_backtest_current_dd": round(bt_cur_dd, 4), "A2Beta_live_current_dd": round(live_cur_dd, 4),
-             "naive_ret": mN["ret"], "qqq_ret": mQ["ret"], "tqqq_ret": mT["ret"],
-             "vault_hard": beta_v["hard"]/CAP, "vault_reload": beta_v["reload"]/CAP, "vaulted_profit_real": vaulted/CAP,
+             "naive_ret": mN["ret"], "qqq_ret": mQ["ret"], "tqqq_ret": mT["ret"], "a2q_ret": mAQ["ret"], "spy_ret": mS["ret"],
+             "a2q_mdd": mAQ["mdd"], "vault_hard": beta_v["hard"]/CAP, "vault_reload": beta_v["reload"]/CAP, "vaulted_profit_real": vaulted/CAP,
              "beat_qqq": beat_qqq, "beat_naive": beat_naive, "verdict": verdict, "acct_ok": bool(beta_v["acct_ok"]),
              "attack_n": am["attack_n"], "moon_n": am["moon_n"], "live_A2Beta": live(beta_nav), "live_qqq": live(qqq_nav)}
     json.dump(state, open(STATE, "w"), indent=2, ensure_ascii=False)
-    build_dashboard(px, beta_nav, full_nav_bt, naive_nav, qqq_nav, tqqq_nav, beta_vlock, state, am)
+    build_dashboard(px, beta_nav, full_nav_bt, naive_nav, qqq_nav, tqqq_nav, beta_vlock, state, am, anchored_b64, a2q_nav)
     write_report(state, am)
     print(f"✅ A2 Book: A2-Beta {mB['ret']*100:+.0f}%(MDD {mB['mdd']*100:.0f}%)·naive {mN['ret']*100:+.0f}%·QQQ {mQ['ret']*100:+.0f}%·TQQQ {mT['ret']*100:+.0f}%")
     print(f"   beat QQQ:{beat_qqq}/naive:{beat_naive} · Vaulted Profit(실제) {vaulted/CAP*100:.2f}% (Hard {beta_v['hard']/CAP*100:.1f}%/Reload {beta_v['reload']/CAP*100:.1f}%) · 회계 OK:{beta_v['acct_ok']}")
     print(f"   Attack live {am['attack_n']}건·Moonshot live {am['moon_n']}건(live paper ledger·과거 백테스트 증명 X) · 판단: {verdict}")
 
 
-def build_dashboard(px, beta, full, naive, qqq, tqqq, vlock, st, am):
+def build_dashboard(px, beta, full, naive, qqq, tqqq, vlock, st, am, anchored_b64="", a2q=None):
     plt.style.use("dark_background"); plt.rcParams.update({"axes.facecolor": "#0d1326", "figure.facecolor": "#0d1326", "grid.alpha": .15, "font.size": 9})
     f, ax = plt.subplots(figsize=(11, 4.0))
-    for k, s, c, lw in [("TQQQ", tqqq, "#ec4899", 1.1), ("QQQ", qqq, "#a78bfa", 1.3), ("naive 35/35", naive, "#f59e0b", 1.3),
-                        ("A2-Beta (real Vault)", beta, "#22d3ee", 2.6)]:
+    series_full = [("TQQQ", tqqq, "#ec4899", 1.1), ("QQQ", qqq, "#a78bfa", 1.3), ("naive 35/35", naive, "#f59e0b", 1.3)]
+    if a2q is not None: series_full.append(("A2-Q (no TQQQ)", a2q, "#34d399", 1.6))
+    series_full.append(("A2-T/Beta (real Vault)", beta, "#22d3ee", 2.6))
+    for k, s, c, lw in series_full:
         ax.plot(s.index, s / 1e8, label=k, color=c, lw=lw, ls="-" if "A2" in k else "--")
     ax.fill_between(vlock.index, 0, vlock / 1e8, color="#16a34a", alpha=0.15, label="Vault locked(실제 차감)")
     ax.legend(framealpha=.2, ncol=5, fontsize=8); ax.set_title("A2-Beta(QQQ/TQQQ + 실제 Vault 차감) vs naive·QQQ·TQQQ — 계좌금액(억·백테스트 2016~)", color="#e5e7eb"); ax.set_ylabel("억원")
@@ -186,16 +212,24 @@ table{{width:100%;border-collapse:collapse;font-size:.84em}} th{{background:#111
 <div class=kpi><div class=l>A2-Beta</div><div class="v" style="color:#22d3ee">{st['A2Beta_ret']*100:+.0f}%</div></div>
 <div class=kpi><div class=l>naive 35/35</div><div class="v" style="color:#f59e0b">{st['naive_ret']*100:+.0f}%</div></div>
 <div class=kpi><div class=l>QQQ</div><div class="v" style="color:#a78bfa">{st['qqq_ret']*100:+.0f}%</div></div>
+<div class=kpi><div class=l>A2-Q (no TQQQ)</div><div class="v" style="color:#34d399">{st.get('a2q_ret',0)*100:+.0f}%</div></div>
+<div class=kpi><div class=l>TQQQ</div><div class="v" style="color:#ec4899">{st['tqqq_ret']*100:+.0f}%</div></div>
 <div class=kpi><div class=l>A2-Beta MDD</div><div class="v">{st['A2Beta_mdd']*100:.0f}%</div></div>
 <div class=kpi><div class=l>Vaulted Profit(실제)</div><div class="v grn">{st['vaulted_profit_real']*100:.2f}%</div></div></div>
 <div class=card><img src="data:image/png;base64,{ch}"></div>
+<h2>📈 진입시점별 ₩1억 — 3/6/12개월 (A2-T vs A2-Q vs SPY·QQQ·TQQQ·용하 요청)</h2>
+<div class=card><img src="data:image/png;base64,{anchored_b64}"></div>
 <div class=card style="border:1px solid {vc}"><b>판단:</b> {'✅' if st['beat_qqq'] else '❌'} vs QQQ · {'✅' if st['beat_naive'] else '❌'} vs naive beta book · <b style="color:{vc}">{st['verdict']}</b><br>
 <span style="color:#94a3b8;font-size:.85em">A2-Beta가 naive(같은 QQQ/TQQQ 베타)를 못 이기면 = 운영규칙(Vault/risk) 부가가치 미확정 = 그냥 레버 베타.</span></div>
 <h2>💰 Vault (실제 active capital 차감 — 표시용 아님)</h2>
 <div class=card>Hard {st['vault_hard']*100:.1f}%(영구 잠금·재투입 불가) / Reload {st['vault_reload']*100:.1f}%(재배치 가능) · <b class=grn>Vaulted Profit(실제 잠근 수익) {st['vaulted_profit_real']*100:.2f}%</b><br>
 <span style="color:#94a3b8;font-size:.85em">Vault In = exposure(QQQ/TQQQ)에서 실제로 빼서 locked cash로 → 낙폭에 수익 보존. 회계 불변식 NAV=Σsleeve assert {'OK' if st['acct_ok'] else 'FAIL'}.</span></div>
 <h2>⚔️ Attack / 🚀 Moonshot (A2-Full·live paper ledger optionality)</h2>
-<div class=card style="color:#94a3b8;font-size:.85em">Attack {am['attack_n']}건·Moonshot {am['moon_n']}건 (실시간 후보→paper entry→PNL→Vault 연결). <b style="color:#fbbf24">과거 EDGAR catalyst 방향 알파 = DEAD → 자동 알파 아님·실시간 기회 ledger·optionality.</b> 빈슬롯=cash. live {st['live_days']}거래일.</div>
+<div class=card style="color:#e5e7eb;font-size:.85em">
+<b style="color:{'#34d399' if am['attack_n'] else '#fbbf24'}">Attack: {('active positions ' + str(am['attack_n']) + '건') if am['attack_n'] else 'no active positions'}</b> ·
+<b style="color:{'#34d399' if am['moon_n'] else '#fbbf24'}">Moonshot: {('active thesis ' + str(am['moon_n']) + '건') if am['moon_n'] else 'no active thesis'}</b><br>
+<b style="color:#fbbf24">▶ A2 current source of return = QQQ/TQQQ beta</b> ({'Attack/Moonshot 비어있음 → 100% beta' if not (am['attack_n'] or am['moon_n']) else 'Attack/Moonshot 일부 활성'})<br>
+<span style="color:#94a3b8">실시간 후보→paper entry→PNL→Vault 연결. 과거 EDGAR catalyst 방향 알파 = DEAD → 자동 알파 아님·optionality. 빈슬롯=cash. live {st['live_days']}거래일.</span></div>
 <div class=warn>⚠️ PAPER·NO LIVE·₩1억·자본권한 0. TQQQ=Booster(레버 베타·알파 아님)·daily reset 위험. Vaulted Profit은 실제 회계(차감)일 때만 표기. AX/S1/S2/S3 historical = DEAD(튜닝 금지). 설계 council/2026-06-14_aggressive-pivot.</div>
 </div></body></html>"""
     open(DASH, "w").write(html)
