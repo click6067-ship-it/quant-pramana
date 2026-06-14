@@ -34,12 +34,13 @@ else echo "⚠️ runner 실패 — /tmp/a1_test.log 확인"; exit 1; fi
 # 5. cron 등록 (기존 PRAMANA 줄 정리 후 재등록 = 중복 방지)
 #    A2 일일 체인 순서: a2_live_runner(state) → a2_daily_war_plan(war_plan) → a2_attack_scanner(top_attack+NEG) → build_a2_overview
 P="$REPO/phase1a"
-(crontab -l 2>/dev/null | grep -v "engine/a1_live_runner\|engine/a2_live_runner\|engine/a2_daily_war_plan\|engine/a2_attack_scanner\|engine/build_a2_overview\|engine/ax_feeder\|engine/forward_runner_v7\|engine/alpha_lab_v2_scanner\|engine/build_unified_dashboard" || true; \
+(crontab -l 2>/dev/null | grep -v "engine/a1_live_runner\|engine/a2_live_runner\|engine/a2_daily_war_plan\|engine/a2_attack_scanner\|engine/build_a2_overview\|engine/a2_book\|engine/ax_feeder\|engine/forward_runner_v7\|engine/alpha_lab_v2_scanner\|engine/build_unified_dashboard" || true; \
  echo "0 6 * * 2-6 cd $P && .venv/bin/python engine/a1_live_runner.py >> outputs/a1_live/cron.log 2>&1"; \
  echo "5 6 * * 2-6 cd $P && .venv/bin/python engine/a2_live_runner.py >> outputs/a2_live/cron.log 2>&1"; \
  echo "15 6 * * 2-6 cd $P && .venv/bin/python engine/a2_daily_war_plan.py >> outputs/a2_live/cron.log 2>&1"; \
  echo "20 6 * * 2-6 cd $P && .venv/bin/python engine/a2_attack_scanner.py >> outputs/a2_live/cron.log 2>&1"; \
  echo "45 6 * * 2-6 cd $P && .venv/bin/python engine/build_a2_overview.py >> outputs/a2_live/cron.log 2>&1"; \
+ echo "48 6 * * 2-6 cd $P && .venv/bin/python engine/a2_book.py >> outputs/a2_live/cron.log 2>&1"; \
  echo "50 6 * * 2-6 cd $P && .venv/bin/python engine/ax_feeder.py >> outputs/ax0/cron.log 2>&1 && .venv/bin/python engine/ax0_convex_book.py >> outputs/ax0/cron.log 2>&1 && .venv/bin/python engine/ax_attribution.py >> outputs/ax0/cron.log 2>&1"; \
  echo "0 6 * * 2-6 cd $P && .venv/bin/python engine/forward_runner_v7.py >> outputs/forward_v7/cron.log 2>&1"; \
  echo "30 6 * * 2-6 cd $P && .venv/bin/python engine/alpha_lab_v2_scanner.py >> outputs/alpha_lab/cron.log 2>&1"; \
