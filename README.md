@@ -11,6 +11,8 @@
 
 📊 **Live dashboard (every chart):** https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html
 
+> 🗄️ **Data actually used:** **Sharadar** (Nasdaq Data Link · *paid · point-in-time · survivorship-free*) — daily prices (SEP), ETF prices (SFP), historical market cap (DAILY), fundamentals (SF1), delistings/dividends/S&P 500 membership (TICKERS/ACTIONS/SP500) → backtest primary · **yfinance** (free) — TQQQ/QQQ/SPY/DBMF/GLD/IEF back to 2010, forward & sanity cross-check · **SEC EDGAR** (free) — 8-K filings with real public timestamps (catalyst/NEG gate) · **^IRX** — T-bill yield for the cash sleeve. *("Public data" below means publicly-available information — no private/insider edge — **not** "free data only"; the backtest spine is paid Sharadar.)*
+
 > ⚠️ **PAPER ONLY · no live capital · virtual ₩100M · not investment advice.** An educational record of *negative results* + a reusable validation framework. Backtests are 2010–2026 (mostly bull; no dot-com / 2008 — the leveraged ETFs are too young), so drawdowns are understated. TQQQ targets 3× the *daily* Nasdaq-100 return (inception 2010-02-09); long holds diverge from 3× the index. DYOR.
 
 ---
@@ -19,7 +21,7 @@
 
 | Claim | Evidence | Caveat |
 |---|---|---|
-| Known/public methods → no predictive alpha | 8 gens retired · factor IC-IR < 0.05 · Timing Log Alpha all negative | Scope: US equity/ETF · public/PIT data · after-cost |
+| Known/public methods → no predictive alpha | 8 gens retired · factor IC-IR < 0.05 · Timing Log Alpha all negative | Scope: US equity/ETF · Sharadar PIT + yfinance + EDGAR · after-cost |
 | Nothing beat TQQQ on raw return | TQQQ 376× vs best strategy 153× (2010–26) | Regime-conditional (2010–26 bull; no dot-com/2008) |
 | What works is risk control, not alpha | Vol-target: −82% → −42% MDD at ≈ QQQ Sharpe | Exposure sizing, not prediction |
 | The framework is the contribution | Self-built PIT index corr **0.998** vs SPY · caught 2 look-ahead bugs | Paper only · capital authority = 0 |
@@ -75,7 +77,7 @@ The honest endpoint isn't a clever model. It's: *size the leverage you can actua
 
 ## Why did everything fail? (interpretation)
 
-**Why no alpha?** Alpha is an inefficiency the market *doesn't yet know about*. Everything tried here used **public data + already-known methods** (textbook factors, chart techniques). Known signals are traded by everyone at once, so they are arbitraged into price and the premium disappears. US large caps are the most efficient, most competitive market on earth — SPIVA scorecards repeatedly show the large majority of active large-cap funds trail the S&P 500 over long horizons. A solo retail trader, on public data, after costs, has a base rate near zero. The genuine sources of alpha (private information edge, structural risk-bearing, execution speed, capital capacity) aren't available to a solo on public data. → Not "failure," but an honest confirmation of efficient markets — and *not manufacturing fake alpha across 8 generations is the real result.*
+**Why no alpha?** Alpha is an inefficiency the market *doesn't yet know about*. Everything tried here used **publicly-available data** (Sharadar's paid-but-public PIT prices & fundamentals, free yfinance, SEC EDGAR filings) **+ already-known methods** (textbook factors, chart techniques). Known signals are traded by everyone at once, so they are arbitraged into price and the premium disappears. US large caps are the most efficient, most competitive market on earth — SPIVA scorecards repeatedly show the large majority of active large-cap funds trail the S&P 500 over long horizons. A solo retail trader, on public data, after costs, has a base rate near zero. The genuine sources of alpha (private information edge, structural risk-bearing, execution speed, capital capacity) aren't available to a solo on public data. → Not "failure," but an honest confirmation of efficient markets — and *not manufacturing fake alpha across 8 generations is the real result.*
 
 **Why these chart shapes?**
 - *Factor IC ≈ 0* → known factors are already priced in.
