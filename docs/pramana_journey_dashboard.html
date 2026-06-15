@@ -1,0 +1,91 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRAMANA — 알파를 찾아 8세대 (발표용)</title>
+<style>
+:root{--ink:#0f172a;--mut:#64748b;--line:#e2e8f0;--accent:#16a34a;--bg:#f8fafc}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Pretendard',-apple-system,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;color:var(--ink);background:var(--bg);line-height:1.65}
+.wrap{max-width:920px;margin:0 auto;padding:0 22px 80px}
+header{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:54px 22px 46px;margin-bottom:8px}
+header .wrap{padding-bottom:0}
+.kick{color:#7dd3fc;font-weight:700;letter-spacing:.06em;font-size:13px}
+h1{font-size:34px;margin:8px 0 10px;line-height:1.25}
+header p{color:#cbd5e1;font-size:16px;max-width:680px;margin:0}
+.tagline{margin-top:18px;font-size:15px;color:#fbbf24;font-weight:600}
+section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 28px;margin:20px 0;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+h2{font-size:21px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+h2 .n{background:var(--ink);color:#fff;width:28px;height:28px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:14px}
+.sub{color:var(--mut);font-size:14px;margin:0 0 18px}
+.jrow{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:center;padding:11px 0;border-top:1px solid var(--line)}
+.jrow:first-child{border-top:none}
+.jgen{font-weight:800;color:var(--ink);font-size:15px}
+.jdesc b{display:block;font-size:14.5px}.jdesc span{color:var(--mut);font-size:12.5px}
+.jbadge{font-size:12px;font-weight:800;padding:4px 11px;border-radius:999px;white-space:nowrap}
+.rcard{border-left:4px solid var(--accent);background:#f6fdf9;padding:14px 18px;border-radius:0 10px 10px 0;margin:14px 0}
+.rcard h3{margin:0 0 6px;font-size:16px}.rcard p{margin:0;font-size:14.5px;color:#334155}
+.chartbox{margin:6px 0 4px}
+.cap{color:var(--mut);font-size:13px;margin:10px 2px 0}
+.cap b{color:var(--ink)}
+ul.concl{list-style:none;padding:0;margin:6px 0 0;counter-reset:c}
+ul.concl li{position:relative;padding:12px 14px 12px 46px;border-bottom:1px solid var(--line);font-size:15px}
+ul.concl li:before{counter-increment:c;content:counter(c);position:absolute;left:12px;top:11px;width:24px;height:24px;background:var(--accent);color:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:4px 0 0}
+.kpi{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.kpi .v{font-size:24px;font-weight:800;color:var(--ink)}.kpi .l{font-size:12px;color:var(--mut);margin-top:2px}
+.foot{color:var(--mut);font-size:12.5px;text-align:center;margin-top:30px}
+@media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.jrow{grid-template-columns:70px 1fr}.jbadge{grid-column:2;justify-self:start}}
+</style></head><body>
+<header><div class="wrap">
+<div class="kick">PRAMANA · solo + LLM 퀀트 리서치 OS · PAPER ONLY</div>
+<h1>알파를 찾아 8세대 — 그리고 정직한 결론</h1>
+<p>한 솔로가 Claude·Codex와 함께 "시장을 이기는 검증된 모델"을 찾아 v1부터 A4까지 돌았다. 이건 그 여정과, 데이터가 끝내 말한 정직한 답의 기록이다.</p>
+<div class="tagline">결론: 검증된·안전한·알려진 방법으론 못 이긴다. 남은 건 "버틸 수 있는 레버드 베타."</div>
+</div></header>
+<div class="wrap">
+
+<section>
+<h2><span class="n">1</span>한눈에 — 8세대의 여정과 판정</h2>
+<p class="sub">각 세대가 무엇이었고, 데이터가 내린 판정. 빨강=DEAD · 회색=베타(알파 아님) · 노랑=부분 · 보라=NULL · 초록=정직한 종착.</p>
+<div class="jrow"><div class="jgen">v1–v3</div><div class="jdesc"><b>단순 횡단면 팩터 6종 (value·momentum·quality·lowvol…)</b><span>비용후 net 엣지 0 · 정직한 negative</span></div><div class="jbadge" style="background:#dc26261a;color:#dc2626;border:1px solid #dc262655">DEAD</div></div><div class="jrow"><div class="jgen">v4</div><div class="jdesc"><b>Core Beta 1.0x (SPY/QQQ 추종)</b><span>알파 아님 · 자기 벤치 못 넘음</span></div><div class="jbadge" style="background:#64748b1a;color:#64748b;border:1px solid #64748b55">베타</div></div><div class="jrow"><div class="jgen">v5</div><div class="jdesc"><b>공격적 레버드 코어 (vol-target 2x)</b><span>in-sample QQQ 넘지만 레버지 알파 아님</span></div><div class="jbadge" style="background:#64748b1a;color:#64748b;border:1px solid #64748b55">레버드 베타</div></div><div class="jrow"><div class="jgen">v6–v7</div><div class="jdesc"><b>4-sleeve 분산 (주식·매니지드퓨처스·금·채권)</b><span>안정·낙폭↓ but QQQ 강세장 수익 절반 포기</span></div><div class="jbadge" style="background:#0284c71a;color:#0284c7;border:1px solid #0284c755">리스크통제</div></div><div class="jrow"><div class="jgen">Alpha Lab</div><div class="jdesc"><b>급등주 인트라데이 setup (ORB·VWAP·RVOL)</b><span>look-ahead 잡음 · false breakout 56%</span></div><div class="jbadge" style="background:#dc26261a;color:#dc2626;border:1px solid #dc262655">DEAD</div></div><div class="jrow"><div class="jgen">A1</div><div class="jdesc"><b>Catalyst Attack Book (직접+레딧·LLM 비추천 길)</b><span>이벤트·정성 베팅도 TQQQ 매집 못 넘음</span></div><div class="jbadge" style="background:#dc26261a;color:#dc2626;border:1px solid #dc262655">DEAD</div></div><div class="jrow"><div class="jgen">A2 / AX</div><div class="jdesc"><b>Convex Raider · 옵션 컨벡시티 공격</b><span>Attack/Moonshot blind backtest 전멸</span></div><div class="jbadge" style="background:#dc26261a;color:#dc2626;border:1px solid #dc262655">DEAD</div></div><div class="jrow"><div class="jgen">A3</div><div class="jdesc"><b>TQQQ War Engine (Vault timing·상태기계)</b><span>낙폭은 방어(-17% vs -82%) but QQQ 못 이김</span></div><div class="jbadge" style="background:#f59e0b1a;color:#f59e0b;border:1px solid #f59e0b55">PARTIAL</div></div><div class="jrow"><div class="jgen">A4-0</div><div class="jdesc"><b>Vault Study (사전등록 falsification)</b><span>vol-target가 답 · timing 불필요</span></div><div class="jbadge" style="background:#7c3aed1a;color:#7c3aed;border:1px solid #7c3aed55">NULL</div></div><div class="jrow"><div class="jgen">A4 Stage A</div><div class="jdesc"><b>Attribution (노출 vs 타이밍 분해)</b><span>타이밍 알파 0/5 · 수익=노출효과</span></div><div class="jbadge" style="background:#16a34a1a;color:#16a34a;border:1px solid #16a34a55">결론</div></div>
+</section>
+
+<section>
+<h2><span class="n">2</span>1막 — "검증된 방법"은 이미 시장에 있었다</h2>
+<p class="sub">v1~v3: LLM이 알려준 교과서 팩터(value·momentum·quality·lowvol). S&amp;P500 대형주에서 측정한 예측력(IC-IR). tradeable 기준(0.30)에 한참 못 미침 = 노이즈.</p>
+<div class="chartbox"><svg viewBox="0 0 760 300" width="100%" preserveAspectRatio="xMidYMid meet" font-family="inherit"><line x1="60" y1="130" x2="740" y2="130" stroke="#94a3b8" stroke-width="1.5"/><line x1="60" y1="50" x2="740" y2="50" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="6 4"/><text x="740" y="45" font-size="10.5" fill="#0284c7" text-anchor="end">tradeable 기준 0.30</text><rect x="105" y="130" width="136" height="8" rx="3" fill="#dc2626"/><text x="173" y="154" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.029</text><text x="173" y="252" font-size="11" fill="#475569" text-anchor="middle">value</text><rect x="332" y="124" width="136" height="6" rx="3" fill="#16a34a"/><text x="400" y="118" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">+0.022</text><text x="400" y="252" font-size="11" fill="#475569" text-anchor="middle">quality</text><rect x="559" y="118" width="136" height="12" rx="3" fill="#16a34a"/><text x="627" y="112" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">+0.045</text><text x="627" y="252" font-size="11" fill="#475569" text-anchor="middle">momentum</text></svg></div>
+<p class="cap"><b>팩터 IC-IR — 전부 0 근처.</b> 가장 나은 momentum(+0.045)도 거래 가능 임계의 1/7. 검증 파이프라인(PIT cap-weight vs 실제 SPY <b>corr 0.998</b>)은 완성했지만, <b>찾을 알파가 없었다.</b></p>
+</section>
+
+<section>
+<h2><span class="n">3</span>핵심 그림 — 무엇도 "공짜 점심"이 없다 (TQQQ 프론티어)</h2>
+<p class="sub">실 TQQQ 2010~2026 · 비용후 · T-bill 현금. 오른쪽 위(고수익) = TQQQ, but 낙폭 -82%. 이상점(왼쪽 위=고수익·저낙폭)은 비어 있다.</p>
+<div class="chartbox"><svg viewBox="0 0 760 470" width="100%" preserveAspectRatio="xMidYMid meet" font-family="inherit"><line x1="70" y1="30" x2="70" y2="410" stroke="#eef2f7"/><text x="70" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-30%</text><line x1="190" y1="30" x2="190" y2="410" stroke="#eef2f7"/><text x="190" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-40%</text><line x1="310" y1="30" x2="310" y2="410" stroke="#eef2f7"/><text x="310" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-50%</text><line x1="430" y1="30" x2="430" y2="410" stroke="#eef2f7"/><text x="430" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-60%</text><line x1="550" y1="30" x2="550" y2="410" stroke="#eef2f7"/><text x="550" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-70%</text><line x1="670" y1="30" x2="670" y2="410" stroke="#eef2f7"/><text x="670" y="428" font-size="11" fill="#94a3b8" text-anchor="middle">-80%</text><line x1="70" y1="389" x2="730" y2="389" stroke="#eef2f7"/><text x="62" y="393" font-size="11" fill="#94a3b8" text-anchor="end">10x</text><line x1="70" y1="301" x2="730" y2="301" stroke="#eef2f7"/><text x="62" y="305" font-size="11" fill="#94a3b8" text-anchor="end">25x</text><line x1="70" y1="234" x2="730" y2="234" stroke="#eef2f7"/><text x="62" y="238" font-size="11" fill="#94a3b8" text-anchor="end">50x</text><line x1="70" y1="168" x2="730" y2="168" stroke="#eef2f7"/><text x="62" y="172" font-size="11" fill="#94a3b8" text-anchor="end">100x</text><line x1="70" y1="101" x2="730" y2="101" stroke="#eef2f7"/><text x="62" y="105" font-size="11" fill="#94a3b8" text-anchor="end">200x</text><line x1="70" y1="35" x2="730" y2="35" stroke="#eef2f7"/><text x="62" y="39" font-size="11" fill="#94a3b8" text-anchor="end">400x</text><text x="400" y="462" font-size="12.5" fill="#475569" text-anchor="middle" font-weight="600">최대낙폭 MDD (오른쪽 = 더 깊음 → 더 위험) →</text><text x="16" y="220" font-size="12.5" fill="#475569" text-anchor="middle" font-weight="600" transform="rotate(-90 16 220)">총수익 배수 (log) ↑</text><polyline points="116,367 231,304 335,247 427,195 507,148 577,106 690,41" fill="none" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="5 4"/><polygon points="114.63999999999999,390.9255395966002 120.63999999999999,396.9255395966002 114.63999999999999,402.9255395966002 108.63999999999999,396.9255395966002" fill="#64748b"/><text x="129" y="391" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">SPY</text><polygon points="131.44000000000005,319.855830632784 138.44000000000005,326.855830632784 131.44000000000005,333.855830632784 124.44000000000005,326.855830632784" fill="#0284c7"/><text x="145" y="321" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">QQQ</text><polygon points="689.9,29.6 692.8,36.6 700.4,37.2 694.6,42.1 696.4,49.5 689.9,45.5 683.5,49.5 685.2,42.1 679.5,37.2 687.0,36.6" fill="#dc2626"/><text x="680" y="27" font-size="11.5" fill="#334155" text-anchor="end" font-weight="600">TQQQ B&H</text><circle cx="577.4799999999999" cy="106.42566912179886" r="5" fill="#b9c2cf"/><text x="591" y="110" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">80/20</text><circle cx="507.28000000000003" cy="147.78506786717873" r="5" fill="#b9c2cf"/><text x="521" y="152" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">70/30</text><circle cx="426.64" cy="194.5670868813864" r="5" fill="#b9c2cf"/><text x="441" y="199" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">60/40</text><circle cx="334.59999999999997" cy="246.68898285193694" r="5" fill="#b9c2cf"/><text x="349" y="251" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">50/50</text><circle cx="230.79999999999998" cy="304.1048389495236" r="5" fill="#b9c2cf"/><text x="245" y="308" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">40/60</text><circle cx="115.84" cy="366.800268087725" r="5" fill="#94a3b8"/><text x="126" y="359" font-size="11.5" fill="#334155" text-anchor="start" font-weight="600">30/70 static</text><circle cx="217.95999999999998" cy="190.09443917464765" r="8" fill="white" stroke="#16a34a" stroke-width="3"/><text x="204" y="178" font-size="11.5" fill="#334155" text-anchor="end" font-weight="600">VT-CANON</text><circle cx="207.04000000000002" cy="215.31085248628517" r="7" fill="white" stroke="#16a34a" stroke-width="3"/><text x="193" y="233" font-size="11.5" fill="#334155" text-anchor="end" font-weight="600">VT-GRID</text><circle cx="290.79999999999995" cy="126.69378363806463" r="6" fill="#f59e0b"/><text x="301" y="115" font-size="11.5" fill="#92400e" text-anchor="start" font-weight="600">C1</text><circle cx="290.79999999999995" cy="135.53790271405262" r="6" fill="#f59e0b"/><text x="301" y="152" font-size="11.5" fill="#92400e" text-anchor="start" font-weight="600">C2</text></svg></div>
+<p class="cap">점선=단순 TQQQ/현금 고정비율 프론티어. <b>VT-CANON(초록)</b>은 그 선보다 <b>왼쪽</b>(같은 수익에 낙폭 덜)=vol-target의 위험효율. <b>C1·C2(노랑)</b>는 A4 타이밍 후보지만 오른쪽(더 위험). 어느 것도 TQQQ의 raw 수익을 못 넘고, 이상점은 영원히 빈칸.</p>
+<div class="kpis" style="margin-top:16px">
+<div class="kpi"><div class="v">376x</div><div class="l">TQQQ B&amp;H (MDD -82%)</div></div>
+<div class="kpi"><div class="v">19x</div><div class="l">QQQ (MDD -35%)</div></div>
+<div class="kpi"><div class="v">79x</div><div class="l">VT-CANON (MDD -42%)</div></div>
+<div class="kpi"><div class="v">1.00</div><div class="l">VT Sharpe (최고)</div></div>
+</div>
+</section>
+
+<section>
+<h2><span class="n">4</span>3막의 판결 — "타이밍"은 노출 효과였다 (A4 Stage A)</h2>
+<p class="sub">각 동적 정책을 "그날 TQQQ 비중 w_t" 기계로 환원 → 같은 평균 노출의 고정전략과 복리 비교. <b>Timing Log Alpha</b> = 양수면 진짜 타이밍.</p>
+<div class="chartbox"><svg viewBox="0 0 760 300" width="100%" preserveAspectRatio="xMidYMid meet" font-family="inherit"><line x1="60" y1="130" x2="740" y2="130" stroke="#94a3b8" stroke-width="1.5"/><rect x="87" y="130" width="82" height="47" rx="3" fill="#dc2626"/><text x="128" y="193" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.223</text><text x="128" y="252" font-size="11" fill="#475569" text-anchor="middle">VT-CANON</text><rect x="223" y="130" width="82" height="23" rx="3" fill="#dc2626"/><text x="264" y="169" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.109</text><text x="264" y="252" font-size="11" fill="#475569" text-anchor="middle">VT-GRID</text><rect x="359" y="130" width="82" height="68" rx="3" fill="#dc2626"/><text x="400" y="214" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.320</text><text x="400" y="252" font-size="11" fill="#475569" text-anchor="middle">C1</text><rect x="495" y="130" width="82" height="80" rx="3" fill="#dc2626"/><text x="536" y="226" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.378</text><text x="536" y="252" font-size="11" fill="#475569" text-anchor="middle">C2</text><rect x="631" y="130" width="82" height="21" rx="3" fill="#dc2626"/><text x="672" y="167" font-size="11.5" fill="#334155" text-anchor="middle" font-weight="700">-0.099</text><text x="672" y="252" font-size="11" fill="#475569" text-anchor="middle">C3</text></svg></div>
+<p class="cap"><b>5개 정책 전부 음수.</b> 모든 동적 타이밍이 "같은 평균 비중 그냥 보유"보다 복리로 <b>졌다</b>(비용 전에도). "위험할 때 줄였다 늘렸다"의 Cash Drag가 방어 이득보다 컸다 — A4가 죽은 자리이자, 타이밍 알파가 없다는 직접 증거.</p>
+</section>
+
+<section>
+<h2><span class="n">5</span>내가 느낀 점 — 솔직하게</h2>
+<p class="sub">이 프로젝트에서 직접 겪고 깨달은 것.</p>
+<div class="rcard"><h3>1막 · 검증된 방법의 한계</h3><p>초기 모델은 LLM(Claude·Codex)이 알려주는 <b>검증되고 안전한 방법</b>을 리서치해서 적용했다. v1에서 v7로 진화할수록 결국 그 안에서 분산·섬세함·안정성을 다듬는 작업이었지만 — <b>단순 SPY/QQQ 매수를 못 이겼다.</b> 이미 알려지고 검증된 안전한 방법으로는 수익 내기 어렵다는 걸 느꼈다.</p></div><div class="rcard"><h3>2막 · 알파는 어디서 오는가</h3><p>차트 기술(모멘텀·엘리엇 파동·캔들)은 <b>이미 알려져 시장에 전부 반영</b>돼 수익으로 안 이어진다는 걸 알았다. 알파란 결국 <b>남들이 모르고·리스크를 감수하고·고급 정보</b>에서 오는 것 같았다. 그래서 공격적으로 위험을 감수하며, LLM이 비추천하는 길을 직접 찾고 전문가 의견(레딧)을 취합해 <b>A1</b>을 만들었다 — 근데 그것조차 <b>단순 레버리지 TQQQ 매집</b>을 못 이겼다.</p></div><div class="rcard"><h3>3막 · 못 이기면 낙폭이라도</h3><p>단순 TQQQ 매집을 수익으로 못 이긴다면, <b>낙폭이라도 완화</b>해서 TQQQ보다 매력적인 시스템을 만들고 싶었다. 그래서 떠올린 게 비율·수학 공식 — <b>타이밍 매도/매수를 잘 조절하면 되지 않을까</b>에서 A4까지 왔다. 결과: 모든 타이밍이 같은 평균 노출 고정전략에 <b>복리로 졌다.</b> 수익은 타이밍이 아니라 TQQQ 노출 자체였다.</p></div>
+</section>
+
+<section>
+<h2><span class="n">6</span>결론</h2>
+<ul class="concl"><li>검증된·알려진·안전한 방법 = 이미 시장에 반영 = <b>엣지 없음</b> (8세대 robust negative).</li><li>차트 기술·팩터·타이밍 = 알파 아님. 검증 인프라(PIT cap-weight vs SPY corr 0.998)는 완성했으나 <b>찾을 알파가 없었다.</b></li><li>수익 엔진 = <b>TQQQ 노출(레버드 베타)</b>이지 알파가 아니다. 타이밍/Vault는 복리만 깎았다 (Cash Drag &gt; Defense).</li><li>vol-target은 알파가 아니라 <b>리스크 통제</b> — TQQQ 낙폭 -82%→-42%로 절반 (수익은 못 더하되 버틸 수 있게).</li><li>가장 큰 자산 = <b>가짜 알파를 안 만든 검증 규율.</b> look-ahead를 잡고, 사전등록 NULL을 지키고, 결과를 정직하게 negative로 적었다.</li><li>길을 잃은 게 아니다 — <b>알파 프로젝트를 정직하게 끝냈고</b>, 이제 '버틸 수 있는 레버 사이즈'를 고르는 단계다. 그게 정직한 종착점.</li></ul>
+</section>
+
+<p class="foot">PRAMANA V4 · PAPER only / NO LIVE · 자본권한 0 · 검증된 알파 아님 · 차트 수치는 a4_baselines.csv·a4_attribution.csv 실데이터 · 2026-06-15</p>
+</div></body></html>
