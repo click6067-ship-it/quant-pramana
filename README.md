@@ -9,7 +9,7 @@
 2. **What works is risk control, not prediction** — volatility-targeting cuts TQQQ's **−82% crash to ~−42%** while keeping most of the upside. Timing the leveraged asset is dead (every timing rule lost to just holding the same average exposure).
 3. **The real result is a discipline that refused to fake a win** — pre-registered kill-criteria, point-in-time data, and an adversarial second AI that caught my own look-ahead bugs twice.
 
-📊 **Live dashboard (every chart):** https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html
+📊 **Live dashboard (every chart · EN/KO toggle in-page):** https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html?lang=en
 
 > 🗄️ **Data actually used:** **Sharadar** (Nasdaq Data Link · *paid · point-in-time · survivorship-free*) — daily prices (SEP), ETF prices (SFP), historical market cap (DAILY), fundamentals (SF1), delistings/dividends/S&P 500 membership (TICKERS/ACTIONS/SP500) → backtest primary · **yfinance** (free) — TQQQ/QQQ/SPY/DBMF/GLD/IEF back to 2010, forward & sanity cross-check · **SEC EDGAR** (free) — 8-K filings with real public timestamps (catalyst/NEG gate) · **^IRX** — T-bill yield for the cash sleeve. *("Public data" below means publicly-available information — no private/insider edge — **not** "free data only"; the backtest spine is paid Sharadar.)*
 
@@ -57,7 +57,7 @@ The honest endpoint isn't a clever model. It's: *size the leverage you can actua
 ![Multi-anchor bars](docs/images/multi_anchor_bars.png)
 *Returns by entry point (3/6/12mo) — V7 trades cumulative return for roughly half the drawdown. Risk efficiency, not alpha.*
 
-> The [interactive dashboard](https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html) has the full set: Return-vs-Pain map, timing attribution, ₩100M multi-anchor entry curves, and methodology.
+> The [interactive dashboard](https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html?lang=en) (EN/KO toggle) has the full set: Return-vs-Pain map, timing attribution, ₩100M multi-anchor entry curves, and methodology.
 
 ---
 
