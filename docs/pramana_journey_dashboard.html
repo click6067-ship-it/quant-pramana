@@ -50,6 +50,9 @@ ul.concl li:before{counter-increment:c;content:counter(c);position:absolute;left
 .pdesc{font-size:13px;color:#334155}.pdesc code{background:#e2e8f0;padding:1px 5px;border-radius:4px;font-size:11.5px}
 .checklist{list-style:none;padding:0;margin:6px 0 0}
 .checklist li{position:relative;padding:9px 12px 9px 14px;border-bottom:1px solid var(--line);font-size:13.5px}
+.qcard{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0;background:#fff}
+.qq{font-weight:800;font-size:16px;color:var(--ink);margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid #fde68a}
+.qa{margin:0;padding-left:20px}.qa li{font-size:14px;color:#334155;margin:7px 0;line-height:1.6}
 @media(max-width:640px){.fgrid{grid-template-columns:1fr}}
 .foot{color:var(--mut);font-size:12.5px;text-align:center;margin-top:30px}
 @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}.jrow{grid-template-columns:70px 1fr}.jbadge{grid-column:2;justify-self:start}}
@@ -133,8 +136,15 @@ ul.concl li:before{counter-increment:c;content:counter(c);position:absolute;left
 <p class="cap">+ <b>파이프라인 검증:</b> 직접 만든 PIT S&amp;P500 cap-weight 지수가 <b>실제 SPY와 상관 0.998</b> = 데이터·처리(배당·상폐·멤버십)가 정확하다는 강한 증거. <b>도구는 정확했고, 단지 찾을 알파가 없었다.</b></p>
 </section>
 
+
 <section>
-<h2><span class="n">8</span>결론</h2>
+<h2><span class="n">8</span>왜 이런 결과가 나왔나 — 해석 (교수 예상질문 Q&amp;A)</h2>
+<p class="sub">"왜 이 그래프? 왜 이 결론? 왜 알파가 다 실패했나?"에 대한 인과적 답. 결과(2~6) + 방법(7)을 '왜'로 잇는다.</p>
+<div class="qcard"><div class="qq">Q. 왜 <u>모든 알파가 실패</u>했나? (가장 중요)</div><ul class="qa"><li>알파 = 시장이 <b>아직 모르는</b> 비효율. 그런데 내가 쓴 건 전부 <b>공개 데이터 + 이미 알려진 방법</b>(교과서 팩터·차트 기술). 알려진 신호는 모두가 동시에 거래해 <b>가격에 즉시 반영(arbitraged away)</b>되고 프리미엄이 사라진다.</li><li>미국 대형주는 지구에서 가장 효율적·경쟁 치열한 시장. SPIVA 통계상 15년에 액티브 펀드 약 90%가 S&amp;P500에 진다. <b>솔로가 공개 데이터로 비용 후 초과</b>할 확률은 0에 가깝다.</li><li>진짜 알파의 원천(비공개 정보 우위·구조적 위험 인수·실행 속도·자본 capacity)은 솔로+공개 데이터에 없다.</li><li>→ 이건 '실패'가 아니라 <b>효율적 시장의 정직한 확인</b>이고, 8세대 내내 <b>가짜 알파를 안 만든 것</b>이 진짜 성과다.</li></ul></div><div class="qcard"><div class="qq">Q. 왜 <u>이런 그래프</u>가 나왔나? (차트별 인과)</div><ul class="qa"><li><b>팩터 IC≈0:</b> 알려진 팩터(value·momentum…)는 이미 모두가 알아 가격에 반영 → 다음 달 수익 예측력이 0.</li><li><b>어떤 모델도 SPY/QQQ를 못 이김:</b> 효율적 시장 + 거래비용. 분산·안정화는 위험을 낮출 뿐 초과수익을 만들지 못한다.</li><li><b>TQQQ 376배인데 −82%:</b> 강세장에서 레버리지가 복리로 증폭된 것(베타×3)이지 알파가 아니다. −82%는 레버의 구조적 대가.</li><li><b>VT가 고정선보다 왼쪽:</b> 변동성을 통제해 같은 수익을 <b>덜 위험하게</b> 가져간 것(레버 decay 회피). 알파가 아니라 '리스크 형태' 개선.</li><li><b>타이밍 알파가 전부 음수:</b> 신호가 후행 + 레버 자산은 폭락 직후 급반등(V자 회복) → 위험할 때 줄이면 그 반등을 놓친다 → 현금 드래그가 방어 이득보다 크다.</li></ul></div><div class="qcard"><div class="qq">Q. 어떤 <u>방식</u>으로 실험했나?</div><ul class="qa"><li><b>최적화가 아니라 falsification(죽이기).</b> 결과를 보기 전에 '못 이기면 폐기'할 기준을 박고(사전등록), 그걸 못 넘으면 정직하게 버린다.</li><li><b>next-bar</b>(다음날 체결)·<b>PIT 데이터</b>(그날 알 수 있던 값만)·<b>비용 포함</b>·<b>OOS 분리</b>·<b>Codex 적대 교차검증</b>이 전부 '가짜로 좋아 보이는 것'을 거르는 장치. (자세한 수식·절차 = 섹션 7)</li></ul></div><div class="qcard"><div class="qq">Q. 그래서 왜 결론이 <u>'vol-target'</u>인가?</div><ul class="qa"><li>미래 수익은 <b>추정이 안 된다</b>(20일 기대수익을 안정적으로 못 맞힌다). 예측이 안 되면 통제할 수 있는 건 <b>위험의 크기</b>뿐이다.</li><li>변동성으로 노출을 조절하면 <b>알파 없이도</b> TQQQ 낙폭을 −82%→−42%로 절반으로 줄인다. 예측 0의 정직한 최선 = <b>'버틸 수 있는 레버'</b>.</li></ul></div>
+</section>
+
+<section>
+<h2><span class="n">9</span>결론</h2>
 <ul class="concl"><li><b>내가 검증한 공개데이터·일봉·PIT·비용후 후보군</b>에서는, 검증된·알려진·안전한 방법이 SPY/QQQ도 단순 TQQQ 노출도 못 이겼다 (8세대 robust negative).</li><li>차트 기술·팩터·타이밍 = 알파 아님. 검증 인프라(자작 PIT 지수 vs 실제 SPY corr 0.998)는 완성했으나 <b>이 후보군에 찾을 알파가 없었다.</b></li><li>수익 엔진 = <b>TQQQ 노출(레버드 베타)</b>이지 알파가 아니다. 타이밍/Vault는 복리만 깎았다 (Cash Drag &gt; Defense).</li><li>vol-target은 알파가 아니라 <b>리스크 통제</b> — TQQQ 낙폭 -82%→-42%로 절반 (수익은 못 더하되 버틸 수 있게).</li><li>가장 큰 자산 = <b>가짜 알파를 안 만든 검증 규율.</b> look-ahead를 잡고, 사전등록 NULL을 지키고, 결과를 정직하게 negative로 적었다.</li><li>길을 잃은 게 아니다 — <b>알파 프로젝트를 정직하게 끝냈고</b>, 이제 '버틸 수 있는 레버 사이즈'를 고르는 단계다. 그게 정직한 종착점.</li></ul>
 </section>
 
