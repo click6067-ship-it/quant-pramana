@@ -42,6 +42,9 @@ The honest endpoint isn't a clever model. It's: *size the leverage you can actua
 
 ## Charts
 
+![Return vs Pain](docs/images/return_vs_pain.png)
+*8 generations vs just holding TQQQ (real TQQQ 2010–2026, after cost). TQQQ wins on return but with −82% drawdown; vol-target (green) sits left of the static frontier = same return at less pain; my market-timing attempts (red) never beat the line. The top-left "dream" zone is empty — no free lunch.*
+
 ![A2 vs TQQQ](docs/images/a2_vs_tqqq.png)
 *A2 (fixed 35/35 QQQ/TQQQ + Attack/Moonshot) vs QQQ·SPY·TQQQ — account value, ₩100M start, backtest 2016~. TQQQ wins on return, but with −80%+ drawdowns the bull window can't show.*
 
