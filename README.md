@@ -11,6 +11,8 @@
 
 📊 **Live dashboard (every chart · EN/KO toggle in-page):** https://click6067-ship-it.github.io/quant-pramana/pramana_journey_dashboard.html?lang=en
 
+▶ **Live paper demo (it actually runs):** https://click6067-ship-it.github.io/quant-pramana/pramana_live.html — VT-CANON / v7 / Static-70-30 + SPY/QQQ/TQQQ run forward from ₩100M (since last week), on **Sharadar (paid · PIT)** data, cron-updated. Paper only, EOD, capital authority 0.
+
 > 🗄️ **Data actually used:** **Sharadar** (Nasdaq Data Link · *paid · point-in-time · survivorship-free*) — daily prices (SEP), ETF prices (SFP), historical market cap (DAILY), fundamentals (SF1), delistings/dividends/S&P 500 membership (TICKERS/ACTIONS/SP500) → backtest primary · **yfinance** (free) — TQQQ/QQQ/SPY/DBMF/GLD/IEF back to 2010, forward & sanity cross-check · **SEC EDGAR** (free) — 8-K filings with real public timestamps (catalyst/NEG gate) · **^IRX** — T-bill yield for the cash sleeve. *("Public data" below means publicly-available information — no private/insider edge — **not** "free data only"; the backtest spine is paid Sharadar.)*
 
 > ⚠️ **PAPER ONLY · no live capital · virtual ₩100M · not investment advice.** An educational record of *negative results* + a reusable validation framework. Backtests are 2010–2026 (mostly bull; no dot-com / 2008 — the leveraged ETFs are too young), so drawdowns are understated. TQQQ targets 3× the *daily* Nasdaq-100 return (inception 2010-02-09); long holds diverge from 3× the index. DYOR.
