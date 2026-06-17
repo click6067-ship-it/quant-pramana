@@ -1,5 +1,8 @@
 # PRAMANA A2 — Convex Raider Book
 
+> # 🗄️ ARCHIVED — superseded by `PRAMANA_V4/A2_SPEC_v2/PRAMANA_A2_SINGLE_SOURCE_OF_TRUTH_v2.md` (2026-06-14)
+> **이 문서 = legacy.** 최신 정본 = **SSOT v2**. 충돌 시 SSOT v2 우선. base allocation은 이 문서가 아니라 **SSOT v2의 QQQ35/TQQQ35/Attack10/Moonshot10/Vault10**. 우선순위: SSOT v2 > A2_DELTA > A2_IMPL_PACK > (이 문서). 구현 기준 = `A2_SPEC_v2/` + `phase1a/engine/a2_*.py` + `run_a2_daily.sh`.
+>
 > **정제 완성본** (중복·상충 정리·2026-06-13). v1~v7 결론("검증된 알파는 없다")에서 출발해 **전략을 뒤집은** 고위험 공격형 convex book.
 > **PAPER only · NO LIVE · 자본권한 0 · V7 생존코어·A1과 완전 분리.** 검증된 알파 ❌ — *QQQ를 크게 이길 확률을 사는* 시스템.
 

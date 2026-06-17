@@ -1,0 +1,90 @@
+# PRAMANA A2 — Vault In/Out + Dynamic Sell rule engine config
+# 정본 spec: 05_DYNAMIC_SELL_AND_VAULT_TIMING.md + 09_VAULT_MODULE.md
+# 규율: PAPER only·자본권한 0. LLM은 상태(GREEN/YELLOW/RED)만 제공. 숫자는 전부 이 룰.
+# Hard Vault = 코드상 영구 재투입 불가. Reload Vault만 재장전 가능.
+# Vault In은 "이긴 돈(절대 수익)"이 있을 때만 — QQQ보다 덜 잃은 것만으론 절대 금지.
+
+label: "A2 Vault/Sell rule engine (검증된 알파 아님·paper·human gate)"
+
+# ── Hard/Reload 분리 (spec §4) ──
+split:
+  hard_ratio: 0.70       # 절대 재투입 금지·A2 공격자금에서 제외
+  reload_ratio: 0.30     # TQ-DH/Attack A급에만·25%/회·월1회
+
+# ── Vault In 강도표 (spec §2) — 신규 초과수익분(excess - HWM)에 곱할 이동률 ──
+# 조건 A(excess_pp HWM 돌파) × 조건 C(risk_state) → move_rate.
+# rate=0 이면 미작동. 절대수익(이긴 돈) 게이트 통과해야만 적용.
+vault_in_strength:
+  # excess +4%p 구간
+  - {min_excess_pp: 0.04, risk: GREEN,  rate: 0.175}   # +4%p·GREEN → 10~25% (중앙 0.175)
+  - {min_excess_pp: 0.04, risk: YELLOW, rate: 0.25}    # +4%p·YELLOW → 25%
+  - {min_excess_pp: 0.04, risk: RED,    rate: 0.25}
+  # excess +8%p 구간
+  - {min_excess_pp: 0.08, risk: GREEN,  rate: 0.25}
+  - {min_excess_pp: 0.08, risk: YELLOW, rate: 0.375}   # +8%p·YELLOW/RED → 25~50% (중앙 0.375)
+  - {min_excess_pp: 0.08, risk: RED,    rate: 0.375}
+  # excess +12%p 이상 구간
+  - {min_excess_pp: 0.12, risk: GREEN,  rate: 0.375}
+  - {min_excess_pp: 0.12, risk: YELLOW, rate: 0.50}
+  - {min_excess_pp: 0.12, risk: RED,    rate: 0.50}    # +12%p+·RED → 50%
+
+# ── Vault In 게이트 (spec §1: 3조건 중 ≥2) ──
+vault_in_gate:
+  excess_pp_min: 0.04           # 조건 A 최소 임계
+  require_abs_profit: true      # 조건 B: A2 NAV inception 대비 수익 상태 (이긴 돈)
+  min_conditions: 2             # A/B/C 중 최소 2개
+  weekly_only: true             # 주 1회 제한
+  max_monthly_move_pct: 0.10    # 월 이동량 ≤ 전체 NAV의 10%
+
+# ── Sleeve-specific Vault In (spec §2 하단) ──
+sleeve_vault_in:
+  tqqq:     {min_profit_pct: 0.50, decay_yellow_red: true, rate_lo: 0.25, rate_hi: 0.33}
+  moonshot: {x2: "원금회수", x3: "절반 Vault"}
+
+# ── Vault source 우선순위 (spec §3·손실 sleeve 금지) ──
+vault_source_priority: [tqqq, attack, moonshot, qqq]
+
+# ── Vault Out (spec §5) — Reload Vault만. Hard는 절대 금지 ──
+vault_out_gate:
+  leadership_green: true        # Leadership GREEN
+  decay_green: true             # TQQQ Decay GREEN
+  market_stress_not_red: true   # Market Stress not RED
+  narrative_green_yellow: true  # LLM Narrative GREEN/YELLOW
+  qqq_above_ma20: true          # QQQ 20일선 회복
+  reload_pct_per_use: 0.25      # 한 번에 Reload의 25% 이하
+  monthly_only: true            # 월 1회 이하
+# dip_type별 Reload 경로 (spec §5)
+vault_out_dip_routing:
+  A: {allow: true,  to: tqqq,        note: "Liquidity Air Pocket → Reload 25% to TQQQ"}
+  B: {allow: true,  to: qqq_then_tq, note: "Growth Reset → QQQ first, then TQQQ on confirmation"}
+  C: {allow: false, to: null,        note: "Structural Break → Reload 금지"}
+  D: {allow: true,  to: qqq_then_tq, note: "Capitulation+Repair → QQQ 먼저, follow-through 후 TQQQ"}
+
+# ── 5%p Dynamic Sell/Add (spec §6/§7) ──
+# 비중 변경 단위. sleeve_ranges clamp = config/a2_convex_raider.yaml.
+dynamic_step_pp: 0.05
+dynamic_sell:        # trim 후보 → -5%p
+  tqqq:
+    triggers: [leadership_red, decay_zone_10d, qqq_below_20_50, booster_rent, mdd_breach_20]
+    action: {tqqq: -0.05, to: [vault, qqq]}
+  attack:
+    triggers: [attack_3_losses, leadership_red, market_stress_red, neg_cluster]
+    action: {attack: -0.05, to: [vault]}
+  moonshot:
+    triggers: [thesis_decay, verdict_passed, hard_neg, regret_budget_breach]
+    action: {moonshot: -0.05, to: [vault]}
+dynamic_add:         # add 후보 → +5%p
+  tqqq:
+    triggers: [leadership_green, decay_green, qqq_above_20_50, narrative_ok, mdd_within_15, tqdh_type_a_d]
+    action: {tqqq: +0.05, from: [vault, qqq]}
+  attack:
+    triggers: [attack_3of5_win, multi_a_catalyst, leadership_green_yellow, market_stress_not_red]
+    action: {attack: +0.05, from: [vault, qqq]}
+  moonshot:
+    triggers: [m1_thesis, reward_risk_3, verdict_clear, no_hard_neg, no_moon_dd]
+    action: {moonshot: +0.05, from: [vault, qqq]}
+
+# mdd thresholds (spec §6/§7)
+mdd:
+  tqqq_trim_breach: -0.20    # A2 MDD -20% 초과 → TQQQ trim 후보
+  tqqq_add_max: -0.15        # A2 MDD -15% 이내라야 TQQQ add 후보

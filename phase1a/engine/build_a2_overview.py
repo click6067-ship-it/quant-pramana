@@ -14,6 +14,17 @@ a2=lj(os.path.join(A2,"state.json")); a1=lj(os.path.join(A1,"state.json")); v7=l
 war=lj(os.path.join(A2,"war_plan.json")); vault=lj(os.path.join(A2,"positions","vault.json"))
 try: cands=pd.read_csv(os.path.join(A2,"attack_candidates.csv"))
 except: cands=pd.DataFrame()
+# blind/PIT backtest verdict (Attack/Moonshot 과거검증)
+DECD=os.path.join(ROOT,"outputs","a2_decisions")
+bb_sm=lj(os.path.join(DECD,"blind_backtest_summary_smallmid.json")); bb_sp=lj(os.path.join(DECD,"blind_backtest_summary_sp500.json"))
+def bb_row(bb,lbl):
+    if not bb: return f'<tr><td>{lbl}</td><td colspan=4 style="color:#64748b">미실행</td></tr>'
+    a=bb.get("attack",{}); h=a.get("by_horizon",{}).get("5",{}) or a.get("by_horizon",{}).get(5,{})
+    v=bb.get("attack_verdict","?")
+    return (f'<tr><td>{lbl}</td><td>{a.get("n_candidates","?"):,}건</td>'
+            f'<td class="{"pos" if h.get("excess_qqq_mean",0)>0 else "neg"}">{h.get("excess_qqq_mean",0)*100:+.2f}%</td>'
+            f'<td class=neg>{h.get("excess_qqq_median",0)*100:+.2f}%</td>'
+            f'<td class=neg>{h.get("win_rate_excess_qqq",0)*100:.0f}%</td><td style="color:#f87171;font-weight:700">{v}</td></tr>')
 def pct(x): return f"{x*100:+.1f}%" if isinstance(x,(int,float)) else "—"
 def chart():
     p=os.path.join(A2,"prices.csv")
@@ -37,12 +48,14 @@ def chart():
 
 phases=[("0 무결성","next-bar·live/backtest·to_won·capital accounting","✅"),
         ("A Vault ledger","forward vault.json·노출차감·Hard70/Reload30·주1회/월10%","✅"),
-        ("B 연료","Attack/Moonshot ledger·#4 sleeve 회계·Graveyard 판정·NEG Gate 차등","✅"),
+        ("B 연료","Attack/Moonshot ledger·token·draft board·thesis·NEG Gate 차등","✅"),
+        ("B+ Blind backtest","feature/event store(PIT)·Attack daily proxy·Moonshot event·decision log","✅"),
         ("C1 War Plan","상태판정(LLM=GYR만)·rule 게이트","✅"),
-        ("C3 Attack scanner","분봉 ORB/VWAP/RVOL/Bollinger·등급·NEG","✅"),
+        ("C3 Attack scanner","분봉 ORB/VWAP/RVOL/Bollinger·등급·NEG=EDGAR 연결완료","✅"),
         ("C4 분봉 provider","yfinance PROXY·Polygon/Alpaca stub","✅"),
         ("C2 Mapping","동적 OFF라 불필요(게이트=War Plan)","⏭️"),
-        ("D 통합·미니PC","이 종합 대시보드·미니PC 배포(마지막)","🔨")]
+        ("Delta","TQ-DH·benchmark panel·dynamic vault/sell engine","✅"),
+        ("D 통합·미니PC","이 종합 대시보드·cron 8 jobs·미니PC 배포","✅")]
 codex=[("1차 STOP","look-ahead·live/backtest 혼동·Vault 장식·beta toy","수정 ✅"),
        ("2차 STOP","close-to-close 미묘 same-close·Vault forward·동적 ablation","수정 ✅"),
        ("동적 allocator","ablation 동적기여 −113%p (고정<동적)","REJECT(benign 한정)")]
@@ -93,6 +106,11 @@ iframe{{width:100%;height:1450px;border:0;border-radius:12px;background:#070b16}
 
 <div class=banner>🔴 <b>동적 allocator = REJECT</b> — dynamic ablation 동적기여 <b>−113%p</b>(고정 35/35 &gt; 동적). 마켓타이밍 또 패배(v7 4전4패·Codex #5 일치). 단 "이 구현·2016~ benign·무비용" 한정·"동적 일반 사망" 확장 ❌. → A2는 고정 + Attack/Moonshot이 차별점.</div>
 
+<h2>🧪 Attack/Moonshot Blind/PIT Backtest <span style="color:#64748b;font-size:.7em">(과거검증·next-bar·decision log·검증된 알파 아님)</span></h2>
+<div class=meta style="border-left-color:#f59e0b">📌 Attack/Moonshot은 forward 빈 슬롯이 아니라 <b>feature store(available_at)·event store(EDGAR 34,381건 PIT)·blind backtest(60,136 decisions)</b>로 과거 검증됨. 결과 = <b>Attack DEAD(두 유니버스)·Moonshot edge 없음</b>(평균 양수는 우측꼬리 lottery·중앙값 음수·승률&lt;50%) = 8세대 결론과 일관. <b>가짜 알파를 또 걸러낸 것(시스템 정상)</b>. 상세 <a href="../phase1a/reports/A2_attack_moonshot_blind_backtest.md">리포트</a>.</div>
+<table><tr><th>Attack Stage-A (h5·cost 20bp)</th><th>후보</th><th>excess vs QQQ (mean)</th><th>excess (median)</th><th>win(ex)</th><th>판정</th></tr>
+{bb_row(bb_sm,"smallmid (gap proxy·next-close)")}
+{bb_row(bb_sp,"sp500 (진짜 open-gap·next-open)")}</table>
 <h2>⚔️ Attack scanner (분봉·PROXY·매수 X·forward watch)</h2>
 <table><tr><th>티커</th><th>등급</th><th>RVOL</th><th>VWAP</th><th>ORB</th><th>blocked</th></tr>{crows}</table>
 

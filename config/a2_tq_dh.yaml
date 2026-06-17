@@ -1,0 +1,57 @@
+# PRAMANA A2 — TQ-DH (TQQQ Dip Harvester) config v0.1
+# spec: pramana_a2_delta_patch_pack/03_TQ_DH_TQQQ_DIP_HARVESTER.md
+# PAPER only · 자본권한 0 · 검증된 알파 아님. 모든 임계값은 spec §2 그대로.
+# VIX/VXN은 캐시에 없음 → QQQ 20일 realized vol(연율화)로 proxy. 라벨에 'proxy' 명시.
+
+capital: 100000000            # 가상 ₩1억 (NAV 비교용)
+
+# ── Dip 분류 임계 (spec §2) ── drawdown은 QQQ peak 대비 (음수)
+dip:
+  type_a:                     # Liquidity Air Pocket
+    dd_hi: -0.05              # -5%
+    dd_lo: -0.08             # ~ -8%
+    leaders_above_50dma_min: 0.5   # 절반 이상 50일선 위
+  type_b:                     # Growth Reset
+    dd_hi: -0.10             # -10%
+    dd_lo: -0.15             # ~ -15% (구간 하단; 더 깊으면 C/D 후보)
+  type_c:                     # Structural Break (NO BUY)
+    dd_max: -0.20            # -20% 이상
+    below_200dma: true       # QQQ 200일선 하회
+    leadership_red_max: 0.34  # 50일선 위 비율이 이하면 RED
+  type_d:                     # Capitulation + Repair (reload QQQ→TQQQ)
+    dd_trigger: -0.20        # 사전에 -20% 이상 폭락 경험
+    break_10d_high: true     # QQQ 10일 고점 돌파
+    leaders_recover_20dma_min: 0.5  # 리더 절반 이상 20일선 회복
+
+# ── VIX/VXN proxy (QQQ realized vol 20d, 연율화) ──
+vix_proxy:
+  calm_below: 0.20           # GREEN proxy
+  elevated_below: 0.35       # YELLOW proxy
+  # 그 이상 = RED proxy
+
+# ── Leadership basket (sp500 패널 내 대형주, 50일선 대비) ──
+leadership:
+  basket: [NVDA, MSFT, AAPL, AMZN, GOOGL, META, AVGO, TSLA, AMD, NFLX]
+  green_above: 0.66          # 50일선 위 비율 >= → GREEN
+  yellow_above: 0.34         # >= → YELLOW, 미만 → RED
+
+# ── Reload 규칙 (spec §4, §5) ── Reload Vault만 사용. Hard Vault 영구 잠금.
+reload:
+  reserve_pct: 0.10          # 초기 자본의 10% = Reload Vault reserve (backtest 시뮬)
+  step_pct: 0.25             # 1회 reload = 현재 Reload Vault의 25%
+  min_interval_days: 3       # 연속 reload 최소 간격 (거래일)
+  sleeve_mdd_block: -0.15    # reload 후 TQQQ sleeve MDD -15% 초과면 추가 reload 금지
+  type_b_confirm_high_days: 10   # Type B: QQQ 10일 고점 회복 시 TQQQ reload
+  type_d_followthrough_days: 4   # Type D: QQQ reload 후 follow-through 대기(거래일)
+
+# ── A2 base (TQ-DH 비교 기준) ──
+a2_base:
+  qqq: 0.35
+  tqqq: 0.35
+  cash: 0.30                 # 이 중 reserve_pct가 Reload Vault로 분리(TQ-DH on)
+
+# ── 벤치마크 DCA 파라미터 (spec §1, §7) ──
+dca:
+  monthly_day_of_month: 1    # 매월 첫 거래일 균등 투입
+  drawdown_trigger: -0.10    # drawdown DCA: QQQ peak 대비 -10% 이하면 1회 투입
+  drawdown_step_pct: 0.10    # 남은 현금의 10%씩

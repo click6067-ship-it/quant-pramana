@@ -1,0 +1,45 @@
+# PRAMANA A2 — State → Target Weight Mapping (SSOT v2 §04)
+# LLM은 상태(GREEN/YELLOW/RED 등)만 판정·이 mapping이 숫자(비중) 결정. next-bar(state t → weight t+1)·1회 5%p.
+# 절대: LLM이 비중 숫자/매수매도/확률 결정 금지.
+
+base_allocation:    # SSOT §01 §04
+  qqq: 0.35
+  tqqq: 0.35
+  attack: 0.10
+  moonshot: 0.10
+  vault: 0.10
+
+ranges:             # clamp (SSOT §04)
+  qqq: [0.25, 0.45]
+  tqqq: [0.15, 0.45]
+  attack: [0.00, 0.20]
+  moonshot: [0.00, 0.15]
+  vault: [0.05, 0.30]
+
+change_unit: 0.05         # 1회 변경
+max_daily_change: 0.05    # 하루 최대(합)
+max_weekly_change: 0.10   # 주간 최대(합)
+
+# state → sleeve 비중 delta (next-bar·5%p 단위·SSOT §04 §5)
+mapping:
+  tqqq:    {GREEN: +0.05, YELLOW: 0.0, RED: -0.05}   # RED=증액 금지 또는 -5%p 후보
+  attack:  {GREEN: +0.05, YELLOW: 0.0, RED: -0.05}   # RED=신규진입 금지
+  moonshot: {OPEN: +0.05, HOLD_ONLY: 0.0, LOCKED: -0.05}
+  vault:   {ACCUMULATE: +0.05, HOLD: 0.0, RELOAD_ALLOWED: -0.05}   # Reload 사용 = vault 감소
+
+# mode (SSOT §04 §6) — Risk-Off 명칭 금지(마켓타이밍 자동매도 오해). 자동매도 아님=신규/증액 게이트.
+modes:
+  base:           {note: "기본 35/35/10/10/10"}
+  berserker:      {note: "TQQQ +5%p 가능(GREEN 다중)·beta governor 내"}
+  red_king:       {note: "TQQQ 증액 금지·Attack half"}
+  attack_lockout: {note: "TQQQ/Attack/Moonshot 신규 증액 금지·Reload 금지·Profit Vault 우선(자동매도 아님)"}
+  crash_lockout:  {note: "신규 0·자동매도는 manual flag만·사람 리뷰"}
+
+# crash lockout 조건 (SSOT §04 §8 · a2_drawdown_rules.py가 enforce)
+crash_lockout_triggers:
+  a2_mdd: -0.30
+  tqqq_sleeve_mdd: -0.35
+  leadership_red_days: 10
+  decay_zone_days: 20
+
+beta_governor_warn: 1.6   # effective beta 경고
